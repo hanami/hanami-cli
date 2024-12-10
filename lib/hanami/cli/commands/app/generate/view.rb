@@ -15,9 +15,11 @@ module Hanami
           # @api private
           class View < Command
             # TODO: make format configurable
-            # TODO: make engine configurable
 
             argument :name, required: true, desc: "View name"
+            option :template_engine, required: false,
+                                     desc: "Template engine to use (officially supported: erb, haml, slim)",
+                                     default: "erb"
 
             example [
               %(books.index               (MyApp::Actions::Books::Index)),

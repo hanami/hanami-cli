@@ -12,6 +12,9 @@ module Hanami
         # @since 2.0.0
         # @api private
         class Action
+          DEFAULT_TEMPLATE_ENGINE = "erb"
+          private_constant :DEFAULT_TEMPLATE_ENGINE
+
           # @since 2.0.0
           # @api private
           def initialize(fs:, inflector:, out: $stdout)
@@ -27,12 +30,13 @@ module Hanami
 
           # @since 2.0.0
           # @api private
-          def call(key:, namespace:, base_path:, url_path:, http_method:, skip_view:, skip_route:, skip_tests:)
+          def call(key:, namespace:, base_path:, url_path:, http_method:, skip_view:, skip_route:, skip_tests:,
+                   template_engine: DEFAULT_TEMPLATE_ENGINE)
             insert_route(key:, namespace:, url_path:, http_method:) unless skip_route
 
             generate_action(key: key, namespace: namespace, base_path: base_path, include_placeholder_body: skip_view)
 
-            generate_view(key:, namespace:, base_path:) unless skip_view
+            generate_view(key:, namespace:, base_path:, template_engine:) unless skip_view
           end
 
           private
@@ -115,17 +119,13 @@ module Hanami
 
           # @api private
           # @since 2.2.2
-          def generate_view(key:, namespace:, base_path:)
+          def generate_view(key:, namespace:, base_path:, template_engine:)
             *controller_name_parts, action_name = key.split(KEY_SEPARATOR)
 
             view_directory = fs.join(base_path, "views", controller_name_parts)
 
             if generate_view?(action_name, view_directory)
-              view_generator.call(
-                key: key,
-                namespace: namespace,
-                base_path: base_path,
-              )
+              view_generator.call(key:, namespace:, base_path:, template_engine:)
             end
           end
 

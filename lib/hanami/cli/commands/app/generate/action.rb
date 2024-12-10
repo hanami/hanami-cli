@@ -28,6 +28,9 @@ module Hanami
             DEFAULT_SKIP_ROUTE = false
             private_constant :DEFAULT_SKIP_ROUTE
 
+            DEFAULT_TEMPLATE_ENGINE = "erb"
+            private_constant :DEFAULT_TEMPLATE_ENGINE
+
             argument :name, required: true, desc: "Action name"
 
             option :url, as: :url_path, required: false, type: :string, desc: "Action URL path"
@@ -56,6 +59,8 @@ module Hanami
               desc: "Skip route generation"
 
             option :slice, required: false, desc: "Slice name"
+            option :template_engine, required: false, type: :string, default: DEFAULT_TEMPLATE_ENGINE,
+                                     desc: "Template engine to use (officially supported options: erb, haml, slim)"
 
             # option :format, required: false, type: :string, default: DEFAULT_FORMAT, desc: "Template format"
 
@@ -86,7 +91,8 @@ module Hanami
               http_method: nil,
               skip_view: DEFAULT_SKIP_VIEW,
               skip_route: DEFAULT_SKIP_ROUTE,
-              skip_tests: DEFAULT_SKIP_TESTS
+              skip_tests: DEFAULT_SKIP_TESTS,
+              template_engine: DEFAULT_TEMPLATE_ENGINE
             )
               name = Naming.new(inflector:).action_name(name)
 
@@ -99,7 +105,8 @@ module Hanami
                 skip_route: skip_route,
                 http_method: http_method,
                 skip_view: skip_view || !Hanami.bundled?("hanami-view"),
-                skip_tests: skip_tests
+                skip_tests: skip_tests,
+                template_engine:
               )
             end
             # rubocop:enable Metrics/ParameterLists
