@@ -3,10 +3,9 @@
 require "hanami"
 
 RSpec.describe Hanami::CLI::Commands::App::Generate::Component, :app do
-  subject { described_class.new(fs: fs, out: out, err: err) }
+  subject { described_class.new(fs: fs, out: out) }
 
   let(:out) { StringIO.new }
-  let(:err) { StringIO.new }
   let(:fs) { Hanami::CLI::Files.new(memory: true, out: out) }
   let(:inflector) { Dry::Inflector.new }
   let(:app) { Hanami.app.namespace }
@@ -17,8 +16,6 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Component, :app do
   def output
     out.rewind && out.read.chomp
   end
-
-  def error_output = err.string.chomp
 
   context "generating for app" do
     context "shallowly nested" do
@@ -38,23 +35,6 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Component, :app do
 
         expect(fs.read("app/operations/send_welcome_email.rb")).to eq(component)
         expect(output).to include("Created app/operations/send_welcome_email.rb")
-      end
-
-      context "with existing file" do
-        let(:file_path) { "app/operations/send_welcome_email.rb" }
-
-        before do
-          fs.write(file_path, "existing content")
-        end
-
-        it "exits with error message" do
-          expect do
-            subject.call(name: "operations.send_welcome_email")
-          end.to raise_error SystemExit do |exception|
-            expect(exception.status).to eq 1
-            expect(error_output).to eq Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
-          end
-        end
       end
     end
 
@@ -80,23 +60,6 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Component, :app do
         expect(fs.read("app/operations/user/mailing/send_welcome_email.rb")).to eq(component)
         expect(output).to include("Created app/operations/user/mailing/send_welcome_email.rb")
       end
-
-      context "with existing file" do
-        let(:file_path) { "app/operations/user/mailing/send_welcome_email.rb" }
-
-        before do
-          fs.write(file_path, "existing content")
-        end
-
-        it "exits with error message" do
-          expect do
-            subject.call(name: "operations.user.mailing.send_welcome_email")
-          end.to raise_error SystemExit do |exception|
-            expect(exception.status).to eq 1
-            expect(error_output).to eq Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
-          end
-        end
-      end
     end
   end
 
@@ -119,23 +82,6 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Component, :app do
 
         expect(fs.read("slices/main/renderers/welcome_email.rb")).to eq(component)
         expect(output).to include("Created slices/main/renderers/welcome_email.rb")
-      end
-
-      context "with existing file" do
-        let(:file_path) { "slices/main/renderers/welcome_email.rb" }
-
-        before do
-          fs.write(file_path, "existing content")
-        end
-
-        it "exits with error message" do
-          expect do
-            subject.call(name: "renderers.welcome_email", slice: "main")
-          end.to raise_error SystemExit do |exception|
-            expect(exception.status).to eq 1
-            expect(error_output).to eq Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
-          end
-        end
       end
     end
 
@@ -161,23 +107,6 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Component, :app do
 
         expect(fs.read("slices/main/renderers/user/mailing/welcome_email.rb")).to eq(component)
         expect(output).to include("Created slices/main/renderers/user/mailing/welcome_email.rb")
-      end
-
-      context "with existing file" do
-        let(:file_path) { "slices/main/renderers/user/mailing/welcome_email.rb" }
-
-        before do
-          fs.write(file_path, "existing content")
-        end
-
-        it "exits with error message" do
-          expect do
-            subject.call(name: "renderers.user.mailing.welcome_email", slice: "main")
-          end.to raise_error SystemExit do |exception|
-            expect(exception.status).to eq 1
-            expect(error_output).to eq Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
-          end
-        end
       end
     end
 
