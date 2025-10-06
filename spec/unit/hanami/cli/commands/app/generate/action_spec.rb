@@ -297,6 +297,15 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
       end
     end
 
+    it "can skip test creation" do
+      within_application_directory do
+        subject.call(name: "no.test", skip_tests: true)
+
+        expect(fs.exist?("spec/actions/no/test_spec.rb")).to be(false)
+        expect(output).to_not include("Created spec/actions/no/test_spec.rb")
+      end
+    end
+
     include_context "with existing files" do
       let(:generate_action) { subject.call(name: action_name) }
     end
@@ -476,6 +485,15 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
 
         expect(fs.read("app/templates/#{controller}/#{action}.html.erb")).to eq(template_file)
         expect(output).to include("Created app/templates/#{controller}/#{action}.html.erb")
+      end
+    end
+
+    it "can skip test creation" do
+      within_application_directory do
+        subject.call(name: "no.test", skip_tests: true)
+
+        expect(fs.exist?("spec/actions/no/test_spec.rb")).to be(false)
+        expect(output).to_not include("Created spec/actions/no/test_spec.rb")
       end
     end
 
@@ -1163,6 +1181,17 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
           "slice `foo' is missing, please generate with `hanami generate slice foo'",
         )
       end
+
+      it "can skip test creation" do
+        within_application_directory do
+          prepare_slice!
+
+          subject.call(slice: slice, name: "no.test", skip_tests: true)
+
+          expect(fs.exist?("spec/slices/#{slice}/actions/no/test_spec.rb")).to be(false)
+          expect(output).to_not include("Created spec/slices/#{slice}/actions/no/test_spec.rb")
+        end
+      end
     end
 
     context "with hanami view bundled" do
@@ -1353,6 +1382,17 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
             # template
             expect(output).to_not include("Created slices/#{slice}/templates/#{controller}/#{action}.html.erb")
           end
+        end
+      end
+
+      it "can skip test creation" do
+        within_application_directory do
+          prepare_slice!
+
+          subject.call(slice: slice, name: "no.test", skip_tests: true)
+
+          expect(fs.exist?("spec/slices/#{slice}/actions/no/test_spec.rb")).to be(false)
+          expect(output).to_not include("Created spec/slices/#{slice}/actions/no/test_spec.rb")
         end
       end
     end

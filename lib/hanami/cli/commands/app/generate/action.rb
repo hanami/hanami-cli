@@ -41,7 +41,6 @@ module Hanami
               default: DEFAULT_SKIP_VIEW,
               desc: "Skip view and template generation"
 
-            # TODO: Implement this
             option \
               :skip_tests,
               required: false,
@@ -90,19 +89,20 @@ module Hanami
               http_method: nil,
               skip_view: DEFAULT_SKIP_VIEW,
               skip_route: DEFAULT_SKIP_ROUTE,
-              skip_tests: DEFAULT_SKIP_TESTS # rubocop:disable Lint/UnusedMethodArgument
+              skip_tests: DEFAULT_SKIP_TESTS
             )
               name = Naming.new(inflector:).action_name(name)
 
               raise InvalidActionNameError.new(name) unless name.include?(".")
 
               super(
-                name:,
-                slice:,
-                url_path:,
-                skip_route:,
-                http_method:,
+                name: name,
+                slice: slice,
+                url_path: url_path,
+                skip_route: skip_route,
+                http_method: http_method,
                 skip_view: skip_view || !Hanami.bundled?("hanami-view"),
+                skip_tests: skip_tests
               )
             end
             # rubocop:enable Lint/ParameterLists
