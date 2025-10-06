@@ -96,13 +96,13 @@ module Hanami
               raise InvalidActionNameError.new(name) unless name.include?(".")
 
               super(
-                name: name,
-                slice: slice,
-                url_path: url_path,
-                skip_route: skip_route,
-                http_method: http_method,
+                name:,
+                slice:,
+                url_path:,
+                skip_route:,
+                http_method:,
                 skip_view: skip_view || !Hanami.bundled?("hanami-view"),
-                skip_tests: skip_tests
+                skip_tests:
               )
             end
             # rubocop:enable Lint/ParameterLists
