@@ -23,7 +23,7 @@ module Hanami
 
                   measure("#{database.name} structure dumped to #{relative_structure_path}") do
                     catch :dump_failed do
-                      result = database.exec_dump_command
+                      result = database.structure_sql_dump
                       exit_codes << result.exit_code if result.respond_to?(:exit_code)
 
                       unless result.successful?
@@ -31,9 +31,13 @@ module Hanami
                         throw :dump_failed, false
                       end
 
+                      structure_sql = result.sql
+
                       migrations_sql = database.schema_migrations_sql_dump
-                      if migrations_sql
-                        File.open(database.structure_file, "a") do |f|
+
+                      File.open(database.structure_file, "w") do |f|
+                        f.puts "#{structure_sql}\n"
+                        if migrations_sql
                           f.puts "#{migrations_sql}\n"
                         end
                       end

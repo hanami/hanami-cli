@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "uri"
+require "delegate"
 
 module Hanami
   module CLI
@@ -11,6 +12,17 @@ module Hanami
             # @api private
             # @since 2.2.0
             class Database
+              class DumpResult < DelegateClass(Hanami::CLI::SystemCall::Result)
+                def initialize(result, post_process: -> sql { sql })
+                  @post_process = post_process
+                  super(result)
+                end
+
+                def sql
+                  @post_process.call(out)
+                end
+              end
+
               DATABASE_CLASS_RESOLVER = Hash.new { |_, key|
                 raise "#{key} is not a supported db scheme"
               }.update(
@@ -167,12 +179,22 @@ module Hanami
                 end
               end
 
+              def structure_sql_dump
+                DumpResult.new(exec_dump_command, post_process: method(:post_process_dump))
+              end
+
               def schema_migrations_sql_dump
                 return unless migrations_dir?
 
                 sql = +"INSERT INTO schema_migrations (filename) VALUES\n"
                 sql << applied_migrations.map { |v| "('#{v}')" }.join(",\n")
                 sql << ";"
+                sql
+              end
+
+              private
+
+              def post_process_dump(sql)
                 sql
               end
             end
