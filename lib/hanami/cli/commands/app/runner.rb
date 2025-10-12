@@ -40,13 +40,13 @@ module Hanami
               begin
                 eval(code_or_path, binding, __FILE__, __LINE__) # rubocop:disable Security/Eval
               rescue SyntaxError => e
-                warn "Syntax error in code: #{e.message}"
+                err.puts "Syntax error in code: #{e.message}"
                 exit 1
               rescue NameError => e
-                warn "Name error in code: #{e.message}"
+                err.puts "Name error in code: #{e.message}"
                 exit 1
               rescue StandardError => e
-                warn "Error executing code: #{e.class}: #{e.message}"
+                err.puts "Error executing code: #{e.class}: #{e.message}"
                 exit 1
               ensure
                 # Clear ARGV to prevent interference with IRB or Pry
@@ -60,7 +60,7 @@ module Hanami
           def validate_file_path!(file_path)
             # Ensure the file is a Ruby file
             unless file_path.end_with?('.rb')
-              warn "Error: Only Ruby files (.rb) are allowed"
+              err.puts "Error: Only Ruby files (.rb) are allowed"
               exit 1
             end
 
@@ -69,14 +69,14 @@ module Hanami
             app_root = File.expand_path(Dir.pwd)
 
             unless resolved_path.start_with?(app_root)
-              warn "Error: File must be within the application directory"
+              err.puts "Error: File must be within the application directory"
               exit 1
             end
 
             # Check file size (prevent loading extremely large files)
             file_size = File.size(file_path)
             if file_size > 10 * 1024 * 1024 # 10MB limit
-              warn "Error: File too large (maximum 10MB allowed)"
+              err.puts "Error: File too large (maximum 10MB allowed)"
               exit 1
             end
           end
@@ -84,7 +84,7 @@ module Hanami
           def validate_inline_code!(code)
             # Basic validation for inline code
             if code.length > 10_000 # 10KB limit for inline code
-              warn "Error: Inline code too long (maximum 10,000 characters allowed)"
+              err.puts "Error: Inline code too long (maximum 10,000 characters allowed)"
               exit 1
             end
           end
