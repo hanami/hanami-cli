@@ -41,13 +41,10 @@ module Hanami
                 eval(code_or_path, binding, __FILE__, __LINE__) # rubocop:disable Security/Eval
               rescue SyntaxError => e
                 err.puts "Syntax error in code: #{e.message}"
-                exit 1
               rescue NameError => e
                 err.puts "Name error in code: #{e.message}"
-                exit 1
               rescue StandardError => e
                 err.puts "Error executing code: #{e.class}: #{e.message}"
-                exit 1
               ensure
                 # Clear ARGV to prevent interference with IRB or Pry
                 ARGV.clear
@@ -61,7 +58,6 @@ module Hanami
             # Ensure the file is a Ruby file
             unless file_path.end_with?(".rb")
               err.puts "Error: Only Ruby files (.rb) are allowed"
-              exit 1
             end
 
             # Resolve the absolute path and ensure it's within the app directory
@@ -70,14 +66,12 @@ module Hanami
 
             unless resolved_path.start_with?(app_root)
               err.puts "Error: File must be within the application directory"
-              exit 1
             end
 
             # Check file size (prevent loading extremely large files)
             file_size = File.size(file_path)
             if file_size > 10 * 1024 * 1024 # 10MB limit
               err.puts "Error: File too large (maximum 10MB allowed)"
-              exit 1
             end
           end
 
@@ -85,7 +79,6 @@ module Hanami
             # Basic validation for inline code
             if code.length > 10_000 # 10KB limit for inline code
               err.puts "Error: Inline code too long (maximum 10,000 characters allowed)"
-              exit 1
             end
           end
         end
