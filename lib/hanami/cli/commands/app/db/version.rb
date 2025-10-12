@@ -11,6 +11,7 @@ module Hanami
 
             option :gateway, required: false, desc: "Use database for gateway"
 
+            # rubocop:disable Layout/LineLength
             # @api private
             def call(app: false, slice: nil, gateway: nil, **)
               databases(app: app, slice: slice, gateway: gateway).each do |database|
@@ -25,6 +26,7 @@ module Hanami
 
                 out.puts "=> #{database.name} current schema version is #{version}"
               end
+              # rubocop:enable Layout/LineLength
             end
           end
         end

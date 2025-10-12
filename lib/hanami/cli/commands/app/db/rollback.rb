@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require_relative "../../app/command"
 require_relative "structure/dump"
 
@@ -15,7 +16,16 @@ module Hanami
             option :dump, desc: "Dump structure after rolling back", default: true
             option :gateway, required: false, desc: "Use database for gateway"
 
-            def call(steps: nil, app: false, slice: nil, gateway: nil, target: nil, dump: true, command_exit: method(:exit), **)
+            def call(
+              steps: nil,
+              app: false,
+              slice: nil,
+              gateway: nil,
+              target: nil,
+              dump: true,
+              command_exit: method(:exit),
+              **
+            )
               # We allow either a number of steps or a target migration number to be provided
               # If steps is provided and target is not, we use steps as the target migration number, but we also have to
               # make sure steps is a number, hence some additional logic around checking and converting to number
@@ -98,7 +108,7 @@ module Hanami
 
             def resolve_app_database(gateway, command_exit)
               databases = build_databases(app)
-              
+
               if gateway
                 database = databases[gateway.to_sym]
                 unless database
@@ -117,7 +127,7 @@ module Hanami
 
             def resolve_default_database(command_exit)
               all_dbs = all_databases
-              
+
               if all_dbs.empty?
                 err.puts "No databases found"
                 command_exit.(1)
@@ -142,13 +152,13 @@ module Hanami
             def resolve_slice(slice_name, command_exit)
               slice_name_sym = inflector.underscore(Shellwords.shellescape(slice_name)).to_sym
               slice = app.slices[slice_name_sym]
-              
+
               unless slice
                 err.puts %(Slice "#{slice_name}" not found)
                 command_exit.(1)
                 return
               end
-              
+
               ensure_database_slice(slice)
               slice
             end
@@ -171,7 +181,7 @@ module Hanami
                 # If we have migrations [A, B, C, D] and want to rollback 2 steps from D,
                 # we want to target B (index -3, since we go back 2 steps + 1 for the target)
                 target_index = -(steps_count + 1)
-                
+
                 if target_index.abs > applied_migrations.size
                   return initial_state(applied_migrations)
                 else

@@ -59,7 +59,6 @@ module Hanami
 
             # option :format, required: false, type: :string, default: DEFAULT_FORMAT, desc: "Template format"
 
-            # rubocop:disable Layout/LineLength
             example [
               %(books.index               # GET    /books          to: "books.index"    (MyApp::Actions::Books::Index)),
               %(books.new                 # GET    /books/new      to: "books.new"      (MyApp::Actions::Books::New)),
@@ -73,15 +72,13 @@ module Hanami
               %(authors.update --http=put # PUT    /authors/:id    to: "authors.update" (MyApp::Actions::Authors::Update)),
               %(users.index --slice=admin # GET    /admin/users    to: "users.index"    (Admin::Actions::Users::Update))
             ]
-            # rubocop:enable Layout/LineLength
-
             def generator_class
               Generators::App::Action
             end
 
             # @since 2.0.0
             # @api private
-            # rubocop:disable Lint/ParameterLists
+            # rubocop:disable Metrics/ParameterLists
             def call(
               name:,
               slice: nil,
@@ -96,16 +93,16 @@ module Hanami
               raise InvalidActionNameError.new(name) unless name.include?(".")
 
               super(
-                name:,
-                slice:,
-                url_path:,
-                skip_route:,
-                http_method:,
+                name: name,
+                slice: slice,
+                url_path: url_path,
+                skip_route: skip_route,
+                http_method: http_method,
                 skip_view: skip_view || !Hanami.bundled?("hanami-view"),
-                skip_tests:
+                skip_tests: skip_tests
               )
             end
-            # rubocop:enable Lint/ParameterLists
+            # rubocop:enable Metrics/ParameterLists
           end
         end
       end

@@ -47,6 +47,7 @@ module Hanami
                 )
               end
 
+              # rubocop:disable Layout/LineLength
               # @api private
               # @since 2.2.0
               def exec_load_command
@@ -55,11 +56,12 @@ module Hanami
                   env: cli_env_vars
                 )
               end
+              # rubocop:enable Layout/LineLength
 
               def schema_migrations_sql_dump
                 migrations_sql = super
                 return unless migrations_sql
-                
+
                 search_path = gateway.connection
                   .fetch("SHOW search_path").to_a.first
                   .fetch(:search_path)
