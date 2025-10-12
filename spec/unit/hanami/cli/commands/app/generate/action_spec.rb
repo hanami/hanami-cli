@@ -1396,6 +1396,57 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
         end
       end
     end
+
+    context "with routes file under slice directory" do
+      it "appends routes to slice route file" do
+        within_application_directory do
+          app_routes = <<~RUBY
+            # frozen_string_literal: true
+
+            require "hanami/routes"
+
+            module #{app}
+              class Routes < Hanami::Routes
+                root { "Hello from Hanami" }
+
+                slice :api, at: "/api"
+              end
+            end
+          RUBY
+
+          fs.write("config/routes.rb", app_routes)
+
+          fs.mkdir("slices/api")
+          fs.write("slices/api/config/routes.rb", <<~RUBY)
+            # frozen_string_literal: true
+
+            require "hanami/routes"
+
+            module Api
+              class Routes < Hanami::Routes
+              end
+            end
+          RUBY
+
+          subject.call(slice: "api", name: "users.index")
+          subject.call(slice: "api", name: "users.show")
+
+          expect(fs.read("config/routes.rb")).to eq(app_routes)
+          expect(fs.read("slices/api/config/routes.rb")).to eq(<<~RUBY)
+            # frozen_string_literal: true
+
+            require "hanami/routes"
+
+            module Api
+              class Routes < Hanami::Routes
+                get "/users", to: "users.index"
+                get "/users/:id", to: "users.show"
+              end
+            end
+          RUBY
+        end
+      end
+    end
   end
 
   private
