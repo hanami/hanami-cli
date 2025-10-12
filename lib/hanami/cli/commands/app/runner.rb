@@ -59,7 +59,7 @@ module Hanami
 
           def validate_file_path!(file_path)
             # Ensure the file is a Ruby file
-            unless file_path.end_with?('.rb')
+            unless file_path.end_with?(".rb")
               err.puts "Error: Only Ruby files (.rb) are allowed"
               exit 1
             end
