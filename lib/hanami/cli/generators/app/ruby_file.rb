@@ -17,11 +17,11 @@ module Hanami
             extra_namespace: nil,
             auto_register: nil,
             body: [],
-            **opts
+            **_opts
           )
             @fs = fs
             @inflector = inflector
-            @key = key
+            @key_segments = key.split(KEY_SEPARATOR).map { |segment| inflector.underscore(segment) }
             @namespace = namespace
             @base_path = base_path
             @extra_namespace = extra_namespace&.downcase
@@ -42,13 +42,13 @@ module Hanami
           # @api private
           def fully_qualified_name
             inflector.camelize(
-              [namespace, extra_namespace, *key_parts].join("/"),
+              [namespace, extra_namespace, *key_segments].join("/"),
             )
           end
 
           # @api private
           def path
-            fs.join(directory, "#{key_parts.last}.rb")
+            fs.join(directory, "#{key_segments.last}.rb")
           end
 
           private
@@ -57,7 +57,7 @@ module Hanami
           attr_reader(
             :fs,
             :inflector,
-            :key,
+            :key_segments,
             :base_path,
             :namespace,
             :extra_namespace,
@@ -79,7 +79,7 @@ module Hanami
 
           # @api private
           def local_namespaces
-            Array(extra_namespace) + key_parts[..-2]
+            Array(extra_namespace) + key_segments[..-2]
           end
 
           # @api private
@@ -100,7 +100,7 @@ module Hanami
 
           # @api private
           def constant_name
-            normalize(key_parts.last)
+            normalize(key_segments.last)
           end
 
           # @api private
@@ -115,11 +115,6 @@ module Hanami
           # @api private
           def normalize(name)
             inflector.camelize(name).gsub(/[^\p{Alnum}]/, "")
-          end
-
-          # @api private
-          def key_parts
-            key.split(KEY_SEPARATOR)
           end
         end
       end
