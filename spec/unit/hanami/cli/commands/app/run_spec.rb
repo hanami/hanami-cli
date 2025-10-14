@@ -27,7 +27,7 @@ RSpec.describe Hanami::CLI::Commands::App::Run do
       end
 
       after do
-        File.delete(temp_file_path) if File.exist?(temp_file_path)
+        FileUtils.rm_f(temp_file_path)
       end
 
       it "loads the file when it exists" do
