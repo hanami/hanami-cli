@@ -23,8 +23,8 @@ module Hanami
           desc "Run code in the context of the application"
 
           example [
-            "runner path/to/script.rb                     # Run a Ruby script in the context of the application",
-            "runner 'puts Hanami.app[\"repos.user_repo\"].all.count' # Run inline Ruby code in the context of the application",
+            "path/to/script.rb                     # Run a Ruby script in the context of the application",
+            "'puts Hanami.app[\"repos.user_repo\"].all.count' # Run inline Ruby code in the context of the application",
           ]
 
           argument :code_or_path, required: true, desc: "Path to a Ruby file or inline Ruby code to be executed"
@@ -48,6 +48,7 @@ module Hanami
               ensure
                 # Clear ARGV to prevent interference with IRB or Pry
                 ARGV.clear
+                exit(1) unless e.nil?
               end
             end
           end
@@ -73,12 +74,15 @@ module Hanami
             if file_size > 10 * 1024 * 1024 # 10MB limit
               err.puts "Error: File too large (maximum 10MB allowed)"
             end
+
+            exit(1) unless err.size.zero?
           end
 
           def validate_inline_code!(code)
             # Basic validation for inline code
             if code.length > 10_000 # 10KB limit for inline code
               err.puts "Error: Inline code too long (maximum 10,000 characters allowed)"
+              exit(1)
             end
           end
         end
