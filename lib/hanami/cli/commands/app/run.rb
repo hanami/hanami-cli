@@ -21,6 +21,8 @@ module Hanami
         # @since 2.0.0
         # @api private
         class Run < Hanami::CLI::Command
+          RunError = Class.new(StandardError)
+
           desc "Run code in the context of the application"
 
           example [
@@ -43,19 +45,19 @@ module Hanami
                 eval(code_or_path, binding, __FILE__, __LINE__) # rubocop:disable Security/Eval
               rescue SyntaxError => e
                 err.puts "Syntax error in code: #{e.message}"
-                raise RunnerError, "Syntax error in code: #{e.message}"
+                raise RunError, "Syntax error in code: #{e.message}"
               rescue NameError => e
                 err.puts "Name error in code: #{e.message}"
-                raise RunnerError, "Name error in code: #{e.message}"
+                raise RunError, "Name error in code: #{e.message}"
               rescue StandardError => e
                 err.puts "Error executing code: #{e.class}: #{e.message}"
-                raise RunnerError, "Error executing code: #{e.class}: #{e.message}"
+                raise RunError, "Error executing code: #{e.class}: #{e.message}"
               ensure
                 # Clear ARGV to prevent interference with IRB or Pry
                 ARGV.clear
               end
             end
-          rescue RunnerError
+          rescue RunError
             exit(1)
           end
           # rubocop:enable Metrics/AbcSize
@@ -86,7 +88,7 @@ module Hanami
 
             unless errors.empty?
               errors.each { |error| err.puts error }
-              raise RunnerError, errors.join("\n")
+              raise RunError, errors.join("\n")
             end
           end
 
@@ -94,7 +96,7 @@ module Hanami
             # Basic validation for inline code
             if code.length > 10_000 # 10KB limit for inline code
               err.puts "Error: Inline code too long (maximum 10,000 characters allowed)"
-              raise RunnerError, "Error: Inline code too long (maximum 10,000 characters allowed)"
+              raise RunError, "Error: Inline code too long (maximum 10,000 characters allowed)"
             end
           end
         end

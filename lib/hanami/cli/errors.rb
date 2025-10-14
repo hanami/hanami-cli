@@ -145,10 +145,5 @@ module Hanami
         TEXT
       end
     end
-
-    # @since 2.2.0
-    # @api public
-    class RunnerError < Error
-    end
   end
 end
