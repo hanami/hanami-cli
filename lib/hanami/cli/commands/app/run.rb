@@ -32,6 +32,11 @@ module Hanami
 
           argument :code_or_path, required: true, desc: "Path to a Ruby file or inline Ruby code to be executed"
 
+          def initialize(command_exit: method(:exit), **opts)
+            super(**opts)
+            @command_exit = command_exit
+          end
+
           # rubocop:disable Metrics/AbcSize
           def call(code_or_path:, **)
             require "hanami/prepare"
@@ -58,7 +63,7 @@ module Hanami
               end
             end
           rescue RunError
-            exit(1)
+            @command_exit.call(1)
           end
           # rubocop:enable Metrics/AbcSize
 
