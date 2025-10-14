@@ -18,7 +18,7 @@ module Hanami
             register "console", Commands::App::Console, aliases: ["c"]
             register "server", Commands::App::Server, aliases: ["s"]
             register "routes", Commands::App::Routes
-            register "run", Commands::App::Runner
+            register "run", Commands::App::Run
             register "middleware", Commands::App::Middleware
 
             if Hanami.bundled?("hanami-assets")

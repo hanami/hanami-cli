@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require "spec_helper"
-require "hanami/cli/commands/app/runner"
+require "hanami/cli/commands/app/run"
 
-RSpec.describe Hanami::CLI::Commands::App::Runner do
+RSpec.describe Hanami::CLI::Commands::App::Run do
   subject { described_class.new(out: out, err: err) }
   let(:out) { StringIO.new }
   let(:err) { StringIO.new }

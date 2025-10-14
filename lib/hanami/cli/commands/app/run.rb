@@ -15,12 +15,12 @@ module Hanami
         #
         # Examples:
         #
-        # $ bundle exec hanami runner path/to/script.rb
-        # $ bundle exec hanami runner 'puts Hanami.app["repos.user_repo"].all.count'
+        # $ bundle exec hanami run path/to/script.rb
+        # $ bundle exec hanami run 'puts Hanami.app["repos.user_repo"].all.count'
         #
         # @since 2.0.0
         # @api private
-        class Runner < Hanami::CLI::Command
+        class Run < Hanami::CLI::Command
           desc "Run code in the context of the application"
 
           example [
