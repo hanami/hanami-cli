@@ -12,8 +12,6 @@ RSpec.describe Hanami::CLI::Commands::App::Run do
   before do
     # Mock the hanami/prepare requirement
     allow(subject).to receive(:require).with("hanami/prepare")
-    # Clear ARGV for clean tests
-    ARGV.clear
 
     allow(command_exit).to receive(:call)
   end
@@ -40,14 +38,6 @@ RSpec.describe Hanami::CLI::Commands::App::Run do
     context "when given inline code" do
       it "evaluates simple Ruby code" do
         expect { subject.call(code_or_path: "puts 'Hello World'") }.not_to raise_error
-      end
-
-      it "clears ARGV after execution" do
-        ARGV.replace(%w[arg1 arg2])
-
-        subject.call(code_or_path: "puts 'test'")
-
-        expect(ARGV).to be_empty
       end
 
       context "with syntax errors" do

@@ -57,9 +57,6 @@ module Hanami
               rescue StandardError => e
                 err.puts "Error executing code: #{e.class}: #{e.message}"
                 raise RunError, "Error executing code: #{e.class}: #{e.message}"
-              ensure
-                # Clear ARGV to prevent interference with IRB or Pry
-                ARGV.clear
               end
             end
           rescue RunError
