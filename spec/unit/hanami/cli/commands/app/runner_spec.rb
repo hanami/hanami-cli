@@ -17,21 +17,20 @@ RSpec.describe Hanami::CLI::Commands::App::Runner do
 
   describe "#call" do
     context "when given a file path" do
-      let(:temp_file) { Tempfile.new(["test_script", ".rb"]) }
+      let(:temp_file_path) { File.join(Dir.pwd, "test_script.rb") }
 
       before do
-        temp_file.write("puts 'Hello from file'")
-        temp_file.close
+        File.write(temp_file_path, "puts 'Hello from file'")
       end
 
       after do
-        temp_file.unlink
+        File.delete(temp_file_path) if File.exist?(temp_file_path)
       end
 
       it "loads the file when it exists" do
-        expect(Kernel).to receive(:load).with(temp_file.path)
+        expect(Kernel).to receive(:load).with(temp_file_path).and_return(true)
 
-        subject.call(code_or_path: temp_file.path)
+        subject.call(code_or_path: temp_file_path)
       end
     end
 
@@ -50,9 +49,9 @@ RSpec.describe Hanami::CLI::Commands::App::Runner do
 
       context "with syntax errors" do
         it "prints error message and exits with code 1" do
-          allow(subject).to receive(:exit)
+          allow(subject).to receive(:exit).and_raise(SystemExit)
 
-          subject.call(code_or_path: "puts 'unclosed string")
+          expect { subject.call(code_or_path: "puts 'unclosed string") }.to raise_error(SystemExit)
 
           expect(err.string).to include("Syntax error in code")
           expect(subject).to have_received(:exit).with(1)
@@ -61,9 +60,9 @@ RSpec.describe Hanami::CLI::Commands::App::Runner do
 
       context "with name errors" do
         it "prints error message and exits with code 1" do
-          allow(subject).to receive(:exit)
+          allow(subject).to receive(:exit).and_raise(SystemExit)
 
-          subject.call(code_or_path: "undefined_variable")
+          expect { subject.call(code_or_path: "undefined_variable") }.to raise_error(SystemExit)
 
           expect(err.string).to include("Name error in code")
           expect(subject).to have_received(:exit).with(1)
@@ -72,9 +71,9 @@ RSpec.describe Hanami::CLI::Commands::App::Runner do
 
       context "with runtime errors" do
         it "prints error message and exits with code 1" do
-          allow(subject).to receive(:exit)
+          allow(subject).to receive(:exit).and_raise(SystemExit)
 
-          subject.call(code_or_path: "1 / 0")
+          expect { subject.call(code_or_path: "1 / 0") }.to raise_error(SystemExit)
 
           expect(err.string).to include("Error executing code")
           expect(subject).to have_received(:exit).with(1)
