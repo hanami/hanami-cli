@@ -41,11 +41,44 @@ RSpec.describe Hanami::CLI::Commands::App::Runner do
       end
 
       it "clears ARGV after execution" do
-        ARGV.replace(["arg1", "arg2"])
+        ARGV.replace(%w[arg1 arg2])
 
         subject.call(code_or_path: "puts 'test'")
 
         expect(ARGV).to be_empty
+      end
+
+      context "with syntax errors" do
+        it "prints error message and exits with code 1" do
+          allow(subject).to receive(:exit)
+
+          subject.call(code_or_path: "puts 'unclosed string")
+
+          expect(err.string).to include("Syntax error in code")
+          expect(subject).to have_received(:exit).with(1)
+        end
+      end
+
+      context "with name errors" do
+        it "prints error message and exits with code 1" do
+          allow(subject).to receive(:exit)
+
+          subject.call(code_or_path: "undefined_variable")
+
+          expect(err.string).to include("Name error in code")
+          expect(subject).to have_received(:exit).with(1)
+        end
+      end
+
+      context "with runtime errors" do
+        it "prints error message and exits with code 1" do
+          allow(subject).to receive(:exit)
+
+          subject.call(code_or_path: "1 / 0")
+
+          expect(err.string).to include("Error executing code")
+          expect(subject).to have_received(:exit).with(1)
+        end
       end
     end
   end
