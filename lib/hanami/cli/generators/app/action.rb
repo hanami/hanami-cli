@@ -83,8 +83,14 @@ module Hanami
             if namespace == Hanami.app.namespace
               fs.inject_line_at_class_bottom(routes_location, "class Routes", route)
             else
-              slice_matcher = /slice[[:space:]]*:#{namespace}/
-              fs.inject_line_at_block_bottom(routes_location, slice_matcher, route)
+              slice_routes = fs.join("slices", namespace, "config", "routes.rb")
+
+              if fs.exist?(slice_routes)
+                fs.inject_line_at_class_bottom(slice_routes, "class Routes", route)
+              else
+                slice_matcher = /slice[[:space:]]*:#{namespace}/
+                fs.inject_line_at_block_bottom(routes_location, slice_matcher, route)
+              end
             end
           end
 
