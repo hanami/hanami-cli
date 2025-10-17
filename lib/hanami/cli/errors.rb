@@ -47,7 +47,7 @@ module Hanami
     # @api public
     class FileAlreadyExistsError < Error
       ERROR_MESSAGE = <<~ERROR.chomp
-        The file `%{file_path}` could not be generated because it already exists.
+        The file `%<file_path>s` could not be generated because it already exists.
       ERROR
 
       def initialize(file_path)
