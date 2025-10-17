@@ -4,6 +4,23 @@ Hanami Command Line Interface
 
 ## Unreleased
 
+## v2.3.0.beta2 - 2025-10-17
+
+### Added
+
+- Add `hanami run` command, to run your own code. For example, `hanami run path/to/script.rb` or `hanami run 'puts Hanami.app["repos.user_repo"].all.count'`. (@afomera in #338)
+
+### Changed
+
+- Add `--skip-tests` flag to `generate action` command. (@kyleplump in #335)
+- In new apps, updated generated types module to `Dry.Types(default: :strict)`. (@minaslater in #323)
+- When generators add routes, add those routes to per-slice routes files (`config/routes.rb` within slice directories) if they exist. (@stephannv in #342)
+- Drop support for Ruby 3.1
+
+### Fixed
+
+- Handle mixed case names given to `generate` subcommands. (@cllns in #327)
+
 ## v2.3.0.beta1 - 2025-10-03
 
 ### Added
