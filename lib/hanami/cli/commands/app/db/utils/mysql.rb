@@ -39,7 +39,7 @@ module Hanami
               def exec_dump_command
                 exec_cli(
                   "mysqldump",
-                  "--no-data --routines --skip-comments --result-file=#{structure_file} #{escaped_name}"
+                  "--no-data --routines --skip-comments #{escaped_name}"
                 )
               end
 

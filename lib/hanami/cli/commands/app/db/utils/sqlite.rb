@@ -55,7 +55,7 @@ module Hanami
               # @api private
               # @since 2.2.0
               def exec_dump_command
-                system_call.call(%(sqlite3 #{file_path} ".schema --indent --nosys" > #{structure_file}))
+                system_call.call(%(sqlite3 #{file_path} ".schema --indent --nosys"))
               end
 
               # @api private
