@@ -251,6 +251,17 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Dump, :app_integration
       )
     end
 
+    it "does not change the dump if the structure is the same" do
+      command.call
+      dump_1 = File.read(Hanami.app.root.join("config", "db", "structure.sql"))
+
+      command.call
+      dump_2 = File.read(Hanami.app.root.join("config", "db", "structure.sql"))
+
+      expect(dump_1).to eq(dump_2)
+    end
+
+
     it "dumps the structure for the app db when given --app" do
       command.call(app: true)
 
