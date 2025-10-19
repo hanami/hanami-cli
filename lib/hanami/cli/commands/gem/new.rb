@@ -177,6 +177,9 @@ module Hanami
                   out.puts "Running hanami install..."
                   run_install_command!(head: head)
 
+                  out.puts "Running bundle binstubs hanami-cli rake..."
+                  install_binstubs!
+
                   out.puts "Initializing git repository..."
                   init_git_repository
                 end
@@ -213,6 +216,11 @@ module Hanami
                 raise HanamiInstallError.new(result.err)
               end
             end
+          end
+
+          # @api private
+          def install_binstubs!
+            bundler.bundle("binstubs hanami-cli rake")
           end
 
           # @api private
