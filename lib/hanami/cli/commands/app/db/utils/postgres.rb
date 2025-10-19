@@ -13,6 +13,8 @@ module Hanami
             # @api private
             # @since 2.2.0
             class Postgres < Database
+              SCHEMA_DUMP_FILTER = /^\\(un)?restrict/
+
               # @api private
               # @since 2.2.0
               def exec_create_command
@@ -68,6 +70,10 @@ module Hanami
               end
 
               private
+
+              def post_process_dump(sql)
+                sql.lines.reject{ |line| line =~ SCHEMA_DUMP_FILTER}.join("\n")
+              end
 
               def escaped_name
                 Shellwords.escape(name)
