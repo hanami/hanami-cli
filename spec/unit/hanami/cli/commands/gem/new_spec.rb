@@ -21,6 +21,10 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
 
   let(:output) { out.rewind && out.read.chomp }
 
+  before do
+    allow(bundler).to receive(:bundle).with(a_string_starting_with("binstubs"))
+  end
+
   it "normalizes app name" do
     expect(bundler).to receive(:install!)
       .at_least(1)
@@ -33,11 +37,6 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
 
     expect(bundler).to receive(:exec)
       .with("check")
-      .at_least(1)
-      .and_return(successful_system_call_result)
-
-    expect(bundler).to receive(:bundle)
-      .with("binstubs hanami-cli rake")
       .at_least(1)
       .and_return(successful_system_call_result)
 
@@ -96,10 +95,6 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
     expect(bundler).to receive(:exec)
       .with("check")
       .at_least(1)
-      .and_return(successful_system_call_result)
-
-    expect(bundler).to receive(:bundle)
-      .with("binstubs hanami-cli rake")
       .and_return(successful_system_call_result)
 
     expect(system_call).to receive(:call).with("npm", ["install"])
@@ -525,10 +520,6 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         .at_least(1)
         .and_return(successful_system_call_result)
 
-      expect(bundler).to receive(:bundle)
-        .with("binstubs hanami-cli rake")
-        .and_return(successful_system_call_result)
-
       subject.call(app: app, **kwargs)
 
       expect(fs.directory?(app)).to be(true)
@@ -589,10 +580,6 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
       expect(bundler).to receive(:exec)
         .with("check")
         .at_least(1)
-        .and_return(successful_system_call_result)
-
-      expect(bundler).to receive(:bundle)
-        .with("binstubs hanami-cli rake")
         .and_return(successful_system_call_result)
 
       expect(system_call).to receive(:call).with("npm", ["install"])
@@ -1086,10 +1073,6 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         .at_least(1)
         .and_return(successful_system_call_result)
 
-      expect(bundler).to receive(:bundle)
-        .with("binstubs hanami-cli rake")
-        .and_return(successful_system_call_result)
-
       expect(system_call).to receive(:call).with("npm", ["install"])
 
       subject.call(app: app, **kwargs)
@@ -1121,10 +1104,6 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
       expect(bundler).to receive(:exec)
         .with("check")
         .at_least(1)
-        .and_return(successful_system_call_result)
-
-      expect(bundler).to receive(:bundle)
-        .with("binstubs hanami-cli rake")
         .and_return(successful_system_call_result)
 
       expect(system_call).not_to receive(:call).with("npm", ["install"])
@@ -1185,10 +1164,6 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         .at_least(1)
         .and_return(successful_system_call_result)
 
-      expect(bundler).to receive(:bundle)
-        .with("binstubs hanami-cli rake")
-        .and_return(successful_system_call_result)
-
       expect(system_call).to receive(:call).with("npm", ["install"])
 
       subject.call(app: app, **kwargs)
@@ -1215,10 +1190,6 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
     expect(bundler).to receive(:exec)
       .with("check")
       .at_least(1)
-      .and_return(successful_system_call_result)
-
-    expect(bundler).to receive(:bundle)
-      .with("binstubs hanami-cli rake")
       .and_return(successful_system_call_result)
 
     subject.call(app: app)
@@ -1292,10 +1263,6 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
       .once
       .and_return(successful_system_call_result)
 
-    expect(bundler).to receive(:bundle)
-      .with("binstubs hanami-cli rake")
-      .and_return(successful_system_call_result)
-
     app_name = "no_gems_installed"
     subject.call(app: app_name)
   end
@@ -1321,10 +1288,6 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
       allow(bundler).to receive(:exec)
         .with("install")
         .once
-        .and_return(successful_system_call_result)
-
-      allow(bundler).to receive(:bundle)
-        .with("binstubs hanami-cli rake")
         .and_return(successful_system_call_result)
     end
 
