@@ -21,6 +21,10 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
 
   let(:output) { out.rewind && out.read.chomp }
 
+  before do
+    allow(bundler).to receive(:bundle).with(a_string_starting_with("binstubs"))
+  end
+
   it "normalizes app name" do
     expect(bundler).to receive(:install!)
       .at_least(1)
@@ -1388,6 +1392,29 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
     end
   end
 
+  it "installs binstubs for hanami and rake" do
+    expect(bundler).to receive(:install!)
+      .and_return(true)
+
+    expect(bundler).to receive(:exec)
+      .with("hanami install")
+      .and_return(successful_system_call_result)
+
+    expect(bundler).to receive(:exec)
+      .with("check")
+      .at_least(1)
+      .and_return(successful_system_call_result)
+
+    expect(bundler).to receive(:bundle)
+      .with("binstubs hanami-cli rake")
+      .and_return(successful_system_call_result)
+
+    subject.call(app: app, **kwargs)
+
+    expect(fs.directory?(app)).to be(true)
+    expect(output).to include("Running bundle binstubs hanami-cli rake...")
+  end
+
   it "initializes a git repository" do
     expect(bundler).to receive(:install!)
       .and_return(true)
@@ -1405,6 +1432,8 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
 
     expect(system_call).to receive(:call).with("git", ["init"])
       .and_return(successful_system_call_result)
+
+    expect(bundler).to receive(:bundle).with("binstubs hanami-cli rake")
 
     subject.call(app: app, **kwargs)
 
