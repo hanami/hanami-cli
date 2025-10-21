@@ -11,17 +11,15 @@ module Hanami
     # @since 2.0.0
     # @api private
     class Context < Module
-      attr_reader :app, :opts
+      attr_reader :app
 
       # @since 2.0.0
       # @api private
-      def initialize(app, opts)
+      def initialize(app)
         super()
         @app = app
-        @opts = opts
 
         define_context_methods
-        boot_app if opts[:boot]
         include Plugins::SliceReaders.new(app)
       end
 
@@ -57,10 +55,6 @@ module Hanami
         app.config.console.extensions.each do |mod|
           include mod
         end
-      end
-
-      def boot_app
-        @app.boot
       end
     end
   end

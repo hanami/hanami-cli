@@ -30,7 +30,7 @@ module Hanami
         # @since 2.0.0
         # @api private
         def context
-          @context ||= Hanami::Console::Context.new(app, opts)
+          @context ||= Hanami::Console::Context.new(app)
         end
 
         # @since 2.0.0

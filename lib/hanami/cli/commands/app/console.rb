@@ -45,8 +45,10 @@ module Hanami
           # @since 2.0.0
           # @api private
           def call(engine: nil, boot: DEFAULT_BOOT, **opts)
+            app.boot if boot
+
             engine ||= app.config.console.engine.to_s
-            console_engine = resolve_engine(engine, opts.merge(boot:))
+            console_engine = resolve_engine(engine, opts)
 
             if console_engine.nil?
               err.puts "`#{engine}' is not bundled. Please run `bundle add #{engine}' and retry."
