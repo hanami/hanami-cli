@@ -90,7 +90,7 @@ module Hanami
         out = nil
         err = nil
 
-        ::Bundler.with_unbundled_env do
+        ::Bundler.with_original_env do
           Open3.popen3(env, command(cmd, *args)) do |stdin, stdout, stderr, wait_thr|
             yield stdin, stdout, stderr, wait_thr if block_given?
 

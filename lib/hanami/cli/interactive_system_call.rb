@@ -13,13 +13,12 @@ module Hanami
         @out = out
         @err = err
         @exit_after = exit_after
-        super()
       end
 
       # @api private
       # @since 2.1.0
       def call(cmd, *args, env: {}, out_prefix: "")
-        ::Bundler.with_unbundled_env do
+        ::Bundler.with_original_env do
           threads = []
           exit_status = 0
 
