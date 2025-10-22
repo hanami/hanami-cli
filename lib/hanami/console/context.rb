@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "plugins/slice_readers"
+require_relative "plugins/unbooted_slice_warnings"
 
 module Hanami
   # @since 2.0.0
@@ -21,6 +22,8 @@ module Hanami
 
         define_context_methods
         include Plugins::SliceReaders.new(app)
+
+        Plugins::UnbootedSliceWarnings.activate
       end
 
       private
