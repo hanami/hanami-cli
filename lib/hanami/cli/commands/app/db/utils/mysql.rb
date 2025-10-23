@@ -39,7 +39,7 @@ module Hanami
               def exec_dump_command
                 exec_cli(
                   "mysqldump",
-                  "--no-data --routines --skip-comments #{escaped_name}"
+                  "--no-data --routines --skip-comments --set-gtid-purged=off #{escaped_name}"
                 )
               end
 
