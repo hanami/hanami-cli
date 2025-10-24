@@ -84,19 +84,19 @@ module Hanami
       end
 
       def updated(path)
-        out.puts Formatter.updated(path)
+        out.puts Formatter.updated(path, out: out)
       end
 
       def created(path)
-        out.puts Formatter.created(path)
+        out.puts Formatter.created(path, out: out)
       end
 
       def created_directory(path)
-        out.puts Formatter.created_directory(path)
+        out.puts Formatter.created_directory(path, out: out)
       end
 
       def within_folder(path)
-        out.puts Formatter.dim("-> Entering `#{path}/` directory...")
+        out.puts Formatter.dim("-> Entering `#{path}/` directory...", out: out)
       end
 
       def dir_path(path)

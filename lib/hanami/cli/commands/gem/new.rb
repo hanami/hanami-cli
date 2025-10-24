@@ -158,43 +158,43 @@ module Hanami
                 skip_view: skip_view,
                 database: normalized_database
               )
-              out.puts Formatter.header("Setting up #{app}...")
+              out.puts Formatter.header("Setting up #{app}...", out: out)
 
               generator.call(app, context: context) do
                 if skip_install
                   out.puts ""
-                  out.puts Formatter.info("Skipping installation")
-                  out.puts Formatter.dim("  To complete setup, run: cd #{app} && bundle exec hanami install")
+                  out.puts Formatter.info("Skipping installation", out: out)
+                  out.puts Formatter.dim("  To complete setup, run: cd #{app} && bundle exec hanami install", out: out)
                 else
                   out.puts ""
-                  out.puts Formatter.info("Installing dependencies...")
+                  out.puts Formatter.info("Installing dependencies...", out: out)
                   bundler.install!
 
                   unless skip_assets
-                    out.puts Formatter.info("Installing npm packages...")
+                    out.puts Formatter.info("Installing npm packages...", out: out)
                     system_call.call("npm", ["install"]).tap do |result|
                       unless result.successful?
-                        out.puts Formatter.error("NPM installation failed:")
-                        out.puts(result.err.lines.map { |line| Formatter.dim("    #{line}") })
+                        out.puts Formatter.error("NPM installation failed:", out: out)
+                        out.puts(result.err.lines.map { |line| Formatter.dim("    #{line}", out: out) })
                       end
                     end
                   end
 
-                  out.puts Formatter.info("Running hanami install...")
+                  out.puts Formatter.info("Running hanami install...", out: out)
                   run_install_command!(head: head)
 
-                  out.puts Formatter.info("Running bundle binstubs hanami-cli rake...")
+                  out.puts Formatter.info("Running bundle binstubs hanami-cli rake...", out: out)
                   install_binstubs!
 
-                  out.puts Formatter.info("Initializing git repository...")
+                  out.puts Formatter.info("Initializing git repository...", out: out)
                   init_git_repository
 
                   out.puts ""
-                  out.puts Formatter.success("Successfully created #{app}!")
+                  out.puts Formatter.success("Successfully created #{app}!", out: out)
                   out.puts ""
-                  out.puts Formatter.dim("Next steps:")
-                  out.puts Formatter.dim("  cd #{app}")
-                  out.puts Formatter.dim("  bundle exec hanami dev")
+                  out.puts Formatter.dim("Next steps:", out: out)
+                  out.puts Formatter.dim("  cd #{app}", out: out)
+                  out.puts Formatter.dim("  bundle exec hanami dev", out: out)
                 end
               end
             end
@@ -240,8 +240,8 @@ module Hanami
           def init_git_repository
             system_call.call("git", ["init"]).tap do |result|
               unless result.successful?
-                out.puts Formatter.warning("Failed to initialize git repository")
-                out.puts(result.err.lines.map { |line| Formatter.dim("    #{line}") })
+                out.puts Formatter.warning("Failed to initialize git repository", out: out)
+                out.puts(result.err.lines.map { |line| Formatter.dim("    #{line}", out: out) })
               end
             end
           end
