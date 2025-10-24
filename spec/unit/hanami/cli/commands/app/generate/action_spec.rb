@@ -33,10 +33,10 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
         within_application_directory do
           generate_action
 
-          expect(output).to include("Updated config/routes.rb")
-          expect(output).to include("Created app/actions/#{controller}/#{action}.rb")
-          expect(output).to include("Created app/views/#{controller}/#{action}.rb")
-          expect(output).to include("Created app/templates/#{controller}/#{action}.html.erb")
+          expect(output).to include("  \e[36m↻\e[0m \e[36mupdate\e[0m  config/routes.rb")
+          expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  app/actions/#{controller}/#{action}.rb")
+          expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  app/views/#{controller}/#{action}.rb")
+          expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  app/templates/#{controller}/#{action}.html.erb")
         end
       end
     end
@@ -122,7 +122,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
 
         # route
         expect(fs.read("config/routes.rb")).to eq(routes)
-        expect(output).to include("Updated config/routes.rb")
+        expect(output).to include("  \e[36m↻\e[0m \e[36mupdate\e[0m  config/routes.rb")
 
         # action
         action_file = <<~EXPECTED
@@ -142,7 +142,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
         EXPECTED
 
         expect(fs.read("app/actions/#{controller}/#{action}.rb")).to eq(action_file)
-        expect(output).to include("Created app/actions/#{controller}/#{action}.rb")
+        expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  app/actions/#{controller}/#{action}.rb")
 
         expect(fs.directory?("app/views/#{controller}")).to eq(false)
         expect(fs.exist?("app/views/#{controller}/#{action}.rb")).to eq(false)
@@ -177,31 +177,31 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
       within_application_directory do
         subject.call(name: "users.index")
         expect(fs.read("config/routes.rb")).to match(%(get "/users", to: "users.index"))
-        expect(output).to include("Updated config/routes.rb")
+        expect(output).to include("  \e[36m↻\e[0m \e[36mupdate\e[0m  config/routes.rb")
 
         subject.call(name: "users.new")
         expect(fs.read("config/routes.rb")).to match(%(get "/users/new", to: "users.new"))
-        expect(output).to include("Updated config/routes.rb")
+        expect(output).to include("  \e[36m↻\e[0m \e[36mupdate\e[0m  config/routes.rb")
 
         subject.call(name: "users.create")
         expect(fs.read("config/routes.rb")).to match(%(post "/users", to: "users.create"))
-        expect(output).to include("Updated config/routes.rb")
+        expect(output).to include("  \e[36m↻\e[0m \e[36mupdate\e[0m  config/routes.rb")
 
         subject.call(name: "users.edit")
         expect(fs.read("config/routes.rb")).to match(%(get "/users/:id/edit", to: "users.edit"))
-        expect(output).to include("Updated config/routes.rb")
+        expect(output).to include("  \e[36m↻\e[0m \e[36mupdate\e[0m  config/routes.rb")
 
         subject.call(name: "users.update")
         expect(fs.read("config/routes.rb")).to match(%(patch "/users/:id", to: "users.update"))
-        expect(output).to include("Updated config/routes.rb")
+        expect(output).to include("  \e[36m↻\e[0m \e[36mupdate\e[0m  config/routes.rb")
 
         subject.call(name: "users.show")
         expect(fs.read("config/routes.rb")).to match(%(get "/users/:id", to: "users.show"))
-        expect(output).to include("Updated config/routes.rb")
+        expect(output).to include("  \e[36m↻\e[0m \e[36mupdate\e[0m  config/routes.rb")
 
         subject.call(name: "users.destroy")
         expect(fs.read("config/routes.rb")).to match(%(delete "/users/:id", to: "users.destroy"))
-        expect(output).to include("Updated config/routes.rb")
+        expect(output).to include("  \e[36m↻\e[0m \e[36mupdate\e[0m  config/routes.rb")
       end
     end
 
@@ -209,7 +209,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
       within_application_directory do
         subject.call(name: "talent.apply", url_path: "/talent/apply")
         expect(fs.read("config/routes.rb")).to match(%(get "/talent/apply", to: "talent.apply"))
-        expect(output).to include("Updated config/routes.rb")
+        expect(output).to include("  \e[36m↻\e[0m \e[36mupdate\e[0m  config/routes.rb")
       end
     end
 
@@ -217,7 +217,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
       within_application_directory do
         subject.call(name: action_name, url_path: "/people")
         expect(fs.read("config/routes.rb")).to match(%(get "/people", to: "users.index"))
-        expect(output).to include("Updated config/routes.rb")
+        expect(output).to include("  \e[36m↻\e[0m \e[36mupdate\e[0m  config/routes.rb")
       end
     end
 
@@ -225,7 +225,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
       within_application_directory do
         subject.call(name: action_name, http_method: "put")
         expect(fs.read("config/routes.rb")).to match(%(put "/users", to: "users.index"))
-        expect(output).to include("Updated config/routes.rb")
+        expect(output).to include("  \e[36m↻\e[0m \e[36mupdate\e[0m  config/routes.rb")
       end
     end
 
@@ -235,7 +235,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
         subject.call(name: action_name, skip_view: true)
 
         expect(fs.read("config/routes.rb")).to match(%(get "/api/users/thing", to: "api.users.thing"))
-        expect(output).to include("Updated config/routes.rb")
+        expect(output).to include("  \e[36m↻\e[0m \e[36mupdate\e[0m  config/routes.rb")
 
         action_file = <<~EXPECTED
           # frozen_string_literal: true
@@ -256,7 +256,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
         EXPECTED
 
         expect(fs.read("app/actions/api/users/thing.rb")).to eq(action_file)
-        expect(output).to include("Created app/actions/api/users/thing.rb")
+        expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  app/actions/api/users/thing.rb")
       end
     end
 
@@ -337,7 +337,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
 
         # route
         expect(fs.read("config/routes.rb")).to eq(routes)
-        expect(output).to include("Updated config/routes.rb")
+        expect(output).to include("  \e[36m↻\e[0m \e[36mupdate\e[0m  config/routes.rb")
 
         # action
         action_file = <<~EXPECTED
@@ -356,7 +356,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
         EXPECTED
 
         expect(fs.read("app/actions/#{controller}/#{action}.rb")).to eq(action_file)
-        expect(output).to include("Created app/actions/#{controller}/#{action}.rb")
+        expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  app/actions/#{controller}/#{action}.rb")
 
         # view
         view_file = <<~EXPECTED
@@ -373,7 +373,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
         EXPECTED
 
         expect(fs.read("app/views/#{controller}/#{action}.rb")).to eq(view_file)
-        expect(output).to include("Created app/views/#{controller}/#{action}.rb")
+        expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  app/views/#{controller}/#{action}.rb")
 
         # template
         expect(fs.directory?("app/templates/#{controller}")).to be(true)
@@ -383,7 +383,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
         EXPECTED
 
         expect(fs.read("app/templates/#{controller}/#{action}.html.erb")).to eq(template_file)
-        expect(output).to include("Created app/templates/#{controller}/#{action}.html.erb")
+        expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  app/templates/#{controller}/#{action}.html.erb")
       end
     end
 
@@ -394,7 +394,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
           subject.call(name: action_name)
 
           expect(fs.read("config/routes.rb")).to match(%(get "/api/users/thing", to: "api.users.thing"))
-          expect(output).to include("Updated config/routes.rb")
+          expect(output).to include("  \e[36m↻\e[0m \e[36mupdate\e[0m  config/routes.rb")
 
           action_file = <<~EXPECTED
             # frozen_string_literal: true
@@ -414,7 +414,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
           EXPECTED
 
           expect(fs.read("app/actions/api/users/thing.rb")).to eq(action_file)
-          expect(output).to include("Created app/actions/api/users/thing.rb")
+          expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  app/actions/api/users/thing.rb")
         end
       end
     end
@@ -457,7 +457,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
         EXPECTED
 
         expect(fs.read("app/actions/#{controller}/#{action}.rb")).to eq(action_file)
-        expect(output).to include("Created app/actions/#{controller}/#{action}.rb")
+        expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  app/actions/#{controller}/#{action}.rb")
 
         # view
         view_file = <<~EXPECTED
@@ -474,7 +474,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
         EXPECTED
 
         expect(fs.read("app/views/#{controller}/#{action}.rb")).to eq(view_file)
-        expect(output).to include("Created app/views/#{controller}/#{action}.rb")
+        expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  app/views/#{controller}/#{action}.rb")
 
         # template
         expect(fs.directory?("app/templates/#{controller}")).to be(true)
@@ -484,7 +484,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
         EXPECTED
 
         expect(fs.read("app/templates/#{controller}/#{action}.html.erb")).to eq(template_file)
-        expect(output).to include("Created app/templates/#{controller}/#{action}.html.erb")
+        expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  app/templates/#{controller}/#{action}.html.erb")
       end
     end
 
@@ -569,7 +569,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
 
             # route
             expect(fs.read("config/routes.rb")).to eq(expected_routes)
-            expect(output).to include("Updated config/routes.rb")
+            expect(output).to include("  \e[36m↻\e[0m \e[36mupdate\e[0m  config/routes.rb")
 
             expected_action = <<~CODE
               # frozen_string_literal: true
@@ -586,7 +586,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
               end
             CODE
             expect(fs.read("app/actions/users/create.rb")).to eq(expected_action)
-            expect(output).to include("Created app/actions/users/create.rb")
+            expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  app/actions/users/create.rb")
 
             expect(fs.exist?("app/views/users/create.rb")).to be(false)
             expect(fs.exist?("app/templates/users/create.html.erb")).to be(false)
@@ -631,7 +631,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
 
               # route
               expect(fs.read("config/routes.rb")).to eq(expected_routes)
-              expect(output).to include("Updated config/routes.rb")
+              expect(output).to include("  \e[36m↻\e[0m \e[36mupdate\e[0m  config/routes.rb")
 
               expected_action = <<~CODE
                 # frozen_string_literal: true
@@ -648,7 +648,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
                 end
               CODE
               expect(fs.read("app/actions/users/create.rb")).to eq(expected_action)
-              expect(output).to include("Created app/actions/users/create.rb")
+              expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  app/actions/users/create.rb")
 
               expected_view = <<~CODE
                 # frozen_string_literal: true
@@ -663,14 +663,14 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
                 end
               CODE
               expect(fs.read("app/views/users/create.rb")).to eq(expected_view)
-              expect(output).to include("Created app/views/users/create.rb")
+              expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  app/views/users/create.rb")
 
               expected_template = <<~EXPECTED
                 <h1>#{inflector.camelize(app)}::Views::Users::Create</h1>
               EXPECTED
 
               expect(fs.read("app/templates/users/create.html.erb")).to eq(expected_template)
-              expect(output).to include("Created app/templates/users/create.html.erb")
+              expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  app/templates/users/create.html.erb")
             end
           end
 
@@ -708,7 +708,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
 
               # route
               expect(fs.read("config/routes.rb")).to eq(expected_routes)
-              expect(output).to include("Updated config/routes.rb")
+              expect(output).to include("  \e[36m↻\e[0m \e[36mupdate\e[0m  config/routes.rb")
 
               expected_action = <<~CODE
                 # frozen_string_literal: true
@@ -726,7 +726,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
                 end
               CODE
               expect(fs.read("app/actions/users/create.rb")).to eq(expected_action)
-              expect(output).to include("Created app/actions/users/create.rb")
+              expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  app/actions/users/create.rb")
 
               expect(fs.exist?("app/views/users/create.rb")).to be(false)
               expect(fs.exist?("app/templates/users/create.html.erb")).to be(false)
@@ -809,7 +809,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
 
             # route
             expect(fs.read("config/routes.rb")).to eq(expected_routes)
-            expect(output).to include("Updated config/routes.rb")
+            expect(output).to include("  \e[36m↻\e[0m \e[36mupdate\e[0m  config/routes.rb")
 
             expected_action = <<~CODE
               # frozen_string_literal: true
@@ -826,7 +826,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
               end
             CODE
             expect(fs.read("app/actions/users/update.rb")).to eq(expected_action)
-            expect(output).to include("Created app/actions/users/update.rb")
+            expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  app/actions/users/update.rb")
 
             expect(fs.exist?("app/views/users/update.rb")).to be(false)
             expect(fs.exist?("app/templates/users/update.html.erb")).to be(false)
@@ -871,7 +871,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
 
               # route
               expect(fs.read("config/routes.rb")).to eq(expected_routes)
-              expect(output).to include("Updated config/routes.rb")
+              expect(output).to include("  \e[36m↻\e[0m \e[36mupdate\e[0m  config/routes.rb")
 
               expected_action = <<~CODE
                 # frozen_string_literal: true
@@ -888,7 +888,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
                 end
               CODE
               expect(fs.read("app/actions/users/update.rb")).to eq(expected_action)
-              expect(output).to include("Created app/actions/users/update.rb")
+              expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  app/actions/users/update.rb")
 
               expected_view = <<~CODE
                 # frozen_string_literal: true
@@ -903,14 +903,14 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
                 end
               CODE
               expect(fs.read("app/views/users/update.rb")).to eq(expected_view)
-              expect(output).to include("Created app/views/users/update.rb")
+              expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  app/views/users/update.rb")
 
               expected_template = <<~EXPECTED
                 <h1>#{inflector.camelize(app)}::Views::Users::Update</h1>
               EXPECTED
 
               expect(fs.read("app/templates/users/update.html.erb")).to eq(expected_template)
-              expect(output).to include("Created app/templates/users/update.html.erb")
+              expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  app/templates/users/update.html.erb")
             end
           end
 
@@ -948,7 +948,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
 
               # route
               expect(fs.read("config/routes.rb")).to eq(expected_routes)
-              expect(output).to include("Updated config/routes.rb")
+              expect(output).to include("  \e[36m↻\e[0m \e[36mupdate\e[0m  config/routes.rb")
 
               expected_action = <<~CODE
                 # frozen_string_literal: true
@@ -966,7 +966,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
                 end
               CODE
               expect(fs.read("app/actions/users/update.rb")).to eq(expected_action)
-              expect(output).to include("Created app/actions/users/update.rb")
+              expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  app/actions/users/update.rb")
 
               expect(fs.exist?("app/views/users/update.rb")).to be(false)
               expect(fs.exist?("app/templates/users/update.html.erb")).to be(false)
@@ -1015,12 +1015,12 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
 
           # route
           expect(fs.read("config/routes.rb")).to eq(routes)
-          expect(output).to include("Updated config/routes.rb")
-          expect(output).to include("Created slices/#{slice}/actions/#{controller}/")
+          expect(output).to include("  \e[36m↻\e[0m \e[36mupdate\e[0m  config/routes.rb")
+          expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  slices/#{slice}/actions/#{controller}/")
 
           # action
           expect(fs.directory?("slices/#{slice}/actions/#{controller}")).to be(true)
-          expect(output).to include("Created slices/#{slice}/actions/#{controller}/")
+          expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  slices/#{slice}/actions/#{controller}/")
 
           action_file = <<~EXPECTED
             # frozen_string_literal: true
@@ -1038,7 +1038,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
             end
           EXPECTED
           expect(fs.read("slices/#{slice}/actions/#{controller}/#{action}.rb")).to eq(action_file)
-          expect(output).to include("Created slices/#{slice}/actions/#{controller}/#{action}.rb")
+          expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  slices/#{slice}/actions/#{controller}/#{action}.rb")
 
           # view
           expect(fs.directory?("slices/#{slice}/views/#{controller}")).to be(false)
@@ -1225,12 +1225,12 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
 
           # route
           expect(fs.read("config/routes.rb")).to eq(routes)
-          expect(output).to include("Updated config/routes.rb")
-          expect(output).to include("Created slices/#{slice}/actions/#{controller}/")
+          expect(output).to include("  \e[36m↻\e[0m \e[36mupdate\e[0m  config/routes.rb")
+          expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  slices/#{slice}/actions/#{controller}/")
 
           # action
           expect(fs.directory?("slices/#{slice}/actions/#{controller}")).to be(true)
-          expect(output).to include("Created slices/#{slice}/actions/#{controller}/")
+          expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  slices/#{slice}/actions/#{controller}/")
 
           action_file = <<~EXPECTED
             # frozen_string_literal: true
@@ -1247,11 +1247,11 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
             end
           EXPECTED
           expect(fs.read("slices/#{slice}/actions/#{controller}/#{action}.rb")).to eq(action_file)
-          expect(output).to include("Created slices/#{slice}/actions/#{controller}/#{action}.rb")
+          expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  slices/#{slice}/actions/#{controller}/#{action}.rb")
 
           # view
           expect(fs.directory?("slices/#{slice}/views/#{controller}")).to be(true)
-          expect(output).to include("Created slices/#{slice}/views/#{controller}/")
+          expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  slices/#{slice}/views/#{controller}/")
 
           view_file = <<~EXPECTED
             # frozen_string_literal: true
@@ -1266,17 +1266,17 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
             end
           EXPECTED
           expect(fs.read("slices/#{slice}/views/#{controller}/#{action}.rb")).to eq(view_file)
-          expect(output).to include("Created slices/#{slice}/views/#{controller}/#{action}.rb")
+          expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  slices/#{slice}/views/#{controller}/#{action}.rb")
 
           # template
           expect(fs.directory?("slices/#{slice}/templates/#{controller}")).to be(true)
-          expect(output).to include("Created slices/#{slice}/templates/#{controller}/")
+          expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  slices/#{slice}/templates/#{controller}/")
 
           template_file = <<~EXPECTED
             <h1>#{inflector.camelize(slice)}::Views::#{inflector.camelize(controller)}::#{inflector.camelize(action)}</h1>
           EXPECTED
           expect(fs.read("slices/#{slice}/templates/#{controller}/#{action}.html.erb")).to eq(template_file)
-          expect(output).to include("Created slices/#{slice}/templates/#{controller}/#{action}.html.erb")
+          expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  slices/#{slice}/templates/#{controller}/#{action}.html.erb")
         end
       end
 
@@ -1356,8 +1356,8 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
 
             # route
             expect(fs.read("config/routes.rb")).to eq(expected_routes)
-            expect(output).to include("Updated config/routes.rb")
-            expect(output).to include("Created slices/#{slice}/actions/#{controller}/")
+            expect(output).to include("  \e[36m↻\e[0m \e[36mupdate\e[0m  config/routes.rb")
+            expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  slices/#{slice}/actions/#{controller}/")
 
             # action
             expected_action = <<~EXPECTED
@@ -1375,7 +1375,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
               end
             EXPECTED
             expect(fs.read("slices/#{slice}/actions/#{controller}/#{action}.rb")).to eq(expected_action)
-            expect(output).to include("Created slices/#{slice}/actions/#{controller}/#{action}.rb")
+            expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  slices/#{slice}/actions/#{controller}/#{action}.rb")
 
             # view
             expect(output).to_not include("Created slices/#{slice}/views/#{controller}/#{action}.rb")

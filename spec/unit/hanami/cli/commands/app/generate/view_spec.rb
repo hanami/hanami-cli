@@ -45,7 +45,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::View, :app do
         EXPECTED
 
         expect(fs.read("app/views/users/index.rb")).to eq(view_file)
-        expect(output).to include("Created app/views/users/index.rb")
+        expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  app/views/users/index.rb")
 
         # template
         expect(fs.directory?("app/templates/users")).to be(true)
@@ -55,7 +55,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::View, :app do
         EXPECTED
 
         expect(fs.read("app/templates/users/index.html.erb")).to eq(template_file)
-        expect(output).to include("Created app/templates/users/index.html.erb")
+        expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  app/templates/users/index.html.erb")
       end
     end
 
@@ -80,7 +80,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::View, :app do
         EXPECTED
 
         expect(fs.read("app/views/special/users/index.rb")).to eq(view_file)
-        expect(output).to include("Created app/views/special/users/index.rb")
+        expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  app/views/special/users/index.rb")
 
         # template
         expect(fs.directory?("app/templates/special/users")).to be(true)
@@ -90,7 +90,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::View, :app do
         EXPECTED
 
         expect(fs.read("app/templates/special/users/index.html.erb")).to eq(template_file)
-        expect(output).to include("Created app/templates/special/users/index.html.erb")
+        expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  app/templates/special/users/index.html.erb")
       end
     end
 
@@ -156,7 +156,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::View, :app do
         EXPECTED
 
         expect(fs.read("slices/main/views/users/index.rb")).to eq(view_file)
-        expect(output).to include("Created slices/main/views/users/index.rb")
+        expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  slices/main/views/users/index.rb")
 
         # template
         expect(fs.directory?("slices/main/templates/users")).to be(true)
@@ -166,7 +166,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::View, :app do
         EXPECTED
 
         expect(fs.read("slices/main/templates/users/index.html.erb")).to eq(template_file)
-        expect(output).to include("Created slices/main/templates/users/index.html.erb")
+        expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  slices/main/templates/users/index.html.erb")
       end
     end
 

@@ -46,7 +46,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Relation, "#call", :app_int
       RUBY
 
       expect(Hanami.app.root.join("app/relations/books.rb").read).to eq relation_file
-      expect(output).to include("Created app/relations/books.rb")
+      expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  app/relations/books.rb")
     end
 
     it "generates a relation in a namespace with default separator" do
@@ -67,7 +67,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Relation, "#call", :app_int
       RUBY
 
       expect(Hanami.app.root.join("app/relations/books/drafts.rb").read).to eq(relation_file)
-      expect(output).to include("Created app/relations/books/drafts.rb")
+      expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  app/relations/books/drafts.rb")
     end
 
     it "generates an relation in a namespace with slash separators" do
@@ -88,7 +88,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Relation, "#call", :app_int
       RUBY
 
       expect(Hanami.app.root.join("app/relations/books/published_books.rb").read).to eq(relation_file)
-      expect(output).to include("Created app/relations/books/published_books.rb")
+      expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  app/relations/books/published_books.rb")
     end
 
     it "deletes the redundant .keep file" do
@@ -114,7 +114,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Relation, "#call", :app_int
       RUBY
 
       expect(Hanami.app.root.join("app/relations/books.rb").read).to eq relation_file
-      expect(output).to include("Created app/relations/books.rb")
+      expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  app/relations/books.rb")
     end
 
     context "with existing file" do
@@ -152,7 +152,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Relation, "#call", :app_int
       RUBY
 
       expect(Hanami.app.root.join("slices/main/relations/books.rb").read).to eq(relation_file)
-      expect(output).to include("Created slices/main/relations/books.rb")
+      expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  slices/main/relations/books.rb")
     end
 
     it "generates a relation in a nested namespace" do
@@ -173,7 +173,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Relation, "#call", :app_int
       RUBY
 
       expect(Hanami.app.root.join("slices/main/relations/book/drafts.rb").read).to eq(relation_file)
-      expect(output).to include("Created slices/main/relations/book/drafts.rb")
+      expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  slices/main/relations/book/drafts.rb")
     end
 
     it "generates a relation for gateway" do
@@ -195,7 +195,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Relation, "#call", :app_int
       RUBY
 
       expect(Hanami.app.root.join("slices/main/relations/book/drafts.rb").read).to eq(relation_file)
-      expect(output).to include("Created slices/main/relations/book/drafts.rb")
+      expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  slices/main/relations/book/drafts.rb")
     end
 
     context "with existing file" do
@@ -233,7 +233,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Relation, "#call", :app_int
       RUBY
 
       expect(Hanami.app.root.join("app/relations/entries.rb").read).to eq(relation_file)
-      expect(output).to include("Created app/relations/entries.rb")
+      expect(output).to include("  \e[32m✓\e[0m \e[32mcreate\e[0m  app/relations/entries.rb")
     end
   end
 end
