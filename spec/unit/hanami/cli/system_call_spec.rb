@@ -42,7 +42,7 @@ RSpec.describe Hanami::CLI::SystemCall do
     it "strips bundler-added environment variables preserving pre-existing ones" do
       Bundler.original_env.dup
         .merge("BUNDLE_FUN_FRAMEWORK" => "hanami")
-        .then {|env| allow(Bundler).to receive(:original_env).and_return(env) }
+        .then { |env| allow(Bundler).to receive(:original_env).and_return(env) }
 
       result = subject.call("cat") do |stdin, _stdout, _stderr, _wait_thr|
         stdin.puts ENV.keys.sort
@@ -57,7 +57,7 @@ RSpec.describe Hanami::CLI::SystemCall do
     it "passes given env to the command" do
       result = subject.call(
         "echo $BUNDLE_GREAT_FRAMEWORK",
-        env: { "BUNDLE_GREAT_FRAMEWORK" => "hanami" }
+        env: {"BUNDLE_GREAT_FRAMEWORK" => "hanami"}
       )
 
       expect(result.out).to eq("hanami")

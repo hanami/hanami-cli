@@ -74,7 +74,7 @@ module Hanami
               private
 
               def post_process_dump(sql)
-                sql.lines.reject{ |line| line =~ SCHEMA_DUMP_FILTER}.join("\n")
+                sql.lines.grep_v(SCHEMA_DUMP_FILTER).join("\n")
               end
 
               def escaped_name
