@@ -31,7 +31,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Repo, :app do
         EXPECTED
 
         expect(fs.read("app/repos/book_repo.rb")).to eq(repo_file)
-        expect(output).to include("Created app/repos/book_repo.rb")
+        expect(output).to include("  ✓ create  app/repos/book_repo.rb")
       end
 
       it "passed through repo name if repo_ suffix is preent" do
@@ -49,7 +49,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Repo, :app do
         EXPECTED
 
         expect(fs.read("app/repos/books_repo.rb")).to eq(repo_file)
-        expect(output).to include("Created app/repos/books_repo.rb")
+        expect(output).to include("  ✓ create  app/repos/books_repo.rb")
       end
     end
 
@@ -70,7 +70,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Repo, :app do
       EXPECTED
 
       expect(fs.read("app/repos/books/drafts_repo.rb")).to eq(repo_file)
-      expect(output).to include("Created app/repos/books/drafts_repo.rb")
+      expect(output).to include("  ✓ create  app/repos/books/drafts_repo.rb")
     end
 
     it "generates an repo in a deep namespace with slash separators" do
@@ -92,7 +92,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Repo, :app do
       EXPECTED
 
       expect(fs.read("app/repos/books/published/hardcover_repo.rb")).to eq(repo_file)
-      expect(output).to include("Created app/repos/books/published/hardcover_repo.rb")
+      expect(output).to include("  ✓ create  app/repos/books/published/hardcover_repo.rb")
     end
 
     context "with existing file" do
@@ -130,7 +130,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Repo, :app do
       EXPECTED
 
       expect(fs.read("slices/main/repos/book_repo.rb")).to eq(repo_file)
-      expect(output).to include("Created slices/main/repos/book_repo.rb")
+      expect(output).to include("  ✓ create  slices/main/repos/book_repo.rb")
     end
 
     it "generates a repo in a nested namespace" do
@@ -151,7 +151,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Repo, :app do
       EXPECTED
 
       expect(fs.read("slices/main/repos/book/draft_repo.rb")).to eq(repo_file)
-      expect(output).to include("Created slices/main/repos/book/draft_repo.rb")
+      expect(output).to include("  ✓ create  slices/main/repos/book/draft_repo.rb")
     end
 
     context "with existing file" do

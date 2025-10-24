@@ -28,7 +28,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Struct, :app do
       EXPECTED
 
       expect(fs.read("app/structs/book.rb")).to eq(struct_file)
-      expect(output).to include("Created app/structs/book.rb")
+      expect(output).to include("  ✓ create  app/structs/book.rb")
     end
 
     it "generates a struct in a namespace with default separator" do
@@ -48,7 +48,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Struct, :app do
       EXPECTED
 
       expect(fs.read("app/structs/book/book_draft.rb")).to eq(struct_file)
-      expect(output).to include("Created app/structs/book/book_draft.rb")
+      expect(output).to include("  ✓ create  app/structs/book/book_draft.rb")
     end
 
     it "generates an struct in a deep namespace with slash separators" do
@@ -70,7 +70,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Struct, :app do
       EXPECTED
 
       expect(fs.read("app/structs/book/published/hardcover.rb")).to eq(struct_file)
-      expect(output).to include("Created app/structs/book/published/hardcover.rb")
+      expect(output).to include("  ✓ create  app/structs/book/published/hardcover.rb")
     end
 
     context "with existing file" do
@@ -108,7 +108,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Struct, :app do
       EXPECTED
 
       expect(fs.read("slices/main/structs/book.rb")).to eq(struct_file)
-      expect(output).to include("Created slices/main/structs/book.rb")
+      expect(output).to include("  ✓ create  slices/main/structs/book.rb")
     end
 
     it "generates a struct in a nested namespace" do
@@ -129,7 +129,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Struct, :app do
       EXPECTED
 
       expect(fs.read("slices/main/structs/book/draft_book.rb")).to eq(struct_file)
-      expect(output).to include("Created slices/main/structs/book/draft_book.rb")
+      expect(output).to include("  ✓ create  slices/main/structs/book/draft_book.rb")
     end
 
     context "with existing file" do

@@ -30,7 +30,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Operation, :app do
       EXPECTED
 
       expect(fs.read("app/add_book.rb")).to eq(operation_file)
-      expect(output).to include("Created app/add_book.rb")
+      expect(output).to include("  ✓ create  app/add_book.rb")
       expect(output).to include(
         "  Note: We generated a top-level operation. " \
         "To generate into a directory, add a namespace: `my_namespace.add_book`"
@@ -56,7 +56,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Operation, :app do
       EXPECTED
 
       expect(fs.read("app/admin/books/add.rb")).to eq(operation_file)
-      expect(output).to include("Created app/admin/books/add.rb")
+      expect(output).to include("  ✓ create  app/admin/books/add.rb")
     end
 
     it "generates an operation in a deep namespace with slash separators" do
@@ -78,7 +78,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Operation, :app do
       EXPECTED
 
       expect(fs.read("app/admin/books/add.rb")).to eq(operation_file)
-      expect(output).to include("Created app/admin/books/add.rb")
+      expect(output).to include("  ✓ create  app/admin/books/add.rb")
     end
 
     context "with existing file" do
@@ -116,7 +116,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Operation, :app do
       EXPECTED
 
       expect(fs.read("slices/main/add_book.rb")).to eq(operation_file)
-      expect(output).to include("Created slices/main/add_book.rb")
+      expect(output).to include("  ✓ create  slices/main/add_book.rb")
       expect(output).to include(
         "  Note: We generated a top-level operation. " \
         "To generate into a directory, add a namespace: `my_namespace.add_book`"
@@ -143,7 +143,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Operation, :app do
       EXPECTED
 
       expect(fs.read("slices/main/admin/books/add.rb")).to eq(operation_file)
-      expect(output).to include("Created slices/main/admin/books/add.rb")
+      expect(output).to include("  ✓ create  slices/main/admin/books/add.rb")
     end
 
     context "with existing file" do
