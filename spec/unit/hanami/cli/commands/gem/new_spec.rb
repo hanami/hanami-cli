@@ -912,6 +912,22 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         expect(fs.read("app/views/helpers.rb")).to eq(helpers)
         expect(output).to include("Created app/views/helpers.rb")
 
+        # app/views/context.rb
+        context_content = <<~RUBY
+          # auto_register: false
+          # frozen_string_literal: true
+
+          module #{inflector.camelize(app)}
+            module Views
+              class Context < Hanami::View::Context
+                # Define view context methods and attributes here
+              end
+            end
+          end
+        RUBY
+        expect(fs.read("app/views/context.rb")).to eq(context_content)
+        expect(output).to include("Created app/views/context.rb")
+
         # app/templates/layouts/app.html.erb
         layout = <<~ERB
           <!DOCTYPE html>

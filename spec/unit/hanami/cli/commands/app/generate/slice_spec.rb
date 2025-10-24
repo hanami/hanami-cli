@@ -144,6 +144,21 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Slice, :app do
       expect(fs.read("slices/#{slice}/views/helpers.rb")).to eq(helpers)
       expect(output).to include("Created slices/#{slice}/views/helpers.rb")
 
+      context = <<~RUBY
+        # auto_register: false
+        # frozen_string_literal: true
+
+        module Admin
+          module Views
+            class Context < Test::View::Context
+              # Define view context methods and attributes here
+            end
+          end
+        end
+      RUBY
+      expect(fs.read("slices/#{slice}/views/context.rb")).to eq(context)
+      expect(output).to include("Created slices/#{slice}/views/context.rb")
+
       operation = <<~RUBY
         # auto_register: false
         # frozen_string_literal: true

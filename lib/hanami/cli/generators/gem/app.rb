@@ -60,6 +60,7 @@ module Hanami
             if context.generate_view?
               fs.create("app/view.rb", t("view.erb", context))
               fs.create("app/views/helpers.rb", t("helpers.erb", context))
+              fs.create("app/views/context.rb", t("context.erb", context))
               fs.create("app/templates/layouts/app.html.erb", t("app_layout.erb", context))
 
               fs.create("public/404.html", file("404.html"))
