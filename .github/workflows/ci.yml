@@ -1,6 +1,6 @@
 name: ci
 
-"on":
+on:
   push:
     paths:
       - ".github/workflows/ci.yml"
@@ -45,7 +45,7 @@ jobs:
         env:
           RACK_VERSION_CONSTRAINT: ${{matrix.rack}}
       - name: Run all tests
-        run: bundle exec rake spec
+        run: script/ci
         env:
           RACK_VERSION_CONSTRAINT: ${{matrix.rack}}
     services:
