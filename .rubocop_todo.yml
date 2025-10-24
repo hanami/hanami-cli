@@ -31,7 +31,6 @@ Lint/UnusedMethodArgument:
     - 'lib/hanami/cli/commands/app/install.rb'
     - 'lib/hanami/cli/generators/app/action.rb'
     - 'lib/hanami/cli/generators/app/part.rb'
-    - 'lib/hanami/cli/generators/app/ruby_file.rb'
 
 # This cop supports safe autocorrection (--autocorrect).
 Lint/UselessAssignment:
@@ -74,6 +73,7 @@ Metrics/PerceivedComplexity:
 Naming/VariableNumber:
   Exclude:
     - 'spec/support/hanami_cli_environment.rb'
+    - 'spec/unit/hanami/cli/commands/app/db/structure/dump_spec.rb'
 
 # This cop supports unsafe autocorrection (--autocorrect-all).
 Style/CombinableLoops:

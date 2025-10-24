@@ -16,7 +16,7 @@ module Hanami
               SCHEMA_DUMP_FILTERS = [
                 /^\\(un)?restrict/,
                 /^-- Dumped (from|by) (database version|pg_dump version)/,
-              ]
+              ].freeze
 
               # @api private
               # @since 2.2.0
