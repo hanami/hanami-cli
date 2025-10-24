@@ -66,6 +66,17 @@ module Hanami
               body: ["# Add your view helpers here"]
             ).create
 
+            RubyClassFile.new(
+              fs: fs,
+              inflector: inflector,
+              namespace: slice,
+              key: "views.context",
+              base_path: directory,
+              parent_class_name: "#{Hanami.app.namespace}::View::Context",
+              auto_register: false,
+              body: ["# Define view context methods and attributes here"]
+            ).create
+
             fs.create(
               fs.join(directory, "templates", "layouts", "app.html.erb"),
               app_layout_template(
@@ -93,11 +104,11 @@ module Hanami
               fs.create(
                 fs.join(directory, "assets", "css", "app.css"),
                 <<~CSS
-                    body {
-                      background-color: #fff;
-                      color: #000;
-                      font-family: sans-serif;
-                    }
+                  body {
+                    background-color: #fff;
+                    color: #000;
+                    font-family: sans-serif;
+                  }
                 CSS
               )
               fs.create(fs.join(directory, "assets", "images", "favicon.ico"), file("favicon.ico"))
@@ -161,9 +172,9 @@ module Hanami
                 <head>
                   <meta charset="UTF-8">
                   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                  <title>#{ page_title }</title>
-                  #{'<%= favicon_tag %>' if bundled_assets }
-                  #{'<%= stylesheet_tag "app" %>' if bundled_assets }
+                  <title>#{page_title}</title>
+                  #{'<%= favicon_tag %>' if bundled_assets}
+                  #{'<%= stylesheet_tag "app" %>' if bundled_assets}
                 </head>
                 <body>
                   <%= yield %>
