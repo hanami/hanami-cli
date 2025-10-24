@@ -4,6 +4,8 @@ module Hanami
   module CLI
     # Provides formatting utilities for CLI output including colors and icons
     #
+    # There is significant overlap with Hanami-Utils ShellColor module, but hasn't been merged together yet.
+    #
     # @api private
     # @since 2.3.0
     module Formatter

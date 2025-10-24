@@ -102,11 +102,11 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
     subject.call(app: app, **kwargs)
 
     expect(fs.directory?(app)).to be(true)
-    expect(output).to include("Created #{app}/")
-    expect(output).to include("-> Within #{app}/")
-    expect(output).to include("Running bundle install...")
-    expect(output).to include("Running npm install...")
-    expect(output).to include("Running hanami install...")
+    expect(output).to include(Hanami::CLI::Formatter.created_directory("#{app}/"))
+    expect(output).to include("-> Entering `#{app}/` directory...")
+    expect(output).to include(Hanami::CLI::Formatter.info("Installing dependencies..."))
+    expect(output).to include(Hanami::CLI::Formatter.info("Installing npm packages..."))
+    expect(output).to include(Hanami::CLI::Formatter.info("Running hanami install..."))
 
     fs.chdir(app) do
       # .gitignore
@@ -120,7 +120,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         db/*.sqlite
       EXPECTED
       expect(fs.read(".gitignore")).to eq(gitignore)
-      expect(output).to include("Created .gitignore")
+      expect(output).to include(Hanami::CLI::Formatter.created(".gitignore"))
 
       # .env
       env = <<~EXPECTED
@@ -128,7 +128,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         DATABASE_URL=sqlite://db/#{app}.sqlite
       EXPECTED
       expect(fs.read(".env")).to eq(env)
-      expect(output).to include("Created .env")
+      expect(output).to include(Hanami::CLI::Formatter.created(".env"))
 
       # README.md
       readme = <<~EXPECTED
@@ -149,7 +149,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         - [Hanami API Doc](https://gemdocs.org/gems/hanami/latest)
       EXPECTED
       expect(fs.read("README.md")).to eq(readme)
-      expect(output).to include("Created README.md")
+      expect(output).to include(Hanami::CLI::Formatter.created("README.md"))
 
       # Gemfile
       hanami_version = Hanami::CLI::Generators::Version.gem_requirement
@@ -189,7 +189,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         end
       EXPECTED
       expect(fs.read("Gemfile")).to eq(gemfile)
-      expect(output).to include("Created Gemfile")
+      expect(output).to include(Hanami::CLI::Formatter.created("Gemfile"))
 
       # package.json
       hanami_npm_version = Hanami::CLI::Generators::Version.npm_package_requirement
@@ -204,7 +204,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         }
       EXPECTED
       expect(fs.read("package.json")).to eq(package_json)
-      expect(output).to include("Created package.json")
+      expect(output).to include(Hanami::CLI::Formatter.created("package.json"))
 
       # Procfile.dev
       procfile = <<~EXPECTED
@@ -212,7 +212,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         assets: bundle exec hanami assets watch
       EXPECTED
       expect(fs.read("Procfile.dev")).to eq(procfile)
-      expect(output).to include("Created Procfile.dev")
+      expect(output).to include(Hanami::CLI::Formatter.created("Procfile.dev"))
 
       # Rakefile
       rakefile = <<~EXPECTED
@@ -224,7 +224,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         Rake.add_rakelib "lib/tasks"
       EXPECTED
       expect(fs.read("Rakefile")).to eq(rakefile)
-      expect(output).to include("Created Rakefile")
+      expect(output).to include(Hanami::CLI::Formatter.created("Rakefile"))
 
       # config.ru
       config_ru = <<~EXPECTED
@@ -235,7 +235,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         run Hanami.app
       EXPECTED
       expect(fs.read("config.ru")).to eq(config_ru)
-      expect(output).to include("Created config.ru")
+      expect(output).to include(Hanami::CLI::Formatter.created("config.ru"))
 
       # bin/dev
       bin_dev = <<~EXPECTED
@@ -250,7 +250,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
       EXPECTED
       expect(fs.read("bin/dev")).to eq(bin_dev)
       expect(fs.executable?("bin/dev")).to be(true)
-      expect(output).to include("Created bin/dev")
+      expect(output).to include(Hanami::CLI::Formatter.created("bin/dev"))
 
       # config/app.rb
       hanami_app = <<~EXPECTED
@@ -264,7 +264,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         end
       EXPECTED
       expect(fs.read("config/app.rb")).to eq(hanami_app)
-      expect(output).to include("Created config/app.rb")
+      expect(output).to include(Hanami::CLI::Formatter.created("config/app.rb"))
 
       # config/assets.js
       assets = <<~EXPECTED
@@ -287,7 +287,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         });
       EXPECTED
       expect(fs.read("config/assets.js")).to eq(assets)
-      expect(output).to include("Created config/assets.js")
+      expect(output).to include(Hanami::CLI::Formatter.created("config/assets.js"))
 
       # config/settings.rb
       settings = <<~EXPECTED
@@ -302,7 +302,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         end
       EXPECTED
       expect(fs.read("config/settings.rb")).to eq(settings)
-      expect(output).to include("Created config/settings.rb")
+      expect(output).to include(Hanami::CLI::Formatter.created("config/settings.rb"))
 
       # config/routes.rb
       routes = <<~EXPECTED
@@ -315,7 +315,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         end
       EXPECTED
       expect(fs.read("config/routes.rb")).to eq(routes)
-      expect(output).to include("Created config/routes.rb")
+      expect(output).to include(Hanami::CLI::Formatter.created("config/routes.rb"))
 
       # config/puma.rb
       puma = <<~EXPECTED
@@ -368,13 +368,13 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         end
       EXPECTED
       expect(fs.read("config/puma.rb")).to eq(puma)
-      expect(output).to include("Created config/puma.rb")
+      expect(output).to include(Hanami::CLI::Formatter.created("config/puma.rb"))
 
       # lib/tasks/.keep
       tasks_keep = <<~EXPECTED
       EXPECTED
       expect(fs.read("lib/tasks/.keep")).to eq(tasks_keep)
-      expect(output).to include("Created lib/tasks/.keep")
+      expect(output).to include(Hanami::CLI::Formatter.created("lib/tasks/.keep"))
 
       # app/action.rb
       action = <<~EXPECTED
@@ -392,7 +392,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         end
       EXPECTED
       expect(fs.read("app/action.rb")).to eq(action)
-      expect(output).to include("Created app/action.rb")
+      expect(output).to include(Hanami::CLI::Formatter.created("app/action.rb"))
 
       # app/view.rb
       view = <<~RUBY
@@ -407,7 +407,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         end
       RUBY
       expect(fs.read("app/view.rb")).to eq(view)
-      expect(output).to include("Created app/view.rb")
+      expect(output).to include(Hanami::CLI::Formatter.created("app/view.rb"))
 
       # app/views/helpers.rb
       helpers = <<~RUBY
@@ -423,7 +423,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         end
       RUBY
       expect(fs.read("app/views/helpers.rb")).to eq(helpers)
-      expect(output).to include("Created app/views/helpers.rb")
+      expect(output).to include(Hanami::CLI::Formatter.created("app/views/helpers.rb"))
 
       # app/templates/layouts/app.html.erb
       layout = <<~ERB
@@ -443,14 +443,14 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         </html>
       ERB
       expect(fs.read("app/templates/layouts/app.html.erb")).to eq(layout)
-      expect(output).to include("Created app/templates/layouts/app.html.erb")
+      expect(output).to include(Hanami::CLI::Formatter.created("app/templates/layouts/app.html.erb"))
 
       # app/assets/js/app.js
       app_js = <<~EXPECTED
         import "../css/app.css";
       EXPECTED
       expect(fs.read("app/assets/js/app.js")).to eq(app_js)
-      expect(output).to include("Created app/assets/js/app.js")
+      expect(output).to include(Hanami::CLI::Formatter.created("app/assets/js/app.js"))
 
       # app/assets/css/app.css
       app_css = <<~EXPECTED
@@ -461,7 +461,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         }
       EXPECTED
       expect(fs.read("app/assets/css/app.css")).to eq(app_css)
-      expect(output).to include("Created app/assets/css/app.css")
+      expect(output).to include(Hanami::CLI::Formatter.created("app/assets/css/app.css"))
 
       # app/assets/images/favicon.ico
       expect(fs.exist?("app/assets/images/favicon.ico")).to be(true)
@@ -481,7 +481,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         end
       EXPECTED
       expect(fs.read("lib/#{app}/types.rb")).to eq(types)
-      expect(output).to include("Created lib/bookshelf/types.rb")
+      expect(output).to include(Hanami::CLI::Formatter.created("lib/bookshelf/types.rb"))
 
       # app/operation.rb
       action = <<~EXPECTED
@@ -496,7 +496,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         end
       EXPECTED
       expect(fs.read("app/operation.rb")).to eq(action)
-      expect(output).to include("Created app/operation.rb")
+      expect(output).to include(Hanami::CLI::Formatter.created("app/operation.rb"))
 
       # public/ error pages
       expect(fs.read("public/404.html")).to include %(<title>The page you were looking for doesn’t exist (404)</title>)
@@ -563,7 +563,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           end
         EXPECTED
         expect(fs.read("Gemfile")).to eq(gemfile)
-        expect(output).to include("Created Gemfile")
+        expect(output).to include(Hanami::CLI::Formatter.created("Gemfile"))
       end
     end
   end
@@ -587,11 +587,11 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
       subject.call(app: app, **kwargs)
 
       expect(fs.directory?(app)).to be(true)
-      expect(output).to include("Created #{app}/")
-      expect(output).to include("-> Within #{app}/")
-      expect(output).to include("Running bundle install...")
-      expect(output).to include("Running npm install...")
-      expect(output).to include("Running hanami install...")
+      expect(output).to include(Hanami::CLI::Formatter.created_directory("#{app}/"))
+      expect(output).to include("-> Entering `#{app}/` directory...")
+      expect(output).to include(Hanami::CLI::Formatter.info("Installing dependencies..."))
+      expect(output).to include(Hanami::CLI::Formatter.info("Installing npm packages..."))
+      expect(output).to include(Hanami::CLI::Formatter.info("Running hanami install..."))
 
       fs.chdir(app) do
         # .gitignore
@@ -605,7 +605,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           db/*.sqlite
         EXPECTED
         expect(fs.read(".gitignore")).to eq(gitignore)
-        expect(output).to include("Created .gitignore")
+        expect(output).to include(Hanami::CLI::Formatter.created(".gitignore"))
 
         # .env
         env = <<~EXPECTED
@@ -613,7 +613,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           DATABASE_URL=sqlite://db/#{app}.sqlite
         EXPECTED
         expect(fs.read(".env")).to eq(env)
-        expect(output).to include("Created .env")
+        expect(output).to include(Hanami::CLI::Formatter.created(".env"))
 
         # README.md
         readme = <<~EXPECTED
@@ -634,7 +634,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           - [Hanami API Doc](https://gemdocs.org/gems/hanami/latest)
         EXPECTED
         expect(fs.read("README.md")).to eq(readme)
-        expect(output).to include("Created README.md")
+        expect(output).to include(Hanami::CLI::Formatter.created("README.md"))
 
         # Gemfile
         hanami_version = Hanami::CLI::Generators::Version.gem_requirement
@@ -674,7 +674,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           end
         EXPECTED
         expect(fs.read("Gemfile")).to eq(gemfile)
-        expect(output).to include("Created Gemfile")
+        expect(output).to include(Hanami::CLI::Formatter.created("Gemfile"))
 
         # package.json
         hanami_npm_version = Hanami::CLI::Generators::Version.npm_package_requirement
@@ -689,7 +689,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           }
         EXPECTED
         expect(fs.read("package.json")).to eq(package_json)
-        expect(output).to include("Created package.json")
+        expect(output).to include(Hanami::CLI::Formatter.created("package.json"))
 
         # Procfile.dev
         procfile = <<~EXPECTED
@@ -697,7 +697,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           assets: bundle exec hanami assets watch
         EXPECTED
         expect(fs.read("Procfile.dev")).to eq(procfile)
-        expect(output).to include("Created Procfile.dev")
+        expect(output).to include(Hanami::CLI::Formatter.created("Procfile.dev"))
 
         # Rakefile
         rakefile = <<~EXPECTED
@@ -709,7 +709,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           Rake.add_rakelib "lib/tasks"
         EXPECTED
         expect(fs.read("Rakefile")).to eq(rakefile)
-        expect(output).to include("Created Rakefile")
+        expect(output).to include(Hanami::CLI::Formatter.created("Rakefile"))
 
         # config.ru
         config_ru = <<~EXPECTED
@@ -720,7 +720,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           run Hanami.app
         EXPECTED
         expect(fs.read("config.ru")).to eq(config_ru)
-        expect(output).to include("Created config.ru")
+        expect(output).to include(Hanami::CLI::Formatter.created("config.ru"))
 
         # bin/dev
         bin_dev = <<~EXPECTED
@@ -735,7 +735,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         EXPECTED
         expect(fs.read("bin/dev")).to eq(bin_dev)
         expect(fs.executable?("bin/dev")).to be(true)
-        expect(output).to include("Created bin/dev")
+        expect(output).to include(Hanami::CLI::Formatter.created("bin/dev"))
 
         # config/app.rb
         hanami_app = <<~EXPECTED
@@ -749,7 +749,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           end
         EXPECTED
         expect(fs.read("config/app.rb")).to eq(hanami_app)
-        expect(output).to include("Created config/app.rb")
+        expect(output).to include(Hanami::CLI::Formatter.created("config/app.rb"))
 
         # config/assets.js
         assets = <<~EXPECTED
@@ -772,7 +772,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           });
         EXPECTED
         expect(fs.read("config/assets.js")).to eq(assets)
-        expect(output).to include("Created config/assets.js")
+        expect(output).to include(Hanami::CLI::Formatter.created("config/assets.js"))
 
         # config/settings.rb
         settings = <<~EXPECTED
@@ -787,7 +787,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           end
         EXPECTED
         expect(fs.read("config/settings.rb")).to eq(settings)
-        expect(output).to include("Created config/settings.rb")
+        expect(output).to include(Hanami::CLI::Formatter.created("config/settings.rb"))
 
         # config/routes.rb
         routes = <<~EXPECTED
@@ -800,7 +800,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           end
         EXPECTED
         expect(fs.read("config/routes.rb")).to eq(routes)
-        expect(output).to include("Created config/routes.rb")
+        expect(output).to include(Hanami::CLI::Formatter.created("config/routes.rb"))
 
         # config/puma.rb
         puma = <<~EXPECTED
@@ -853,13 +853,13 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           end
         EXPECTED
         expect(fs.read("config/puma.rb")).to eq(puma)
-        expect(output).to include("Created config/puma.rb")
+        expect(output).to include(Hanami::CLI::Formatter.created("config/puma.rb"))
 
         # lib/tasks/.keep
         tasks_keep = <<~EXPECTED
         EXPECTED
         expect(fs.read("lib/tasks/.keep")).to eq(tasks_keep)
-        expect(output).to include("Created lib/tasks/.keep")
+        expect(output).to include(Hanami::CLI::Formatter.created("lib/tasks/.keep"))
 
         # app/action.rb
         action = <<~EXPECTED
@@ -877,9 +877,9 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           end
         EXPECTED
         expect(fs.read("app/action.rb")).to eq(action)
-        expect(output).to include("Created app/action.rb")
+        expect(output).to include(Hanami::CLI::Formatter.created("app/action.rb"))
         expect(fs.read("app/actions/.keep")).to eq("")
-        expect(output).to include("Created app/actions/.keep")
+        expect(output).to include(Hanami::CLI::Formatter.created("app/actions/.keep"))
 
         # app/view.rb
         view = <<~RUBY
@@ -894,7 +894,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           end
         RUBY
         expect(fs.read("app/view.rb")).to eq(view)
-        expect(output).to include("Created app/view.rb")
+        expect(output).to include(Hanami::CLI::Formatter.created("app/view.rb"))
 
         # app/views/helpers.rb
         helpers = <<~RUBY
@@ -910,7 +910,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           end
         RUBY
         expect(fs.read("app/views/helpers.rb")).to eq(helpers)
-        expect(output).to include("Created app/views/helpers.rb")
+        expect(output).to include(Hanami::CLI::Formatter.created("app/views/helpers.rb"))
 
         # app/templates/layouts/app.html.erb
         layout = <<~ERB
@@ -930,14 +930,14 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           </html>
         ERB
         expect(fs.read("app/templates/layouts/app.html.erb")).to eq(layout)
-        expect(output).to include("Created app/templates/layouts/app.html.erb")
+        expect(output).to include(Hanami::CLI::Formatter.created("app/templates/layouts/app.html.erb"))
 
         # app/assets/js/app.js
         app_js = <<~EXPECTED
           import "../css/app.css";
         EXPECTED
         expect(fs.read("app/assets/js/app.js")).to eq(app_js)
-        expect(output).to include("Created app/assets/js/app.js")
+        expect(output).to include(Hanami::CLI::Formatter.created("app/assets/js/app.js"))
 
         # app/assets/css/app.css
         app_css = <<~EXPECTED
@@ -948,7 +948,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           }
         EXPECTED
         expect(fs.read("app/assets/css/app.css")).to eq(app_css)
-        expect(output).to include("Created app/assets/css/app.css")
+        expect(output).to include(Hanami::CLI::Formatter.created("app/assets/css/app.css"))
 
         # app/assets/images/favicon.ico
         expect(fs.exist?("app/assets/images/favicon.ico")).to be(true)
@@ -967,9 +967,9 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           end
         EXPECTED
         expect(fs.read("app/db/relation.rb")).to eq(relation)
-        expect(output).to include("Created app/db/relation.rb")
+        expect(output).to include(Hanami::CLI::Formatter.created("app/db/relation.rb"))
         expect(fs.read("app/relations/.keep")).to eq("")
-        expect(output).to include("Created app/relations/.keep")
+        expect(output).to include(Hanami::CLI::Formatter.created("app/relations/.keep"))
 
         # app/db/repo.rb
         repo = <<~EXPECTED
@@ -985,9 +985,9 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           end
         EXPECTED
         expect(fs.read("app/db/repo.rb")).to eq(repo)
-        expect(output).to include("Created app/db/repo.rb")
+        expect(output).to include(Hanami::CLI::Formatter.created("app/db/repo.rb"))
         expect(fs.read("app/repos/.keep")).to eq("")
-        expect(output).to include("Created app/repos/.keep")
+        expect(output).to include(Hanami::CLI::Formatter.created("app/repos/.keep"))
 
         # app/db/struct.rb
         struct = <<~EXPECTED
@@ -1003,9 +1003,9 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           end
         EXPECTED
         expect(fs.read("app/db/struct.rb")).to eq(struct)
-        expect(output).to include("Created app/db/struct.rb")
+        expect(output).to include(Hanami::CLI::Formatter.created("app/db/struct.rb"))
         expect(fs.read("app/structs/.keep")).to eq("")
-        expect(output).to include("Created app/structs/.keep")
+        expect(output).to include(Hanami::CLI::Formatter.created("app/structs/.keep"))
 
         seeds = <<~EXPECTED
           # This seeds file should create the database records required to run the app.
@@ -1025,13 +1025,13 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           #   categories.insert(title: "General")
         EXPECTED
         expect(fs.read("config/db/seeds.rb")).to eq(seeds)
-        expect(output).to include("Created config/db/seeds.rb")
+        expect(output).to include(Hanami::CLI::Formatter.created("config/db/seeds.rb"))
 
         expect(fs.read("config/db/migrate/.keep")).to eq("")
-        expect(output).to include("Created config/db/migrate/.keep")
+        expect(output).to include(Hanami::CLI::Formatter.created("config/db/migrate/.keep"))
 
         expect(fs.read("db/.keep")).to eq("")
-        expect(output).to include("Created db/.keep")
+        expect(output).to include(Hanami::CLI::Formatter.created("db/.keep"))
 
         # lib/bookshelf/types.rb
         types = <<~EXPECTED
@@ -1048,7 +1048,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           end
         EXPECTED
         expect(fs.read("lib/#{app}/types.rb")).to eq(types)
-        expect(output).to include("Created lib/bookshelf/types.rb")
+        expect(output).to include(Hanami::CLI::Formatter.created("lib/bookshelf/types.rb"))
 
         # public/ error pages
         expect(fs.read("public/404.html")).to include %(<title>The page you were looking for doesn’t exist (404)</title>)
@@ -1412,7 +1412,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
     subject.call(app: app, **kwargs)
 
     expect(fs.directory?(app)).to be(true)
-    expect(output).to include("Running bundle binstubs hanami-cli rake...")
+    expect(output).to include(Hanami::CLI::Formatter.info("Running bundle binstubs hanami-cli rake..."))
   end
 
   it "initializes a git repository" do
@@ -1438,6 +1438,6 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
     subject.call(app: app, **kwargs)
 
     expect(fs.directory?(app)).to be(true)
-    expect(output).to include("Initializing git repository...")
+    expect(output).to include(Hanami::CLI::Formatter.info("Initializing git repository..."))
   end
 end
