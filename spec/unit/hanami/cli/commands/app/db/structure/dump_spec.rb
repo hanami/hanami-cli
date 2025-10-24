@@ -261,7 +261,6 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Dump, :app_integration
       expect(dump_1).to eq(dump_2)
     end
 
-
     it "dumps the structure for the app db when given --app" do
       command.call(app: true)
 
