@@ -167,7 +167,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         gem "hanami-view", "#{hanami_version}"
 
         gem "dry-types", "~> 1.7"
-        gem "dry-operation"
+        gem "dry-operation", ">= 1.0.1"
         gem "puma"
         gem "rake"
         gem "sqlite3"
@@ -541,7 +541,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           gem "hanami-view", github: "hanami/view", branch: "main"
 
           gem "dry-types", "~> 1.7"
-          gem "dry-operation"
+          gem "dry-operation", ">= 1.0.1"
           gem "puma"
           gem "rake"
           gem "sqlite3"
@@ -652,7 +652,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           gem "hanami-view", "#{hanami_version}"
 
           gem "dry-types", "~> 1.7"
-          gem "dry-operation"
+          gem "dry-operation", ">= 1.0.1"
           gem "puma"
           gem "rake"
           gem "sqlite3"
