@@ -43,6 +43,7 @@ module Hanami
                 )
               end
 
+              # rubocop:disable Layout/LineLength
               # @api private
               # @since 2.2.0
               def exec_load_command
@@ -51,6 +52,7 @@ module Hanami
                   %(--commands --execute "SET FOREIGN_KEY_CHECKS = 0; SOURCE #{structure_file}; SET FOREIGN_KEY_CHECKS = 1" --database #{escaped_name})
                 )
               end
+              # rubocop:enable Layout/LineLength
 
               private
 

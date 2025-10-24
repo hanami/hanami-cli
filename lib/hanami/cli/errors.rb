@@ -110,6 +110,7 @@ module Hanami
       end
     end
 
+    # rubocop:disable Layout/LineLength
     # @since 2.2.0
     # @api public
     class DatabaseNotSupportedError < Error
@@ -117,6 +118,7 @@ module Hanami
         super("`#{invalid_database}' is not a supported database. Supported databases are: #{supported_databases.join(', ')}")
       end
     end
+    # rubocop:enable Layout/LineLength
 
     # @since 2.2.0
     # @api public
