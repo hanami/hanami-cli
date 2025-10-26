@@ -32,7 +32,9 @@ module Hanami
 
         # @since 2.0.0
         # @api private
-        def hanami_gem_version(gem_name)
+        def hanami_gem_version(name)
+          gem_name = name == "hanami" ? "hanami" : "hanami-#{name}"
+
           if hanami_head?
             %(github: "hanami/#{gem_name}", branch: "main")
           else

@@ -532,13 +532,13 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           source "https://rubygems.org"
 
           gem "hanami", github: "hanami/hanami", branch: "main"
-          gem "hanami-cli", github: "hanami/cli", branch: "main"
-          gem "hanami-assets", github: "hanami/assets", branch: "main"
-          gem "hanami-controller", github: "hanami/controller", branch: "main"
-          gem "hanami-db", github: "hanami/db", branch: "main"
-          gem "hanami-router", github: "hanami/router", branch: "main"
-          gem "hanami-validations", github: "hanami/validations", branch: "main"
-          gem "hanami-view", github: "hanami/view", branch: "main"
+          gem "hanami-cli", github: "hanami/hanami-cli", branch: "main"
+          gem "hanami-assets", github: "hanami/hanami-assets", branch: "main"
+          gem "hanami-controller", github: "hanami/hanami-controller", branch: "main"
+          gem "hanami-db", github: "hanami/hanami-db", branch: "main"
+          gem "hanami-router", github: "hanami/hanami-router", branch: "main"
+          gem "hanami-validations", github: "hanami/hanami-validations", branch: "main"
+          gem "hanami-view", github: "hanami/hanami-view", branch: "main"
 
           gem "dry-types", "~> 1.7"
           gem "dry-operation", ">= 1.0.1"
@@ -547,7 +547,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           gem "sqlite3"
 
           group :development do
-            gem "hanami-webconsole", github: "hanami/webconsole", branch: "main"
+            gem "hanami-webconsole", github: "hanami/hanami-webconsole", branch: "main"
           end
 
           group :development, :test do
@@ -555,11 +555,11 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           end
 
           group :cli, :development do
-            gem "hanami-reloader", github: "hanami/reloader", branch: "main"
+            gem "hanami-reloader", github: "hanami/hanami-reloader", branch: "main"
           end
 
           group :cli, :development, :test do
-            gem "hanami-rspec", github: "hanami/rspec", branch: "main"
+            gem "hanami-rspec", github: "hanami/hanami-rspec", branch: "main"
           end
         EXPECTED
         expect(fs.read("Gemfile")).to eq(gemfile)
