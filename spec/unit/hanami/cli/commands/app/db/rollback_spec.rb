@@ -46,7 +46,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
     described_class.new(
       system_call: system_call,
       out: out,
-      err: err
+      err: err,
+      test_env_executor: test_env_executor
     )
   }
 
@@ -54,6 +55,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
   let(:out) { StringIO.new }
   let(:err) { StringIO.new }
   def output = out.string + err.string
+  let(:test_env_executor) { instance_spy(Hanami::CLI::InteractiveSystemCall) }
 
   let(:dump_command) { instance_spy(Hanami::CLI::Commands::App::DB::Structure::Dump) }
 
@@ -84,10 +86,11 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
     out.truncate(0)
   end
 
-  # Primary tests group happen on sqlite for no particular reason. The most basics specs are shared (above), but there was no
-  # particular reason to repeat all edge cases across all databases thus we use sqlite for primary tests group and the rest
-  # just uses the shared examples. Otherwise, this spec would have become very hard to maintain and understand due to size,
-  # with little benefit to it.
+  # Execute most tests for this feature against sqlite.
+  #
+  # The basic features are executed against all databases via the shared example groups above, but
+  # there's no real reason to repeat all edge cases against all databases. This would be slow down
+  # tests and add unnecessary clutter to this test file.
   describe "sqlite" do
     before do
       ENV["DATABASE_URL"] = "sqlite://db/app.sqlite3"
@@ -318,6 +321,49 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
         expect(output).to include "database db/app_extra.sqlite3 rolled back"
         expect(output).not_to include "db/app.sqlite3"
         expect(output).not_to include "db/app_super.sqlite3"
+      end
+    end
+
+    describe "automatic test env execution" do
+      let(:test_env_executor) { instance_spy(Hanami::CLI::InteractiveSystemCall) }
+
+      before do
+        ENV["DATABASE_URL"] = "sqlite://db/app.sqlite3"
+      end
+
+      around do |example|
+        as_hanami_cli_with_args(%w[db rollback]) { example.run }
+      end
+
+      it "re-executes the command in test env when run in development env" do
+        with_directory(@dir = make_tmp_directory) do
+          write "config/app.rb", <<~RUBY
+            module TestApp
+              class App < Hanami::App
+                config.logger.stream = File::NULL
+              end
+            end
+          RUBY
+
+          require "hanami/setup"
+          before_prepare_single
+          require "hanami/prepare"
+        end
+
+        Dir.chdir(@dir)
+
+        db_create
+        db_migrate
+
+        command.call(env: "development")
+
+        expect(test_env_executor).to have_received(:call).with(
+          "bundle exec hanami",
+          "db", "rollback",
+          {
+            env: hash_including("HANAMI_ENV" => "test")
+          }
+        )
       end
     end
   end

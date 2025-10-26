@@ -55,15 +55,17 @@ module Hanami
                 true
               end
 
-              return unless dump && !re_running_in_test?
+              if dump && !re_running_in_test?
+                run_command(
+                  Structure::Dump,
+                  app: database.slice == self.app,
+                  slice: database.slice == self.app ? nil : database.slice.slice_name.to_s,
+                  gateway: database.gateway_name == :default ? nil : database.gateway_name.to_s,
+                  command_exit: command_exit
+                )
+              end
 
-              run_command(
-                Structure::Dump,
-                app: database.slice == self.app,
-                slice: database.slice == self.app ? nil : database.slice.slice_name.to_s,
-                gateway: database.gateway_name == :default ? nil : database.gateway_name.to_s,
-                command_exit: command_exit
-              )
+              re_run_development_command_in_test
             end
 
             private

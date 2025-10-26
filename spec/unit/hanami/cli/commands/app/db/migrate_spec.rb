@@ -580,7 +580,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
       as_hanami_cli_with_args(%w[db migrate]) { example.run }
     end
 
-    it "re-executes the command in test env when run with development env" do
+    it "re-executes the command in test env when run in development env" do
       command.call(env: "development")
 
       expect(test_env_executor).to have_received(:call).with(
