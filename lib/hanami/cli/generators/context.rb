@@ -76,6 +76,14 @@ module Hanami
           options.fetch(:head)
         end
 
+        # @since 2.3.0
+        # @api private
+        def gem_source
+          value = options.fetch(:gem_source)
+          return value if value.match? %r(\A\w+://)
+          "https://#{value}"
+        end
+
         # @since 2.1.0
         # @api private
         def generate_assets?

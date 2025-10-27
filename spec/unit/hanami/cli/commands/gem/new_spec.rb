@@ -568,6 +568,56 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
     end
   end
 
+  context "with gem-source" do
+    context "without scheme" do
+      it "generates an app with a custom gem source" do
+        expect(bundler).to receive(:install!)
+          .and_return(true)
+
+        expect(bundler).to receive(:exec)
+          .with("hanami install")
+          .and_return(successful_system_call_result)
+
+        expect(bundler).to receive(:exec)
+          .with("check")
+          .at_least(1)
+          .and_return(successful_system_call_result)
+
+        subject.call(app: app, **kwargs.merge(gem_source: "gem.coop"))
+
+        expect(fs.directory?(app)).to be(true)
+
+        fs.chdir(app) do
+          expect(fs.read("Gemfile")).to match('source "https://gem.coop"')
+        end
+      end
+    end
+
+    context "with scheme" do
+      it "generates an app with a custom gem source" do
+        expect(bundler).to receive(:install!)
+          .and_return(true)
+
+        expect(bundler).to receive(:exec)
+          .with("hanami install")
+          .and_return(successful_system_call_result)
+
+        expect(bundler).to receive(:exec)
+          .with("check")
+          .at_least(1)
+          .and_return(successful_system_call_result)
+
+        subject.call(app: app, **kwargs.merge(gem_source: "http://gem.local"))
+
+        expect(fs.directory?(app)).to be(true)
+
+        fs.chdir(app) do
+          expect(fs.read("Gemfile")).to match('source "http://gem.local"')
+        end
+      end
+    end
+  end
+
   context "default configuration" do
     it "generates an app with hanami-assets and hanami-db" do
       expect(bundler).to receive(:install!)

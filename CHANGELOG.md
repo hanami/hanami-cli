@@ -4,6 +4,10 @@ Hanami Command Line Interface
 
 ## Unreleased
 
+### Added
+
+- By default, Ruby gems are sourced from rubygems.org. Add `--gem-source` to use a different server such as gem.coop or your own gem server. (@svooop in #356)
+
 ## v2.3.0.beta2 - 2025-10-17
 
 ### Added

@@ -10,15 +10,20 @@ module Hanami
         # @since 2.0.0
         # @api private
         class New < Command
-          # @since 2.0.0
-          # @api private
-          SKIP_INSTALL_DEFAULT = false
-          private_constant :SKIP_INSTALL_DEFAULT
-
           # @since 2.1.0
           # @api private
           HEAD_DEFAULT = false
           private_constant :HEAD_DEFAULT
+
+          # @since 2.3.0
+          # @api private
+          GEM_SOURCE_DEFAULT = "rubygems.org"
+          private_constant :GEM_SOURCE_DEFAULT
+
+          # @since 2.0.0
+          # @api private
+          SKIP_INSTALL_DEFAULT = false
+          private_constant :SKIP_INSTALL_DEFAULT
 
           # @since 2.1.0
           # @api private
@@ -60,17 +65,23 @@ module Hanami
           # @api private
           argument :app, required: true, desc: "App name"
 
-          # @since 2.0.0
-          # @api private
-          option :skip_install, type: :flag, required: false,
-                                default: SKIP_INSTALL_DEFAULT,
-                                desc: "Skip app installation (Bundler, third-party Hanami plugins)"
-
           # @since 2.1.0
           # @api private
           option :head, type: :flag, required: false,
                         default: HEAD_DEFAULT,
                         desc: "Use Hanami HEAD version (from GitHub `main` branches)"
+
+          # @since 2.3.0
+          # @api private
+          option :gem_source, required: true,
+                              default: GEM_SOURCE_DEFAULT,
+                              desc: "Where to source Ruby gems from"
+
+          # @since 2.0.0
+          # @api private
+          option :skip_install, type: :flag, required: false,
+                                default: SKIP_INSTALL_DEFAULT,
+                                desc: "Skip app installation (Bundler, third-party Hanami plugins)"
 
           # @since 2.1.0
           # @api private
@@ -100,6 +111,7 @@ module Hanami
           example [
             "bookshelf                                    # Generate a new Hanami app in `bookshelf/' directory, using `Bookshelf' namespace",
             "bookshelf --head                             # Generate a new Hanami app, using Hanami HEAD version from GitHub `main' branches",
+            "bookshelf --gem-source=gem.coop              # Generate a new Hanami app, using https://gem.coop as Ruby gem source",
             "bookshelf --skip-install                     # Generate a new Hanami app, but it skips Hanami installation",
             "bookshelf --skip-assets                      # Generate a new Hanami app without hanami-assets",
             "bookshelf --skip-db                          # Generate a new Hanami app without hanami-db",
@@ -132,6 +144,7 @@ module Hanami
           def call(
             app:,
             head: HEAD_DEFAULT,
+            gem_source: GEM_SOURCE_DEFAULT,
             skip_install: SKIP_INSTALL_DEFAULT,
             skip_assets: SKIP_ASSETS_DEFAULT,
             skip_db: SKIP_DB_DEFAULT,
@@ -152,6 +165,7 @@ module Hanami
                 inflector,
                 app,
                 head: head,
+                gem_source: gem_source,
                 skip_assets: skip_assets,
                 skip_db: skip_db,
                 skip_view: skip_view,
