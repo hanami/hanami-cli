@@ -13,7 +13,10 @@ module Hanami
             # @api private
             # @since 2.2.0
             class Postgres < Database
-              SCHEMA_DUMP_FILTER = /^\\(un)?restrict/
+              SCHEMA_DUMP_FILTERS = [
+                /^\\(un)?restrict/,
+                /^-- Dumped (from|by) (database version|pg_dump version)/,
+              ]
 
               # @api private
               # @since 2.2.0
@@ -74,7 +77,9 @@ module Hanami
               private
 
               def post_process_dump(sql)
-                sql.lines.reject{ |line| line =~ SCHEMA_DUMP_FILTER}.join("\n")
+                sql.lines.reject do |line|
+                  SCHEMA_DUMP_FILTERS.any? { |filter| line =~ filter }
+                end.join
               end
 
               def escaped_name
