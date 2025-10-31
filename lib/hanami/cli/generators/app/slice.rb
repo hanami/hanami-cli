@@ -74,7 +74,7 @@ module Hanami
               base_path: directory,
               parent_class_name: "#{Hanami.app.namespace}::View::Context",
               auto_register: false,
-              body: ["# Define view context methods and attributes here"]
+              body: ["# Define your view context here. See https://guides.hanamirb.org/views/context/ for details."]
             ).create
 
             fs.create(

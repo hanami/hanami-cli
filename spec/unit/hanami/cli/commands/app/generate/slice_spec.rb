@@ -151,7 +151,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Slice, :app do
         module Admin
           module Views
             class Context < Test::View::Context
-              # Define view context methods and attributes here
+              # Define your view context here. See https://guides.hanamirb.org/views/context/ for details.
             end
           end
         end

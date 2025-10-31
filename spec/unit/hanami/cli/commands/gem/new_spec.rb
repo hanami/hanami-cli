@@ -920,7 +920,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           module #{inflector.camelize(app)}
             module Views
               class Context < Hanami::View::Context
-                # Define view context methods and attributes here
+                # Define your view context here. See https://guides.hanamirb.org/views/context/ for details.
               end
             end
           end
