@@ -21,7 +21,7 @@ module Hanami
               # @api private
               # @since 2.2.0
               def exec_create_command
-                return true if exists?
+                return success_result if exists?
 
                 system_call.call("createdb #{escaped_name}", env: cli_env_vars)
               end
@@ -29,7 +29,7 @@ module Hanami
               # @api private
               # @since 2.2.0
               def exec_drop_command
-                return true unless exists?
+                return success_result unless exists?
 
                 system_call.call("dropdb #{escaped_name}", env: cli_env_vars)
               end
@@ -75,6 +75,10 @@ module Hanami
               end
 
               private
+
+              def success_result
+                @success_result ||= SystemCall::Result.new(exit_code: 0, out: "", err: "")
+              end
 
               def post_process_dump(sql)
                 sql.lines.reject do |line|

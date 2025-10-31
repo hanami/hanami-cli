@@ -17,7 +17,7 @@ module Hanami
               option :gateway, required: false, desc: "Use database for gateway"
 
               # @api private
-              def call(app: false, slice: nil, gateway: nil, command_exit: method(:exit), **) # rubocop:disable Metrics/AbcSize
+              def call(app: false, slice: nil, gateway: nil, command_exit: method(:exit), **)
                 exit_codes = []
 
                 databases(app: app, slice: slice, gateway: gateway).each do |database|
@@ -29,7 +29,7 @@ module Hanami
                   measure("#{database.name} structure loaded from #{relative_structure_path}") do
                     catch :load_failed do
                       result = database.exec_load_command
-                      exit_codes << result.exit_code if result.respond_to?(:exit_code)
+                      exit_codes << result.exit_code
 
                       unless result.successful?
                         out.puts result.err

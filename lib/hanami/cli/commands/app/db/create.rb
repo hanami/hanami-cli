@@ -16,9 +16,9 @@ module Hanami
 
               databases(app: app, slice: slice, gateway: gateway).each do |database|
                 result = database.exec_create_command
-                exit_codes << result.exit_code if result.respond_to?(:exit_code)
+                exit_codes << result.exit_code
 
-                if result == true || result.successful?
+                if result.successful?
                   out.puts "=> database #{database.name} created"
                 else
                   out.puts "=> failed to create database #{database.name}"

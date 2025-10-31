@@ -13,20 +13,28 @@ module Hanami
             class Sqlite < Database
               # @api private
               # @since 2.2.0
-              Failure = Struct.new(:err) do
-                def successful?
-                  false
+              class Failure
+                def initialize(err)
+                  @err = err
                 end
 
-                def exit_code
-                  1
-                end
+                attr_reader :err
+
+                def successful? = false
+                def exit_code = 1
+              end
+
+              # @api private
+              # @since 2.2.0
+              class Success
+                def successful? = true
+                def exit_code = 0
               end
 
               # @api private
               # @since 2.2.0
               def exec_create_command
-                return true if exists?
+                return Success.new if exists?
 
                 FileUtils.mkdir_p(File.dirname(file_path))
 
@@ -43,7 +51,8 @@ module Hanami
                   return Failure.new(exception.message)
                 end
 
-                true
+                # Mimic a system_call result
+                Success.new
               end
 
               # @api private
