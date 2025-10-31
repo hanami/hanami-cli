@@ -80,7 +80,8 @@ module Hanami
         # @api private
         def gem_source
           value = options.fetch(:gem_source)
-          return value if value.match? %r(\A\w+://)
+          return value if value.match? %r{\A\w+://}
+
           "https://#{value}"
         end
 
