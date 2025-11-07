@@ -15,6 +15,7 @@ RSpec.describe Hanami::CLI::Commands::App::Middleware, :app, :command do
       /    Hanami::Middleware::RenderErrors
       /    Rack::MethodOverride
       /    Hanami::Middleware::Assets
+      /    Hanami::Middleware::BodyParser
     OUTPUT
   end
 
