@@ -258,7 +258,6 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         #!/usr/bin/env bash
         set -euo pipefail
         IFS=$'\\n\\t'
-        set -vx
 
         # This script is a way to set up and keep your development environment updated
         # automatically. It is meant to be idempotent so that you can run it at any
@@ -822,7 +821,6 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           #!/usr/bin/env bash
           set -euo pipefail
           IFS=$'\\n\\t'
-          set -vx
 
           # This script is a way to set up and keep your development environment updated
           # automatically. It is meant to be idempotent so that you can run it at any
@@ -1215,7 +1213,6 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           #!/usr/bin/env bash
           set -euo pipefail
           IFS=$'\\n\\t'
-          set -vx
 
           # This script is a way to set up and keep your development environment updated
           # automatically. It is meant to be idempotent so that you can run it at any
