@@ -38,27 +38,25 @@ module Hanami
           "^#{result}"
         end
 
-        # @since 2.0.0
         # @api private
         def self.prerelease?
           version.match?(/alpha|beta|rc/)
         end
 
         # @example
-        #   Hanami::VERSION # => 2.0.0
-        #   Hanami::CLI::Generators::Version.stable_version # => "2.0"
+        #   Hanami::VERSION # => 2.3.1
+        #   Hanami::CLI::Generators::Version.stable_version # => "2.3.0"
         #
-        # @since 2.0.0
         # @api private
         def self.stable_version
-          version.scan(/\A\d{1,2}\.\d{1,2}/).first
+          major_minor = version.scan(/\A\d{1,2}\.\d{1,2}/).first
+          "#{major_minor}.0"
         end
 
         # @example
         #   Hanami::VERSION # => 2.0.0.alpha8.1
-        #   Hanami::CLI::Generators::Version.stable_version # => "2.0.0.alpha"
+        #   Hanami::CLI::Generators::Version.prerelease_version # => "2.0.0.alpha"
         #
-        # @since 2.0.0
         # @api private
         def self.prerelease_version
           version.sub(/[[[:digit:]].]*\Z/, "")

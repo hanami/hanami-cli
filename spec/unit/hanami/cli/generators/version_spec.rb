@@ -90,8 +90,8 @@ RSpec.describe Hanami::CLI::Generators::Version do
 
   describe ".stable_version" do
     it "returns the major and minor version" do
-      allow(described_class).to receive(:version).and_return("2.1.0")
-      expect(described_class.stable_version).to eq("2.1")
+      allow(described_class).to receive(:version).and_return("2.1.1")
+      expect(described_class.stable_version).to eq("2.1.0")
     end
   end
 
