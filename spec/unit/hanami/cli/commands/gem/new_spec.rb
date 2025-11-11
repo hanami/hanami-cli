@@ -264,16 +264,22 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         # time to get the same result. Add any new necessary setup steps to this file
         # as your application evolves.
 
-        printf "Running bundle install...\\n"
+        announce() {
+          local bold='\\033[1m'
+          local reset='\\033[0m'
+          printf "${bold}${1}${reset}\\n"
+        }
+
+        announce "Running bundle install..."
         bundle check || bundle install
 
-        printf "\\nRunning npm install...\\n"
+        announce "\\nRunning npm install..."
         npm install
 
-        printf "\\nPreparing the database...\\n"
+        announce "\\nPreparing the database..."
         hanami db prepare
 
-        printf "\\nSetup completed successfully!\\n"
+        announce "\\n🌸 Setup complete!"
       EXPECTED
       expect(fs.read("bin/setup")).to eq(bin_setup)
       expect(fs.executable?("bin/setup")).to be(true)
@@ -827,16 +833,22 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           # time to get the same result. Add any new necessary setup steps to this file
           # as your application evolves.
 
-          printf "Running bundle install...\\n"
+          announce() {
+            local bold='\\033[1m'
+            local reset='\\033[0m'
+            printf "${bold}${1}${reset}\\n"
+          }
+
+          announce "Running bundle install..."
           bundle check || bundle install
 
-          printf "\\nRunning npm install...\\n"
+          announce "\\nRunning npm install..."
           npm install
 
-          printf "\\nPreparing the database...\\n"
+          announce "\\nPreparing the database..."
           hanami db prepare
 
-          printf "\\nSetup completed successfully!\\n"
+          announce "\\n🌸 Setup complete!"
         EXPECTED
         expect(fs.read("bin/setup")).to eq(bin_setup)
         expect(fs.executable?("bin/setup")).to be(true)
@@ -1219,13 +1231,19 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           # time to get the same result. Add any new necessary setup steps to this file
           # as your application evolves.
 
-          printf "Running bundle install...\\n"
+          announce() {
+            local bold='\\033[1m'
+            local reset='\\033[0m'
+            printf "${bold}${1}${reset}\\n"
+          }
+
+          announce "Running bundle install..."
           bundle check || bundle install
 
-          printf "\\nRunning npm install...\\n"
+          announce "\\nRunning npm install..."
           npm install
 
-          printf "\\nSetup completed successfully!\\n"
+          announce "\\n🌸 Setup complete!"
         EXPECTED
         expect(fs.read("bin/setup")).to eq(bin_setup)
         expect(fs.executable?("bin/setup")).to be(true)
