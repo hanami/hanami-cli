@@ -86,7 +86,7 @@ module Hanami
       # @since 2.0.0
       # @api public
       def call(cmd, *args, env: {})
-        exitstatus = nil
+        exit_code = nil
         out = nil
         err = nil
 
@@ -96,13 +96,17 @@ module Hanami
 
             stdin.close
 
-            exitstatus = wait_thr&.value&.exitstatus
+            # Read output before waiting on the process, to prevent deadlock. If we wait on the
+            # process first, and the process writes enough data to fill the limited OS pipe buffers,
+            # then the process will block waiting for us to read, while _we're_ blocked waiting for
+            # it to finish. Reading first allows us to drain the buffers as output arrives.
             out = Thread.new { stdout.read }.value.strip
             err = Thread.new { stderr.read }.value.strip
+            exit_code = wait_thr&.value&.exitstatus
           end
         end
 
-        Result.new(exit_code: exitstatus, out: out, err: err)
+        Result.new(exit_code:, out:, err:)
       end
 
       # @since 2.1.0
