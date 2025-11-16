@@ -12,11 +12,7 @@ module Hanami
         end
 
         def self.gem_requirement
-          result = if prerelease?
-                     prerelease_version
-                   else
-                     stable_version
-                   end
+          result = prerelease? ? prerelease_version : stable_version
 
           "~> #{result}"
         end
