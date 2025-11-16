@@ -18,7 +18,8 @@ module Hanami
         end
 
         def self.npm_package_requirement
-          result = version
+          result = prerelease? ? prerelease_version : stable_version
+
           # Change "2.1.0.beta2.1" to "2.1.0-beta.2" (the only format tolerable by `npm install`)
           if prerelease?
             result = result

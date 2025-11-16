@@ -4,6 +4,10 @@ Hanami Command Line Interface
 
 ## Unreleased
 
+### Fixed
+
+- Decouple the hanami-assets npm package version from the current Hanami version in generated `package.json`, using the stable minor version (e.g. `^2.3.0`) instead of the exact version (e.g. `^2.3.1`). This allows Hanami patch releases without requiring a corresponding hanami-assets npm package release. (@timriley in #270)
+
 ## v2.3.1 - 2025-11-14
 
 ### Fixed

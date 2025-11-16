@@ -47,31 +47,46 @@ RSpec.describe Hanami::CLI::Generators::Version do
 
   describe ".npm_package_requirement" do
     context "when prerelease version" do
-      it "formats the alpha version string for npm" do
-        allow(described_class).to receive(:version).and_return("2.1.0.alpha8.1")
+      before do
+        allow(described_class).to receive(:prerelease?).and_return(true)
+      end
+
+      it "formats an alpha version string for npm" do
+        allow(described_class).to receive(:prerelease_version).and_return("2.1.0.alpha8")
         expect(described_class.npm_package_requirement).to eq("^2.1.0-alpha.8")
       end
 
-      it "formats the beta version string for npm" do
-        allow(described_class).to receive(:version).and_return("2.1.0.beta2")
+      it "formats a beta version string for npm" do
+        allow(described_class).to receive(:prerelease_version).and_return("2.1.0.beta2")
         expect(described_class.npm_package_requirement).to eq("^2.1.0-beta.2")
       end
 
-      it "formats the rc version string for npm" do
-        allow(described_class).to receive(:version).and_return("2.1.0.rc1")
+      it "formats an rc version string for npm" do
+        allow(described_class).to receive(:prerelease_version).and_return("2.1.0.rc1")
         expect(described_class.npm_package_requirement).to eq("^2.1.0-rc.1")
       end
     end
 
     context "when stable version" do
-      it "formats the stable version string for npm" do
-        allow(described_class).to receive(:version).and_return("2.1.0")
+      before do
+        allow(described_class).to receive(:prerelease?).and_return(false)
+      end
+
+      it "returns the minor version with ^" do
+        allow(described_class).to receive(:stable_version).and_return("2.1.0")
         expect(described_class.npm_package_requirement).to eq("^2.1.0")
       end
 
-      it "formats the stable version string (with tiny patch) for npm" do
+      it "returns the minor version for patch releases (e.g. 2.1.1 returns ^2.1.0)" do
+        allow(described_class).to receive(:version).and_return("2.1.1")
+        allow(described_class).to receive(:stable_version).and_return("2.1.0")
+        expect(described_class.npm_package_requirement).to eq("^2.1.0")
+      end
+
+      it "returns the minor version for tiny patch releases (e.g. 2.1.0.1 returns ^2.1.0)" do
         allow(described_class).to receive(:version).and_return("2.1.0.1")
-        expect(described_class.npm_package_requirement).to eq("^2.1.0.1")
+        allow(described_class).to receive(:stable_version).and_return("2.1.0")
+        expect(described_class.npm_package_requirement).to eq("^2.1.0")
       end
     end
   end
