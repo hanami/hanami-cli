@@ -19,6 +19,7 @@ module Hanami
             argument :name, required: true, desc: "View name"
             option :template_engine, required: false,
                                      desc: "Template engine to use (officially supported: erb, haml, slim)",
+                                     values: %w[erb haml slim],
                                      default: "erb"
 
             example [
