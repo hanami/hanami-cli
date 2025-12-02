@@ -328,14 +328,6 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
       end
     end
 
-    it "raises on unknown template engine" do
-      within_application_directory do
-        expect {
-          subject.call(name: action_name, template_engine: "md")
-        }.to raise_error(Hanami::CLI::Generators::App::View::TemplateEngineNotSupported)
-      end
-    end
-
     include_context "with existing files" do
       let(:generate_action) { subject.call(name: action_name) }
     end

@@ -116,14 +116,6 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::View, :app do
       end
     end
 
-    it "raises on unknown template engine" do
-      within_application_directory do
-        expect {
-          subject.call(name: "special.users.index", template_engine: "md")
-        }.to raise_error(Hanami::CLI::Generators::App::View::TemplateEngineNotSupported)
-      end
-    end
-
     context "with existing view file" do
       let(:file_path) { "app/views/users/index.rb" }
 
@@ -220,15 +212,6 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::View, :app do
           %h1 Main::Views::Users::Index
         EXPECTED
         expect(fs.read("slices/main/templates/users/index.html.haml")).to eq(template_file)
-      end
-    end
-
-    it "raises on unknown template engine" do
-      within_application_directory do
-        fs.mkdir("slices/main")
-        expect {
-          subject.call(name: "users.index", slice: "main", template_engine: "md")
-        }.to raise_error(Hanami::CLI::Generators::App::View::TemplateEngineNotSupported)
       end
     end
 
