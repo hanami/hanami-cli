@@ -20,6 +20,8 @@ module Hanami
           DEFAULT_TEMPLATE_ENGINE = "erb"
           private_constant :DEFAULT_TEMPLATE_ENGINE
 
+          TemplateEngineNotSupported = Class.new(StandardError)
+
           # @since 2.0.0
           # @api private
           def initialize(fs:, inflector:, out: $stdout)
@@ -85,6 +87,7 @@ module Hanami
             when "erb" then "<h1>#{view_class_name}</h1>\n"
             when "haml" then "%h1 #{view_class_name}\n"
             when "slim" then "h1 #{view_class_name}\n"
+            else raise TemplateEngineNotSupported.new("Only erb, haml and slim engines are currently supported")
             end
           end
         end
