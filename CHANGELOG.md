@@ -4,6 +4,10 @@ Hanami Command Line Interface
 
 ## Unreleased
 
+### Added
+
+- Add `--template-engine` option to `hanami generate`, to specify which template engine should be used for generated template file. Supports `erb`, `haml` and `slim`. (@katafrakt in #280)
+
 ## v2.3.2 - 2025-11-16
 
 ### Fixed
