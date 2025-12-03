@@ -168,7 +168,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
 
         gem "dry-types", "~> 1.7"
         gem "dry-operation", ">= 1.0.1"
-        gem "puma"
+        gem "puma", ">= 7.1"
         gem "rake"
         gem "sqlite3"
 
@@ -385,9 +385,6 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         #
 
         if puma_cluster_mode
-          # Preload the application before starting the workers. Only in cluster mode.
-          preload_app!
-
           # Code to run immediately before master process forks workers (once on boot).
           #
           # These hooks can block if necessary to wait for background operations unknown
@@ -575,7 +572,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
 
           gem "dry-types", "~> 1.7"
           gem "dry-operation", ">= 1.0.1"
-          gem "puma"
+          gem "puma", ">= 7.1"
           gem "rake"
           gem "sqlite3"
 
@@ -736,7 +733,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
 
           gem "dry-types", "~> 1.7"
           gem "dry-operation", ">= 1.0.1"
-          gem "puma"
+          gem "puma", ">= 7.1"
           gem "rake"
           gem "sqlite3"
 
@@ -953,9 +950,6 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           #
 
           if puma_cluster_mode
-            # Preload the application before starting the workers. Only in cluster mode.
-            preload_app!
-
             # Code to run immediately before master process forks workers (once on boot).
             #
             # These hooks can block if necessary to wait for background operations unknown
