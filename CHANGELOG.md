@@ -4,6 +4,10 @@ Hanami Command Line Interface
 
 ## Unreleased
 
+## v2.3.3 - 2025-12-04
+
+- Support the newly released Bundler v4 by removing the upper version bound from our dependency. (@timriley in #373)
+
 ## v2.3.2 - 2025-11-16
 
 ### Fixed
