@@ -8,6 +8,10 @@ Hanami Command Line Interface
 
 - Add `--template-engine` option to `hanami generate`, to specify which template engine should be used for generated template file. Supports `erb`, `haml` and `slim`. (@katafrakt in #280)
 
+## v2.3.3 - 2025-12-04
+
+- Support the newly released Bundler v4 by removing the upper version bound from our dependency. (@timriley in #373)
+
 ## v2.3.2 - 2025-11-16
 
 ### Fixed

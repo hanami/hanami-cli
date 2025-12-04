@@ -30,7 +30,7 @@ Gem::Specification.new do |spec|
   spec.metadata["rubygems_mfa_required"] = "true"
   spec.required_ruby_version = ">= 3.2"
 
-  spec.add_dependency "bundler", "~> 2.1"
+  spec.add_dependency "bundler", ">= 2.1"
   spec.add_dependency "dry-cli", "~> 1.0", ">= 1.1.0"
   spec.add_dependency "dry-files", "~> 1.0", ">= 1.0.2", "< 2"
   spec.add_dependency "dry-inflector", "~> 1.0", "< 2"
