@@ -30,4 +30,5 @@ gem "hanami-devtools", github: "hanami/devtools", branch: "main"
 
 group :test do
   gem "pry"
+  gem "readline"
 end
