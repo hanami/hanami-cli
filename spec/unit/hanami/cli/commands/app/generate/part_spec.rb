@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "hanami"
-require "ostruct"
 
 RSpec.describe Hanami::CLI::Commands::App::Generate::Part, :app do
   subject { described_class.new(fs: fs, out: out, err: err) }
