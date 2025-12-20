@@ -6,7 +6,7 @@ require "puma"
 RSpec.describe Hanami::CLI::Commands::App::Server do
   subject { described_class.new }
 
-  it "starts rack server in the given environment", skip: RUBY_VERSION >= "4.0" && Rack::RELEASE < "3" do
+  it "starts rack server in the given environment" do
     host = ENV.fetch("HANAMI_CLI_TEST_HOST", "0.0.0.0")
     port = ENV.fetch("HANAMI_CLI_TEST_PORT", "2300")
     begin
