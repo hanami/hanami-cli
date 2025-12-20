@@ -31,5 +31,5 @@ gem "hanami-devtools", github: "hanami/devtools", branch: "main"
 group :test do
   gem "pry"
   gem "readline"
-  gem "ostruct"
+  gem "ostruct", require: false
 end
