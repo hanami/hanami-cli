@@ -18,8 +18,8 @@ gem "hanami-utils", github: "hanami/utils", branch: "main"
 
 gem "dry-system", github: "dry-rb/dry-system", branch: "main"
 
-if ENV["RACK_VERSION_CONSTRAINT"]
-  gem "rack", ENV["RACK_VERSION_CONSTRAINT"]
+if ENV["RACK_MATRIX_VALUE"]
+  gem "rack", ENV["RACK_MATRIX_VALUE"]
 end
 
 gem "mysql2"
