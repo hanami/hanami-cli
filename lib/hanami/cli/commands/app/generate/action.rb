@@ -61,7 +61,7 @@ module Hanami
             option :slice, required: false, desc: "Slice name"
             option :template_engine, required: false, type: :string, default: DEFAULT_TEMPLATE_ENGINE,
                                      values: %w[erb haml slim],
-                                     desc: "Template engine to use (officially supported options: erb, haml, slim)"
+                                     desc: "Template engine to use"
 
             # option :format, required: false, type: :string, default: DEFAULT_FORMAT, desc: "Template format"
 
