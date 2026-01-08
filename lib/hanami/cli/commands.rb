@@ -15,8 +15,8 @@ module Hanami
       require "hanami"
 
       !!Hanami.app_path
-    rescue LoadError => e
-      raise e unless e.path == "hanami"
+    rescue LoadError => exception
+      raise exception unless exception.path == "hanami"
 
       # If for any reason the hanami gem isn't installed, make a simple best effort to determine
       # whether we're inside an app.

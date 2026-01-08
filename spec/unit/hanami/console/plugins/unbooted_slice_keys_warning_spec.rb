@@ -32,12 +32,11 @@ RSpec.describe Hanami::Console::Plugins::UnbootedSliceWarnings, :app do
 
     it "still returns the keys from the slice" do
       result = nil
-      original_keys = app.keys
       expect {
         result = console_env.instance_eval { app.keys }
       }.to output(/Test::App is not booted/).to_stderr
 
-      expect(result).to eq(original_keys)
+      expect(result).to eq(app.keys)
     end
   end
 

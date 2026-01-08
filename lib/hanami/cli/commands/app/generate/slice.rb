@@ -43,7 +43,7 @@ module Hanami
 
             example [
               "admin          # Admin slice (/admin URL prefix)",
-              "users --url=/u # Users slice (/u URL prefix)",
+              "users --url=/u # Users slice (/u URL prefix)"
             ]
 
             # @since 2.0.0

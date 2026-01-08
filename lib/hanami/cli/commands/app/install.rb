@@ -36,6 +36,7 @@ module Hanami
           # @api private
           private attr_reader :bundler
 
+          # rubocop:disable Lint/MissingSuper
           def initialize(
             fs:,
             bundler: CLI::Bundler.new(fs: fs),
@@ -43,6 +44,7 @@ module Hanami
           )
             @bundler = bundler
           end
+          # rubocop:enable Lint/MissingSuper
 
           # @since 2.0.0
           # @api private

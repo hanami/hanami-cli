@@ -33,7 +33,7 @@ module Hanami
               base_path: base_path,
               extra_namespace: "Relations",
               parent_class_name: "#{inflector.camelize(namespace)}::DB::Relation",
-              body: body_content,
+              body: body_content
             ).create
           end
 

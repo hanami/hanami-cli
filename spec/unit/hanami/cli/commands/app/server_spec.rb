@@ -17,11 +17,13 @@ RSpec.describe Hanami::CLI::Commands::App::Server do
       it "invokes server" do
         allow(Hanami::Port).to receive(:[]).and_return(port)
 
+        # rubocop:disable Style/IdenticalConditionalBranches
         if RUBY_VERSION > "3.2"
           expect(server).to receive(:call).with({port: port})
         else
           expect(server).to receive(:call).with(port: port)
         end
+        # rubocop:enable Style/IdenticalConditionalBranches
 
         subject.call
       end

@@ -292,7 +292,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Prepare, :app_integration do
         "database #{POSTGRES_BASE_DB_NAME}_app created",
         "database #{POSTGRES_BASE_DB_NAME}_app migrated",
         "#{POSTGRES_BASE_DB_NAME}_app structure dumped to config/db/structure.sql",
-        "seed data loaded from config/db/seeds.rb",
+        "seed data loaded from config/db/seeds.rb"
       )
       expect(output).not_to include "#{POSTGRES_BASE_DB_NAME}_main"
     end
@@ -350,7 +350,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Prepare, :app_integration do
           "database #{POSTGRES_BASE_DB_NAME}_app created",
           "database #{POSTGRES_BASE_DB_NAME}_app migrated",
           "#{POSTGRES_BASE_DB_NAME}_app structure dumped to config/db/structure.sql",
-          "seed data loaded from config/db/seeds.rb",
+          "seed data loaded from config/db/seeds.rb"
         )
       end
     end
@@ -378,7 +378,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Prepare, :app_integration do
           "database #{POSTGRES_BASE_DB_NAME}_app created", # TODO: it would be good not to include this
           "database #{POSTGRES_BASE_DB_NAME}_app migrated",
           "#{POSTGRES_BASE_DB_NAME}_app structure dumped to config/db/structure.sql",
-          "seed data loaded from config/db/seeds.rb",
+          "seed data loaded from config/db/seeds.rb"
         )
       end
     end

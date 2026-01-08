@@ -42,7 +42,7 @@ module Hanami
                 fs: fs,
                 system_call: system_call,
                 test_env_executor: test_env_executor,
-                nested_command: true,
+                nested_command: true
               ).call(...)
             end
 
@@ -90,7 +90,7 @@ module Hanami
               end
             end
 
-            def all_databases # rubocop:disable Metrics/AbcSize
+            def all_databases # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
               slices = [app] + app.slices.with_nested
 
               slice_gateways_by_database_url = slices.each_with_object({}) { |slice, hsh|
@@ -117,7 +117,7 @@ module Hanami
                   system_call: system_call
                 )
 
-                warn_on_misconfigured_database database, slice_gateways_with_config.map { _1.fetch(:slice) }
+                warn_on_misconfigured_database(database, slice_gateways_with_config.map { _1.fetch(:slice) })
 
                 arr << database
               }

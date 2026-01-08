@@ -24,7 +24,7 @@ module Hanami
 
             example [
               %(books.index               (MyApp::Actions::Books::Index)),
-              %(books.index --slice=admin (Admin::Actions::Books::Index)),
+              %(books.index --slice=admin (Admin::Actions::Books::Index))
             ]
 
             # @since 2.2.0

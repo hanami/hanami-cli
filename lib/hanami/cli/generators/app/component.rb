@@ -26,7 +26,7 @@ module Hanami
               inflector: inflector,
               key: key,
               namespace: namespace,
-              base_path: base_path,
+              base_path: base_path
             ).create
           end
 

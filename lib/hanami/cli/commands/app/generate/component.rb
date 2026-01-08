@@ -18,7 +18,7 @@ module Hanami
               %(isbn_decoder               (MyApp::IsbnDecoder)),
               %(recommenders.fiction       (MyApp::Recommenders::Fiction)),
               %(isbn_decoder --slice=admin (Admin::IsbnDecoder)),
-              %(Exporters::Complete::CSV   (MyApp::Exporters::Complete::CSV)),
+              %(Exporters::Complete::CSV   (MyApp::Exporters::Complete::CSV))
             ]
 
             # @since 2.2.0

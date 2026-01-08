@@ -99,7 +99,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Dump, :app_integration
 
       expect(output).to include_in_order(
         "db/app.sqlite3 structure dumped to config/db/structure.sql",
-        "db/main.sqlite3 structure dumped to slices/main/config/db/structure.sql",
+        "db/main.sqlite3 structure dumped to slices/main/config/db/structure.sql"
       )
     end
 

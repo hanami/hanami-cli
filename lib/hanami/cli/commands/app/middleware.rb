@@ -38,7 +38,7 @@ module Hanami
 
           example [
             "middleware                  # Print app Rack middleware stack",
-            "middleware --with-arguments # Print app Rack middleware stack, including initialize arguments",
+            "middleware --with-arguments # Print app Rack middleware stack, including initialize arguments"
           ]
 
           # @since 2.0.0

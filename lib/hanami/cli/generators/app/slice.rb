@@ -19,7 +19,7 @@ module Hanami
 
           # @since 2.0.0
           # @api private
-          def call(app, slice, url, **opts)
+          def call(app, slice, url, **opts) # rubocop:disable Metrics/AbcSize
             skip_route = opts.fetch(:skip_route, false)
 
             unless skip_route
@@ -121,7 +121,7 @@ module Hanami
                 namespace: slice,
                 key: "db.relation",
                 base_path: directory,
-                parent_class_name: "#{Hanami.app.namespace}::DB::Relation",
+                parent_class_name: "#{Hanami.app.namespace}::DB::Relation"
               ).create
 
               RubyClassFile.new(
@@ -130,7 +130,7 @@ module Hanami
                 namespace: slice,
                 key: "db.repo",
                 base_path: directory,
-                parent_class_name: "#{Hanami.app.namespace}::DB::Repo",
+                parent_class_name: "#{Hanami.app.namespace}::DB::Repo"
               ).create
 
               RubyClassFile.new(
@@ -139,7 +139,7 @@ module Hanami
                 namespace: slice,
                 key: "db.struct",
                 base_path: directory,
-                parent_class_name: "#{Hanami.app.namespace}::DB::Struct",
+                parent_class_name: "#{Hanami.app.namespace}::DB::Struct"
               ).create
 
               fs.touch(fs.join(directory, "relations", ".keep"))

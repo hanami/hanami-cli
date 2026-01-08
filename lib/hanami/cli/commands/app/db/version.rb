@@ -18,7 +18,7 @@ module Hanami
                 unless database.migrations_dir?
                   relative_migrations_path = database.migrations_path.relative_path_from(database.slice.app.root)
                   out.puts "=> Cannot find version for database #{database.name}: no migrations directory at #{relative_migrations_path}/"
-                  return
+                  return # rubocop:disable Lint/NonLocalExitFromIterator
                 end
 
                 migration = database.applied_migrations.last

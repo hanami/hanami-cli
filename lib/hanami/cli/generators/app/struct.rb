@@ -25,7 +25,7 @@ module Hanami
               namespace: namespace,
               base_path: base_path,
               extra_namespace: "Structs",
-              parent_class_name: "#{inflector.camelize(namespace)}::DB::Struct",
+              parent_class_name: "#{inflector.camelize(namespace)}::DB::Struct"
             ).create
           end
 

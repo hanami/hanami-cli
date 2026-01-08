@@ -17,7 +17,7 @@ module Hanami
               option :gateway, required: false, desc: "Use database for gateway"
 
               # @api private
-              def call(app: false, slice: nil, gateway: nil, command_exit: method(:exit), **)
+              def call(app: false, slice: nil, gateway: nil, command_exit: method(:exit), **) # rubocop:disable Metrics/AbcSize
                 exit_codes = []
 
                 databases(app: app, slice: slice, gateway: gateway).each do |database|

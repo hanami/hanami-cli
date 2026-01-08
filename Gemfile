@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 source "https://rubygems.org"
+
 gemspec
+
+eval_gemfile "Gemfile.devtools"
 
 unless ENV["CI"]
   gem "byebug", platforms: :mri
@@ -18,10 +21,11 @@ gem "hanami-utils", github: "hanami/utils", branch: "main"
 
 gem "dry-system", github: "dry-rb/dry-system", branch: "main"
 
-if ENV["RACK_VERSION_CONSTRAINT"]
-  gem "rack", ENV["RACK_VERSION_CONSTRAINT"]
+if ENV["RACK_MATRIX_VALUE"]
+  gem "rack", ENV["RACK_MATRIX_VALUE"]
 end
 
+gem "puma"
 gem "mysql2"
 gem "pg"
 gem "sqlite3"
@@ -31,5 +35,6 @@ gem "hanami-devtools", github: "hanami/devtools", branch: "main"
 group :test do
   gem "pry"
   gem "readline"
+  gem "rspec", "~> 3.9"
   gem "ostruct", require: false
 end

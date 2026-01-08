@@ -27,7 +27,7 @@ module Hanami
 
           example [
             "path/to/script.rb                     # Run a Ruby script in the context of the application",
-            "'puts Hanami.app[\"repos.user_repo\"].all.count' # Run inline Ruby code in the context of the application",
+            "'puts Hanami.app[\"repos.user_repo\"].all.count' # Run inline Ruby code in the context of the application"
           ]
 
           argument :code_or_path, required: true, desc: "Path to a Ruby file or inline Ruby code to be executed"
@@ -48,15 +48,15 @@ module Hanami
               validate_inline_code!(code_or_path)
               begin
                 eval(code_or_path, binding, __FILE__, __LINE__) # rubocop:disable Security/Eval
-              rescue SyntaxError => e
-                err.puts "Syntax error in code: #{e.message}"
-                raise RunError, "Syntax error in code: #{e.message}"
-              rescue NameError => e
-                err.puts "Name error in code: #{e.message}"
-                raise RunError, "Name error in code: #{e.message}"
-              rescue StandardError => e
-                err.puts "Error executing code: #{e.class}: #{e.message}"
-                raise RunError, "Error executing code: #{e.class}: #{e.message}"
+              rescue SyntaxError => exception
+                err.puts "Syntax error in code: #{exception.message}"
+                raise RunError, "Syntax error in code: #{exception.message}"
+              rescue NameError => exception
+                err.puts "Name error in code: #{exception.message}"
+                raise RunError, "Name error in code: #{exception.message}"
+              rescue StandardError => exception
+                err.puts "Error executing code: #{exception.class}: #{exception.message}"
+                raise RunError, "Error executing code: #{exception.class}: #{exception.message}"
               end
             end
           rescue RunError
