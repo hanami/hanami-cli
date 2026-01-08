@@ -15,7 +15,7 @@ module Hanami
             class Postgres < Database
               SCHEMA_DUMP_FILTERS = [
                 /^\\(un)?restrict/,
-                /^-- Dumped (from|by) (database version|pg_dump version)/,
+                /^-- Dumped (from|by) (database version|pg_dump version)/
               ].freeze
 
               # @api private

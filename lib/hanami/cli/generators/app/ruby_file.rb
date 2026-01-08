@@ -108,7 +108,7 @@ module Hanami
             [
               # Intentional ternary logic. Skip if nil, else 'true' or 'false'
               ("# auto_register: #{auto_register}" unless auto_register.nil?),
-              "# frozen_string_literal: true",
+              "# frozen_string_literal: true"
             ].compact
           end
 

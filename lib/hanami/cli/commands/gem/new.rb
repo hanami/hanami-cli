@@ -116,7 +116,7 @@ module Hanami
             "bookshelf --skip-assets                      # Generate a new Hanami app without hanami-assets",
             "bookshelf --skip-db                          # Generate a new Hanami app without hanami-db",
             "bookshelf --skip-view                        # Generate a new Hanami app without hanami-view",
-            "bookshelf --database={sqlite|postgres|mysql} # Generate a new Hanami app with a specified database (default: sqlite)",
+            "bookshelf --database={sqlite|postgres|mysql} # Generate a new Hanami app with a specified database (default: sqlite)"
           ]
           # rubocop:enable Layout/LineLength
 

@@ -27,7 +27,7 @@ module Hanami
 
           example [
             "path/to/script.rb                     # Run a Ruby script in the context of the application",
-            "'puts Hanami.app[\"repos.user_repo\"].all.count' # Run inline Ruby code in the context of the application",
+            "'puts Hanami.app[\"repos.user_repo\"].all.count' # Run inline Ruby code in the context of the application"
           ]
 
           argument :code_or_path, required: true, desc: "Path to a Ruby file or inline Ruby code to be executed"

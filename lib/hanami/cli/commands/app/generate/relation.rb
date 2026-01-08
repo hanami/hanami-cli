@@ -15,7 +15,7 @@ module Hanami
               %(books               (MyApp::Relation::Book)),
               %(books/drafts        (MyApp::Relations::Books::Drafts)),
               %(books --slice=admin (Admin::Relations::Books)),
-              %(books --slice=admin --gateway=extra (Admin::Relations::Books)),
+              %(books --slice=admin --gateway=extra (Admin::Relations::Books))
             ]
 
             # @since 2.2.0

@@ -15,7 +15,7 @@ module Hanami
               %(create_posts),
               %(add_published_at_to_posts),
               %(create_users --slice=admin),
-              %(create_comments --slice=admin --gateway=extra),
+              %(create_comments --slice=admin --gateway=extra)
             ]
 
             def generator_class
