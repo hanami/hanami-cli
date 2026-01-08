@@ -38,7 +38,7 @@ module Hanami
               def exec_drop_command
                 begin
                   File.unlink(file_path) if exists?
-                rescue => exception
+                rescue => exception # rubocop:disable Style/RescueStandardError
                   # Mimic a system_call result
                   return Failure.new(exception.message)
                 end
