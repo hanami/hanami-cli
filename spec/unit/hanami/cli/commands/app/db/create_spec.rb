@@ -218,7 +218,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Create, :app_integration do
 
           expect(output).to include_in_order(
             "database db/app.sqlite3 created",
-            "database db/app_extra.sqlite3 created",
+            "database db/app_extra.sqlite3 created"
           )
         end
 
@@ -245,7 +245,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Create, :app_integration do
 
           expect(output).to include_in_order(
             "database db/main.sqlite3 created",
-            "database db/main_extra.sqlite3 created",
+            "database db/main_extra.sqlite3 created"
           )
         end
 

@@ -42,7 +42,7 @@ module Hanami
           # @api private
           def fully_qualified_name
             inflector.camelize(
-              [namespace, extra_namespace, *key_segments].join("/"),
+              [namespace, extra_namespace, *key_segments].join("/")
             )
           end
 
@@ -62,7 +62,7 @@ module Hanami
             :namespace,
             :extra_namespace,
             :auto_register,
-            :body,
+            :body
           )
 
           # @api private

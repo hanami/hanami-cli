@@ -261,7 +261,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Load, :app_integration
         .to true
 
       expect(output).to include(
-        "#{MYSQL_BASE_DB_NAME}_app structure loaded from config/db/structure.sql",
+        "#{MYSQL_BASE_DB_NAME}_app structure loaded from config/db/structure.sql"
       )
     end
 

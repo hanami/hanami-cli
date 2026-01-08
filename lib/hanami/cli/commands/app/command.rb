@@ -85,7 +85,7 @@ module Hanami
           def run_command(klass, ...)
             klass.new(
               out: out,
-              fs: Hanami::CLI::Files,
+              fs: Hanami::CLI::Files
             ).call(...)
           end
 

@@ -20,7 +20,7 @@ RSpec.describe Hanami::CLI::RubyFileGenerator do
         expect(
           Hanami::CLI::RubyFileGenerator.class(
             "Greeter",
-            parent_class_name: "BaseService",
+            parent_class_name: "BaseService"
           ).to_s
         ).to(
           eq(
@@ -57,7 +57,7 @@ RSpec.describe Hanami::CLI::RubyFileGenerator do
         expect(
           Hanami::CLI::RubyFileGenerator.class(
             "Greeter",
-            modules: %w[Services],
+            modules: %w[Services]
           )
         ).to(
           eq(
@@ -121,7 +121,7 @@ RSpec.describe Hanami::CLI::RubyFileGenerator do
         expect(
           Hanami::CLI::RubyFileGenerator.class(
             "Greeter",
-            modules: %w[Admin Services],
+            modules: %w[Admin Services]
           )
         ).to(
           eq(

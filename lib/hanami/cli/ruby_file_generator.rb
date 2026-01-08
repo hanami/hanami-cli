@@ -40,7 +40,7 @@ module Hanami
           modules: module_names,
           class_name: nil,
           parent_class_name: nil,
-          **args,
+          **args
         ).call
       end
 

@@ -42,7 +42,7 @@ module Hanami
                 fs: fs,
                 system_call: system_call,
                 test_env_executor: test_env_executor,
-                nested_command: true,
+                nested_command: true
               ).call(...)
             end
 
