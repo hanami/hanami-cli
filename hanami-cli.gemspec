@@ -1,45 +1,43 @@
 # frozen_string_literal: true
 
-require_relative "lib/hanami/cli/version"
+# This file is synced from hanakai-rb/repo-sync. To update it, edit repo-sync.yml.
+
+lib = File.expand_path("lib", __dir__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require "hanami/cli/version"
 
 Gem::Specification.new do |spec|
   spec.name          = "hanami-cli"
-  spec.version       = Hanami::CLI::VERSION
   spec.authors       = ["Hanakai team"]
   spec.email         = ["info@hanakai.org"]
-
-  spec.summary       = "Hanami CLI"
-  spec.description   = "Hanami command line"
-  spec.homepage      = "https://hanamirb.org"
   spec.license       = "MIT"
+  spec.version       = Hanami::CLI::VERSION.dup
+
+  spec.summary       = "The CLI for the Hanami framework"
+  spec.description   = spec.summary
+  spec.homepage      = "https://hanamirb.org"
+  spec.files         = Dir["CHANGELOG.md", "LICENSE", "README.md", "hanami-cli.gemspec", "lib/**/*"]
+  spec.bindir        = "bin"
+  spec.executables   = []
+  spec.require_paths = ["lib"]
+
+  spec.extra_rdoc_files = ["README.md", "CHANGELOG.md", "LICENSE"]
 
   spec.metadata["allowed_push_host"] = "https://rubygems.org"
+  spec.metadata["changelog_uri"]     = "https://github.com/hanami/hanami-cli/blob/main/CHANGELOG.md"
+  spec.metadata["source_code_uri"]   = "https://github.com/hanami/hanami-cli"
+  spec.metadata["bug_tracker_uri"]   = "https://github.com/hanami/hanami-cli/issues"
+  spec.metadata["funding_uri"]       = "https://github.com/sponsors/hanami"
 
-  spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "https://github.com/hanami/cli"
-  spec.metadata["changelog_uri"] = "https://github.com/hanami/cli/blob/master/CHANGELOG.md"
-
-  # Specify which files should be added to the gem when it is released.
-  # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
-  spec.files = Dir.chdir(File.expand_path(__dir__)) do
-    `git ls-files -z`.split("\x0").reject { |f| f.match(%r{\A(?:test|spec|features)/}) }
-  end
-  spec.bindir        = "exe"
-  spec.executables   = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
-  spec.require_paths = ["lib"]
-  spec.metadata["rubygems_mfa_required"] = "true"
   spec.required_ruby_version = ">= 3.2"
 
-  spec.add_dependency "bundler", ">= 2.1"
-  spec.add_dependency "dry-cli", "~> 1.0", ">= 1.1.0"
-  spec.add_dependency "dry-files", "~> 1.0", ">= 1.0.2", "< 2"
-  spec.add_dependency "dry-inflector", "~> 1.0", "< 2"
-  spec.add_dependency "irb"
-  spec.add_dependency "rake", "~> 13.0"
-  spec.add_dependency "zeitwerk", "~> 2.6"
-  spec.add_dependency "rackup"
-
-  spec.add_development_dependency "rspec", "~> 3.9"
-  spec.add_development_dependency "rubocop", "~> 1.0"
-  spec.add_development_dependency "puma"
+  spec.add_runtime_dependency "bundler", ">= 2.1"
+  spec.add_runtime_dependency "dry-cli", "~> 1.0", ">= 1.1.0"
+  spec.add_runtime_dependency "dry-files", "~> 1.0", ">= 1.0.2"
+  spec.add_runtime_dependency "dry-inflector", "~> 1.0"
+  spec.add_runtime_dependency "irb"
+  spec.add_runtime_dependency "rake", "~> 13.0"
+  spec.add_runtime_dependency "zeitwerk", "~> 2.6"
+  spec.add_runtime_dependency "rackup"
 end
+
