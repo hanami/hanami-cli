@@ -90,7 +90,7 @@ module Hanami
               end
             end
 
-            def all_databases # rubocop:disable Metrics/AbcSize
+            def all_databases # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
               slices = [app] + app.slices.with_nested
 
               slice_gateways_by_database_url = slices.each_with_object({}) { |slice, hsh|

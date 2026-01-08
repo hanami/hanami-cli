@@ -16,6 +16,7 @@ module Hanami
             option :dump, desc: "Dump structure after rolling back", default: true
             option :gateway, required: false, desc: "Use database for gateway"
 
+            # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
             def call(
               steps: nil,
               app: false,
@@ -67,6 +68,7 @@ module Hanami
 
               re_run_development_command_in_test
             end
+            # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
             private
 
@@ -165,6 +167,7 @@ module Hanami
               slice
             end
 
+            # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
             def find_migration_target(target, steps_count, database)
               applied_migrations = database.applied_migrations
 
@@ -195,6 +198,7 @@ module Hanami
 
               [migration_code, migration_name]
             end
+            # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
             def initial_state(applied_migrations)
               migration = applied_migrations.first

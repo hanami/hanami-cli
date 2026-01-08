@@ -86,7 +86,7 @@ module Hanami
                 Shellwords.escape(name)
               end
 
-              def cli_env_vars
+              def cli_env_vars # rubocop:disable Metrics/AbcSize
                 @cli_env_vars ||= {}.tap do |vars|
                   vars["PGHOST"] = database_uri.host.to_s if database_uri.host
                   vars["PGPORT"] = database_uri.port.to_s if database_uri.port

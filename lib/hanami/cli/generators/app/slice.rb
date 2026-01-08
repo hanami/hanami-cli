@@ -19,7 +19,7 @@ module Hanami
 
           # @since 2.0.0
           # @api private
-          def call(app, slice, url, **opts)
+          def call(app, slice, url, **opts) # rubocop:disable Metrics/AbcSize
             skip_route = opts.fetch(:skip_route, false)
 
             unless skip_route
