@@ -38,9 +38,9 @@ module Hanami
               def exec_drop_command
                 begin
                   File.unlink(file_path) if exists?
-                rescue => e
+                rescue => exception
                   # Mimic a system_call result
-                  return Failure.new(e.message)
+                  return Failure.new(exception.message)
                 end
 
                 true
