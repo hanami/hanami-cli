@@ -43,7 +43,7 @@ module Hanami
                   key: name,
                   namespace: app.namespace,
                   base_path: "app",
-                  **opts,
+                  **opts
                 )
                 return
               end
@@ -55,7 +55,7 @@ module Hanami
                 key: name,
                 namespace: slice,
                 base_path: slice_root,
-                **opts,
+                **opts
               )
             end
 

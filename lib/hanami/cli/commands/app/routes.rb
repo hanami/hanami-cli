@@ -46,7 +46,7 @@ module Hanami
 
           example [
             "routes              # Print app routes",
-            "routes --format=csv # Print app routes, using CSV format",
+            "routes --format=csv # Print app routes, using CSV format"
           ]
 
           # @since 2.0.0

@@ -12,6 +12,8 @@ module Hanami
         end
 
         def self.activate
+          return if @activated
+
           warning_shown_for_slice = {}
 
           # Define the wrapper method with access to the context via closure
@@ -29,10 +31,16 @@ module Hanami
           end
 
           Hanami::Slice::ClassMethods.prepend(SliceExtension)
+
+          @activated = true
         end
 
         def self.deactivate
+          return unless @activated
+
           SliceExtension.remove_method :keys
+
+          @activated = false
         end
       end
     end

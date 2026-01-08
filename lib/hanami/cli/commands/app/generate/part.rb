@@ -26,7 +26,7 @@ module Hanami
 
             example [
               %(book               (MyApp::Views::Parts::Book)),
-              %(book --slice=admin (Admin::Views::Parts::Book)),
+              %(book --slice=admin (Admin::Views::Parts::Book))
             ]
 
             def generator_class

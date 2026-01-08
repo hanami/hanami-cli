@@ -9,7 +9,7 @@ module Hanami
           class Prepare < DB::Command
             desc "Prepare databases"
 
-            def call(app: false, slice: nil, **)
+            def call(app: false, slice: nil, **) # rubocop:disable Metrics/AbcSize
               command_exit = -> code { throw :command_exited, code }
               command_exit_arg = {command_exit: command_exit}
 

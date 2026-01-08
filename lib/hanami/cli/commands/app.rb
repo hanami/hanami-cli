@@ -10,7 +10,7 @@ module Hanami
       module App
         # @since 2.0.0
         # @api private
-        def self.extended(base)
+        def self.extended(base) # rubocop:disable Metrics/AbcSize
           base.module_eval do
             register "version", Commands::App::Version, aliases: ["v", "-v", "--version"]
             register "install", Commands::App::Install

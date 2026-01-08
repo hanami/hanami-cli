@@ -47,7 +47,7 @@ module Hanami
               key: key,
               base_path: base_path,
               parent_class_name: "#{inflector.camelize(namespace)}::View",
-              extra_namespace: "Views",
+              extra_namespace: "Views"
             )
           end
 
@@ -60,7 +60,7 @@ module Hanami
               base_path,
               TEMPLATES_FOLDER,
               module_names_from_key,
-              template_file_name(class_name_from_key, DEFAULT_FORMAT),
+              template_file_name(class_name_from_key, DEFAULT_FORMAT)
             )
             body = "<h1>#{view_class_name}</h1>\n"
             fs.create(file_path, body)

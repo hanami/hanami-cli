@@ -2,20 +2,12 @@ name: ci
 
 on:
   push:
-    paths:
-      - ".github/workflows/ci.yml"
-      - "lib/**"
-      - "*.gemspec"
-      - "spec/**"
-      - "Rakefile"
-      - "Gemfile"
-      - ".rubocop.yml"
+    branches: ["main", "release-*", "ci/*"]
+    tags: ["v*"]
   pull_request:
-    branches:
-      - main
+    branches: ["main", "release-*"]
   schedule:
     - cron: "30 4 * * *"
-  create:
 
 jobs:
   tests:
@@ -44,11 +36,11 @@ jobs:
           ruby-version: ${{matrix.ruby}}
           bundler-cache: true
         env:
-          RACK_VERSION_CONSTRAINT: ${{matrix.rack}}
+          RACK_MATRIX_VALUE: ${{matrix.rack}}
       - name: Run all tests
         run: script/ci
         env:
-          RACK_VERSION_CONSTRAINT: ${{matrix.rack}}
+          RACK_MATRIX_VALUE: ${{matrix.rack}}
     services:
       mysql:
         image: mysql:latest

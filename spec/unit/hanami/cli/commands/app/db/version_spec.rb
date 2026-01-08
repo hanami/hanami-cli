@@ -121,7 +121,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Version, :app_integration do
 
       expect(output).to include_in_order(
         "db/app.sqlite3 current schema version is 20240602191330_create_categories",
-        "db/app_extra.sqlite3 current schema version is 20240921211330_create_users",
+        "db/app_extra.sqlite3 current schema version is 20240921211330_create_users"
       )
     end
 

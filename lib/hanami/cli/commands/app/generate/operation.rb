@@ -12,7 +12,7 @@ module Hanami
 
             example [
               %(books.add               (MyApp::Books::Add)),
-              %(books.add --slice=admin (Admin::Books::Add)),
+              %(books.add --slice=admin (Admin::Books::Add))
             ]
 
             def generator_class

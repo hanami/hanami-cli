@@ -27,7 +27,7 @@ module Hanami
               namespace: namespace,
               base_path: base_path,
               parent_class_name: "#{inflector.camelize(namespace)}::Operation",
-              body: ["def call", "end"],
+              body: ["def call", "end"]
             ).create
 
             unless key.match?(KEY_SEPARATOR)

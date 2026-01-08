@@ -4,7 +4,7 @@ require "open3"
 require "uri"
 
 POSTGRES_BASE_DB_NAME = "hanami_cli_test"
-POSTGRES_BASE_URL = ENV.fetch("POSTGRES_BASE_URL", "postgres://postgres:password@localhost:5433/#{POSTGRES_BASE_DB_NAME}")
+POSTGRES_BASE_URL = ENV.fetch("POSTGRES_BASE_URL", "postgres://postgres:password@localhost:5433/#{POSTGRES_BASE_DB_NAME}") # rubocop:disable Layout/LineLength
 POSTGRES_BASE_URI = URI(POSTGRES_BASE_URL)
 
 RSpec.configure do |config|
@@ -18,7 +18,7 @@ RSpec.configure do |config|
     }
 
     db_prefix = POSTGRES_BASE_URI.path.sub(%r{^/}, "")
-    psql_list, status = Open3.capture2(cmd_env, "psql -t -A -c '\\l #{db_prefix}*'")
+    psql_list, _status = Open3.capture2(cmd_env, "psql -t -A -c '\\l #{db_prefix}*'")
 
     test_databases = psql_list.split("\n").map { _1.split("|").first }
     test_databases.each do |database|

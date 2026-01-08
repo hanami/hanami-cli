@@ -22,7 +22,7 @@ module Hanami
             },
             "irb" => -> (*args) {
               Repl::Irb.new(*args)
-            },
+            }
           }.freeze
           private_constant :ENGINES
 

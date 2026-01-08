@@ -54,7 +54,7 @@ module Hanami
               slices.each do |slice|
                 unless assets_config(slice)
                   out.puts "No assets config found for #{slice}. Please create a config/assets.js."
-                  return
+                  return # rubocop:disable Lint/NonLocalExitFromIterator
                 end
               end
 

@@ -13,7 +13,7 @@ module Hanami
             example [
               %(book                (MyApp::Structs::Book)),
               %(book/published_book (MyApp::Structs::Book::PublishedBook)),
-              %(book --slice=admin  (Admin::Structs::Book)),
+              %(book --slice=admin  (Admin::Structs::Book))
             ]
 
             def generator_class

@@ -116,11 +116,9 @@ module Hanami
             "bookshelf --skip-assets                      # Generate a new Hanami app without hanami-assets",
             "bookshelf --skip-db                          # Generate a new Hanami app without hanami-db",
             "bookshelf --skip-view                        # Generate a new Hanami app without hanami-view",
-            "bookshelf --database={sqlite|postgres|mysql} # Generate a new Hanami app with a specified database (default: sqlite)",
+            "bookshelf --database={sqlite|postgres|mysql} # Generate a new Hanami app with a specified database (default: sqlite)"
           ]
           # rubocop:enable Layout/LineLength
-
-          # rubocop:disable Metrics/ParameterLists
 
           # @since 2.0.0
           # @api private
@@ -151,7 +149,6 @@ module Hanami
             skip_view: SKIP_VIEW_DEFAULT,
             database: nil
           )
-            # rubocop:enable Metrics/ParameterLists
             app = inflector.underscore(app)
 
             raise PathAlreadyExistsError.new(app) if fs.exist?(app)
