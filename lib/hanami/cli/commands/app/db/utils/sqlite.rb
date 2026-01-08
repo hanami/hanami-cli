@@ -76,7 +76,8 @@ module Hanami
               private
 
               def file_path
-                @file_path ||= if File.absolute_path?(name)
+                @file_path ||=
+                  if File.absolute_path?(name)
                     name
                   else
                     slice.app.root.join(name).to_s
