@@ -1,23 +1,15 @@
-# Hanami::CLI
+<!--- This file is synced from hanakai-rb/repo-sync -->
+
+[rubygem]: https://rubygems.org/gems/hanami-cli
+[actions]: https://github.com/hanami/hanami-cli/actions
+
+# Hanami CLI [![Gem Version](https://badge.fury.io/rb/hanami-cli.svg)][rubygem] [![CI Status](https://github.com/hanami/hanami-cli/workflows/CI/badge.svg)][actions]
 
 This library contains all of the CLI commands for [full-stack Hanami applications](`https://github.com/hanami/hanami`).
 
 **NOTE**: For versions 0.4 and below, there was a general purpose CLI utility library with this name.
 That library has since been renamed to [dry-rb/dry-cli](https://github.com/dry-rb/dry-cli).
 Please update your Gemfiles accordingly.
-
-## Status
-
-[![Gem Version](https://badge.fury.io/rb/hanami-cli.svg)](https://badge.fury.io/rb/hanami-cli)
-[![CI](https://github.com/hanami/hanami-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/hanami/hanami-cli/actions?query=workflow%3Aci+branch%3Amain)
-
-## Contact
-
-- Home page: http://hanamirb.org
-- Mailing List: http://hanamirb.org/mailing-list
-- Bugs/Issues: https://github.com/hanami/cli/issues
-- API Doc: http://rubydoc.info/gems/hanami-cli
-- Chat: http://chat.hanamirb.org
 
 ## Installation
 
@@ -37,14 +29,13 @@ In order to run all of the tests, you should run `docker compose up` separately,
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/hanami/cli. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/hanami/cli/blob/main/CODE_OF_CONDUCT.md).
 
+## Links
+
+- [User documentation](https://hanamirb.org)
+- [API documentation](http://rubydoc.info/gems/hanami-cli)
+
+
 ## License
 
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+See `LICENSE` file.
 
-## Code of Conduct
-
-Everyone interacting in the `Hanami::CLI` project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/hanami/cli/blob/main/CODE_OF_CONDUCT.md).
-
-## Copyright
-
-Copyright © 2014–2024 Hanami Team – Released under MIT License
