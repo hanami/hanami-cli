@@ -84,7 +84,6 @@ module Hanami
 
             # @since 2.0.0
             # @api private
-            # rubocop:disable Metrics/ParameterLists
             def call(
               name:,
               slice: nil,
@@ -110,7 +109,6 @@ module Hanami
                 template_engine:
               )
             end
-            # rubocop:enable Metrics/ParameterLists
           end
         end
       end

@@ -4,7 +4,6 @@ require "dry/files"
 require_relative "../constants"
 require_relative "../../errors"
 
-# rubocop:disable Metrics/ParameterLists
 module Hanami
   module CLI
     module Generators
@@ -195,4 +194,3 @@ module Hanami
     end
   end
 end
-# rubocop:enable Metrics/ParameterLists

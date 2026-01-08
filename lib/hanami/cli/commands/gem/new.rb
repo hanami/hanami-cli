@@ -120,8 +120,6 @@ module Hanami
           ]
           # rubocop:enable Layout/LineLength
 
-          # rubocop:disable Metrics/ParameterLists
-
           # @since 2.0.0
           # @api private
           def initialize(
@@ -151,7 +149,6 @@ module Hanami
             skip_view: SKIP_VIEW_DEFAULT,
             database: nil
           )
-            # rubocop:enable Metrics/ParameterLists
             app = inflector.underscore(app)
 
             raise PathAlreadyExistsError.new(app) if fs.exist?(app)
