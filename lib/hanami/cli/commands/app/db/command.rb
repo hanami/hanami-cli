@@ -117,7 +117,7 @@ module Hanami
                   system_call: system_call
                 )
 
-                warn_on_misconfigured_database database, slice_gateways_with_config.map { _1.fetch(:slice) }
+                warn_on_misconfigured_database(database, slice_gateways_with_config.map { _1.fetch(:slice) })
 
                 arr << database
               }
