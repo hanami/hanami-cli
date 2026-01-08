@@ -6,13 +6,13 @@ RSpec.describe Hanami::CLI::SystemCall do
 
     context "when successful" do
       it "returns a successful Result" do
-        expect(subject.call("return 0")).to be_successful
+        expect(subject.call("sh -c 'exit 0'")).to be_successful
       end
     end
 
     context "when unsuccessful" do
       it "returns an unsuccessful Result" do
-        expect(subject.call("return 1")).not_to be_successful
+        expect(subject.call("sh -c 'exit 1'")).not_to be_successful
       end
     end
 
@@ -22,7 +22,7 @@ RSpec.describe Hanami::CLI::SystemCall do
     end
 
     it "captures the exit code" do
-      expect(subject.call("return 50").exit_code).to eq 50
+      expect(subject.call("sh -c 'exit 50'").exit_code).to eq 50
     end
 
     it "accepts a block for stdin" do
