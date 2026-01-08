@@ -81,7 +81,6 @@ module Hanami
                   else
                     slice.app.root.join(name).to_s
                   end
-                
               end
             end
           end
