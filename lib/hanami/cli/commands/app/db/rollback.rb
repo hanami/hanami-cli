@@ -142,11 +142,11 @@ module Hanami
                 elsif app_databases.size > 1
                   err.puts "Multiple gateways found in app. Please specify --gateway option."
                   command_exit.(1)
-                  return
+                  nil
                 else
                   err.puts "Multiple database contexts found. Please specify --app or --slice option."
                   command_exit.(1)
-                  return
+                  nil
                 end
               end
             end
