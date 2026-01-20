@@ -16,11 +16,13 @@ module Hanami
           class View < Command
             # TODO: make format configurable
 
+            DEFAULT_TEMPLATE_ENGINE = "erb"
+            private_constant :DEFAULT_TEMPLATE_ENGINE
+
             argument :name, required: true, desc: "View name"
             option :template_engine, required: false,
-                                     desc: "Template engine to use",
                                      values: %w[erb haml slim],
-                                     default: "erb"
+                                     desc: "Template engine to use (default: set in application config or erb)"
 
             example [
               %(books.index               (MyApp::Actions::Books::Index)),
@@ -31,6 +33,17 @@ module Hanami
             # @api private
             def generator_class
               Generators::App::View
+            end
+
+            # @since 2.0.0
+            # @api private
+            def call(name:, slice: nil, template_engine: nil, **opts)
+              template_engine_from_app_config = app.config.views.default_template_engine if Hanami.bundled?("hanami-view") && app.config.views.respond_to?(:default_template_engine)
+              super(
+                name: name,
+                slice: slice,
+                template_engine: template_engine || template_engine_from_app_config || DEFAULT_TEMPLATE_ENGINE
+              )
             end
           end
         end
