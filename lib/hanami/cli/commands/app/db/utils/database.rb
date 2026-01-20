@@ -42,14 +42,28 @@ module Hanami
                   require_relative("mysql")
                   Mysql
                 },
-                "jdbc" => -> {
+                "jdbc:sqlite" => -> {
                   require_relative("jdbc_sqlite")
                   JdbcSqlite
+                },
+                "jdbc:postgresql" => -> {
+                  require_relative("jdbc_postgres")
+                  JdbcPostgres
+                },
+                "jdbc:mysql" => -> {
+                  require_relative("jdbc_mysql")
+                  JdbcMysql
                 }
               ).freeze
 
               def self.database_class(database_url)
                 database_scheme = URI(database_url).scheme
+
+                if database_scheme == "jdbc"
+                  jdbc_subprotocol = database_url[/^jdbc:([^:]+):/, 1]
+                  database_scheme = "jdbc:#{jdbc_subprotocol}"
+                end
+
                 DATABASE_CLASS_RESOLVER[database_scheme].call
               end
 
@@ -88,7 +102,10 @@ module Hanami
               end
 
               def database_uri
-                @database_uri ||= URI(database_url)
+                @database_uri ||= begin
+                  uri_to_parse = database_url.start_with?("jdbc:") ? database_url.sub(/^jdbc:/, "") : database_url
+                  URI(uri_to_parse)
+                end
               end
 
               def gateway
