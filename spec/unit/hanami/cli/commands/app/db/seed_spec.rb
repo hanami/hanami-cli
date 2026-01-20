@@ -10,6 +10,14 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Seed, :app_integration do
   let(:out) { StringIO.new }
   def output = out.string
 
+  def build_db_url(filename)
+    if RUBY_ENGINE == "jruby"
+      "jdbc:sqlite:#{filename}"
+    else
+      "sqlite://#{filename}"
+    end
+  end
+
   before do
     @env = ENV.to_h
     allow(Hanami::Env).to receive(:loaded?).and_return(false)
@@ -87,8 +95,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Seed, :app_integration do
   end
 
   before do
-    ENV["DATABASE_URL"] = "sqlite://db/app.sqlite3"
-    ENV["MAIN__DATABASE_URL"] = "sqlite://db/main.sqlite3"
+    ENV["DATABASE_URL"] = build_db_url("db/app.sqlite3")
+    ENV["MAIN__DATABASE_URL"] = build_db_url("db/main.sqlite3")
 
     db_migrate
   end

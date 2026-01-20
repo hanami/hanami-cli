@@ -16,6 +16,14 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
   let(:out) { StringIO.new }
   def output = out.string
 
+  def build_db_url(filename)
+    if RUBY_ENGINE == "jruby"
+      "jdbc:sqlite:#{filename}"
+    else
+      "sqlite://#{filename}"
+    end
+  end
+
   before do
     # Prevent the command from exiting the spec run in the case of unexpected system call failures
     allow(command).to receive(:exit)
@@ -59,8 +67,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
 
   describe "sqlite" do
     before do
-      ENV["DATABASE_URL"] = "sqlite://db/app.sqlite3"
-      ENV["MAIN__DATABASE_URL"] = "sqlite://db/main.sqlite3"
+      ENV["DATABASE_URL"] = build_db_url("db/app.sqlite3")
+      ENV["MAIN__DATABASE_URL"] = build_db_url("db/main.sqlite3")
     end
 
     it "drops each database" do
@@ -153,8 +161,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
         write "config/db/.keep", ""
         write "slices/main/config/db/.keep", ""
 
-        ENV["DATABASE_URL__EXTRA"] = "sqlite://db/app_extra.sqlite3"
-        ENV["MAIN__DATABASE_URL__EXTRA"] = "sqlite://db/main_extra.sqlite3"
+        ENV["DATABASE_URL__EXTRA"] = build_db_url("db/app_extra.sqlite3")
+        ENV["MAIN__DATABASE_URL__EXTRA"] = build_db_url("db/main_extra.sqlite3")
       end
 
       before do
@@ -183,7 +191,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
     context "app with gateways" do
       def before_prepare
         write "config/db/.keep", ""
-        ENV["DATABASE_URL__EXTRA"] = "sqlite://db/app_extra.sqlite3"
+        ENV["DATABASE_URL__EXTRA"] = build_db_url("db/app_extra.sqlite3")
       end
 
       before do
@@ -217,7 +225,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
     context "slice with gateways" do
       def before_prepare
         write "slices/main/config/db/.keep", ""
-        ENV["MAIN__DATABASE_URL__EXTRA"] = "sqlite://db/main_extra.sqlite3"
+        ENV["MAIN__DATABASE_URL__EXTRA"] = build_db_url("db/main_extra.sqlite3")
       end
 
       before do
@@ -448,7 +456,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
 
   describe "automatic test env execution" do
     before do
-      ENV["DATABASE_URL"] = "sqlite://db/app.sqlite3"
+      ENV["DATABASE_URL"] = build_db_url("db/app.sqlite3")
     end
 
     around do |example|
