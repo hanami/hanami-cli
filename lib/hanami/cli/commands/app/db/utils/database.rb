@@ -41,6 +41,10 @@ module Hanami
                 "mysql2" => -> {
                   require_relative("mysql")
                   Mysql
+                },
+                "jdbc" => -> {
+                  require_relative("jdbc_sqlite")
+                  JdbcSqlite
                 }
               ).freeze
 

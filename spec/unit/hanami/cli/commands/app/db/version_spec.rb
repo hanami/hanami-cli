@@ -6,6 +6,14 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Version, :app_integration do
   let(:out) { StringIO.new }
   def output = out.string
 
+  def build_db_url(filename)
+    if RUBY_ENGINE == "jruby"
+      "jdbc:sqlite:#{filename}"
+    else
+      "sqlite://#{filename}"
+    end
+  end
+
   before do
     @env = ENV.to_h
     allow(Hanami::Env).to receive(:loaded?).and_return(false)
@@ -64,8 +72,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Version, :app_integration do
   end
 
   before do
-    ENV["DATABASE_URL"] = "sqlite://db/app.sqlite3"
-    ENV["MAIN__DATABASE_URL"] = "sqlite://db/main.sqlite3"
+    ENV["DATABASE_URL"] = build_db_url("db/app.sqlite3")
+    ENV["MAIN__DATABASE_URL"] = build_db_url("db/main.sqlite3")
 
     db_migrate
   end
@@ -113,7 +121,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Version, :app_integration do
         end
       RUBY
 
-      ENV["DATABASE_URL__EXTRA"] = "sqlite://db/app_extra.sqlite3"
+      ENV["DATABASE_URL__EXTRA"] = build_db_url("./db/app_extra.sqlite3")
     end
 
     it "prints the versions for all an app's databases when given --app" do
@@ -146,7 +154,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Version, :app_integration do
         end
       RUBY
 
-      ENV["MAIN__DATABASE_URL__EXTRA"] = "sqlite://db/main_extra.sqlite3"
+      ENV["MAIN__DATABASE_URL__EXTRA"] = build_db_url("./db/main_extra.sqlite3")
     end
 
     it "prints the versions for all an app's databases when given --app" do
