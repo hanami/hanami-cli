@@ -280,9 +280,9 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
 
     context "app with multiple gateways" do
       before do
-        ENV["DATABASE_URL"] = "sqlite://db/app.sqlite3"
-        ENV["DATABASE_URL__EXTRA"] = "sqlite://db/app_extra.sqlite3"
-        ENV["DATABASE_URL__SUPER"] = "sqlite://db/app_super.sqlite3"
+        ENV["DATABASE_URL"] = build_db_url("db/app.sqlite3")
+        ENV["DATABASE_URL__EXTRA"] = build_db_url("db/app_extra.sqlite3")
+        ENV["DATABASE_URL__SUPER"] = build_db_url("db/app_super.sqlite3")
 
         with_directory(@dir = make_tmp_directory) do
           write "config/app.rb", <<~RUBY
@@ -336,7 +336,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
       let(:test_env_executor) { instance_spy(Hanami::CLI::InteractiveSystemCall) }
 
       before do
-        ENV["DATABASE_URL"] = "sqlite://db/app.sqlite3"
+        ENV["DATABASE_URL"] = build_db_url("db/app.sqlite3")
       end
 
       around do |example|
