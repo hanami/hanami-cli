@@ -419,7 +419,10 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Prepare, :app_integration do
         .with(a_string_matching(/createdb.+_main/), anything)
         .and_return Hanami::CLI::SystemCall::Result.new(exit_code: 2, out: "", err: "main-db-err")
 
-      command.call
+      exit_code = catch(:exit) {
+        command.call
+        0
+      }
 
       expect { Hanami.app["relations.posts"] }.to raise_error Sequel::DatabaseError
       expect { Main::Slice["relations.comments"] }.to raise_error Sequel::DatabaseError
@@ -433,7 +436,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Prepare, :app_integration do
       expect(output).not_to include "migrated"
       expect(output).not_to include "seed data loaded"
 
-      expect(command).to have_received(:exit).with 2
+      expect(exit_code).to eq(2)
     end
   end
 

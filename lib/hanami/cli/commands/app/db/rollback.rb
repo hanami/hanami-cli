@@ -24,7 +24,6 @@ module Hanami
               gateway: nil,
               target: nil,
               dump: true,
-              command_exit: method(:exit),
               **
             )
               # We allow either a number of steps or a target migration number to be provided
@@ -33,7 +32,7 @@ module Hanami
               target = steps if steps && !target && !code_is_number?(steps)
               steps_count = steps && code_is_number?(steps) ? Integer(steps) : 1
 
-              database = resolve_target_database(app: app, slice: slice, gateway: gateway, command_exit: command_exit)
+              database = resolve_target_database(app: app, slice: slice, gateway: gateway)
               return unless database
 
               migration_code, migration_name = find_migration_target(target, steps_count, database)
@@ -61,8 +60,7 @@ module Hanami
                   Structure::Dump,
                   app: database.slice == self.app,
                   slice: database.slice == self.app ? nil : database.slice.slice_name.to_s,
-                  gateway: database.gateway_name == :default ? nil : database.gateway_name.to_s,
-                  command_exit: command_exit
+                  gateway: database.gateway_name == :default ? nil : database.gateway_name.to_s
                 )
               end
 
@@ -72,24 +70,23 @@ module Hanami
 
             private
 
-            def resolve_target_database(app:, slice:, gateway:, command_exit:)
+            def resolve_target_database(app:, slice:, gateway:)
               if gateway && !app && !slice
                 err.puts "When specifying --gateway, an --app or --slice must also be given"
-                command_exit.(1)
-                return
+                throw :exit, 1
               end
 
               if slice
-                resolve_slice_database(slice, gateway, command_exit)
+                resolve_slice_database(slice, gateway)
               elsif app
-                resolve_app_database(gateway, command_exit)
+                resolve_app_database(gateway)
               else
-                resolve_default_database(command_exit)
+                resolve_default_database
               end
             end
 
-            def resolve_slice_database(slice_name, gateway, command_exit)
-              slice = resolve_slice(slice_name, command_exit)
+            def resolve_slice_database(slice_name, gateway)
+              slice = resolve_slice(slice_name)
               return unless slice
 
               databases = build_databases(slice)
@@ -98,43 +95,41 @@ module Hanami
                 database = databases[gateway.to_sym]
                 unless database
                   err.puts %(No gateway "#{gateway}" found in slice "#{slice_name}")
-                  command_exit.(1)
-                  return
+                  throw :exit, 1
                 end
                 database
               elsif databases.size == 1
                 databases.values.first
               else
                 err.puts "Multiple gateways found in slice #{slice_name}. Please specify --gateway option."
-                command_exit.(1)
+                throw :exit, 1
               end
             end
 
-            def resolve_app_database(gateway, command_exit)
+            def resolve_app_database(gateway)
               databases = build_databases(app)
 
               if gateway
                 database = databases[gateway.to_sym]
                 unless database
                   err.puts %(No gateway "#{gateway}" found in app)
-                  command_exit.(1)
-                  return
+                  throw :exit, 1
                 end
                 database
               elsif databases.size == 1
                 databases.values.first
               else
                 err.puts "Multiple gateways found in app. Please specify --gateway option."
-                command_exit.(1)
+                throw :exit, 1
               end
             end
 
-            def resolve_default_database(command_exit)
+            def resolve_default_database
               all_dbs = all_databases
 
               if all_dbs.empty?
                 err.puts "No databases found"
-                command_exit.(1)
+                throw :exit, 1
               elsif all_dbs.size == 1
                 all_dbs.first
               else
@@ -143,24 +138,21 @@ module Hanami
                   app_databases.values.first
                 elsif app_databases.size > 1
                   err.puts "Multiple gateways found in app. Please specify --gateway option."
-                  command_exit.(1)
-                  nil
+                  throw :exit, 1
                 else
                   err.puts "Multiple database contexts found. Please specify --app or --slice option."
-                  command_exit.(1)
-                  nil
+                  throw :exit, 1
                 end
               end
             end
 
-            def resolve_slice(slice_name, command_exit)
+            def resolve_slice(slice_name)
               slice_name_sym = inflector.underscore(Shellwords.shellescape(slice_name)).to_sym
               slice = app.slices[slice_name_sym]
 
               unless slice
                 err.puts %(Slice "#{slice_name}" not found)
-                command_exit.(1)
-                return
+                throw :exit, 1
               end
 
               ensure_database_slice(slice)

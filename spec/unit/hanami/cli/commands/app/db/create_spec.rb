@@ -11,16 +11,9 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Create, :app_integration do
 
   let(:system_call) { Hanami::CLI::SystemCall.new }
   let(:test_env_executor) { instance_spy(Hanami::CLI::InteractiveSystemCall) }
-  let(:exit_double) { double(:exit_method) }
 
   let(:out) { StringIO.new }
   def output = out.string
-
-  before do
-    # Prevent the command from exiting the spec run in the case of unexpected system call failures
-    allow(command).to receive(:exit)
-    allow(exit_double).to receive(:call)
-  end
 
   before do
     @env = ENV.to_h
@@ -95,7 +88,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Create, :app_integration do
       end
 
       it "does not create the database if it already exists" do
-        command.run_command(Hanami::CLI::Commands::App::DB::Create, command_exit: exit_double)
+        command.run_command(Hanami::CLI::Commands::App::DB::Create)
         out.truncate(0)
 
         command.call
@@ -120,7 +113,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Create, :app_integration do
       end
 
       it "does not create the database if it already exists" do
-        command.run_command(Hanami::CLI::Commands::App::DB::Create, command_exit: exit_double)
+        command.run_command(Hanami::CLI::Commands::App::DB::Create)
         out.truncate(0)
 
         command.call
@@ -190,7 +183,10 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Create, :app_integration do
           .with(a_string_matching(/sqlite3.+app.sqlite3/))
           .and_return Hanami::CLI::SystemCall::Result.new(exit_code: 2, out: "", err: "app-db-err")
 
-        command.call
+        exit_code = catch(:exit) {
+          command.call
+          0
+        }
 
         expect { Main::Slice["db.gateway"] }.not_to raise_error
 
@@ -202,7 +198,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Create, :app_integration do
 
         expect(output).to include "database db/main.sqlite3 created"
 
-        expect(command).to have_received(:exit).with(2).once
+        expect(exit_code).to eq(2)
       end
 
       context "app with gateways" do
@@ -283,7 +279,10 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Create, :app_integration do
           .with(a_string_matching(/createdb.+_app/), anything)
           .and_return Hanami::CLI::SystemCall::Result.new(exit_code: 2, out: "", err: "app-db-err")
 
-        command.call
+        exit_code = catch(:exit) {
+          command.call
+          0
+        }
 
         expect { Hanami.app["db.gateway"] }.to raise_error Sequel::DatabaseConnectionError
         expect { Main::Slice["db.gateway"] }.not_to raise_error
@@ -293,7 +292,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Create, :app_integration do
 
         expect(output).to include "database #{POSTGRES_BASE_DB_NAME}_main created"
 
-        expect(command).to have_received(:exit).with(2).once
+        expect(exit_code).to eq(2)
       end
     end
 

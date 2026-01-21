@@ -7,9 +7,14 @@ require "hanami/cli"
 cli = Dry::CLI.new(Hanami::CLI)
 Hanami::CLI::Bundler.require(:cli)
 
-begin
-  cli.call
-rescue Hanami::CLI::Error => exception
-  $stderr.puts(exception.message) # rubocop:disable Style/StderrPuts
-  exit(1)
-end
+code = catch(:exit) {
+  begin
+    cli.call
+    0
+  rescue Hanami::CLI::Error => exception
+    $stderr.puts(exception.message) # rubocop:disable Style/StderrPuts
+    1
+  end
+}
+
+exit(code)
