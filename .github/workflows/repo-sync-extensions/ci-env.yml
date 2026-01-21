@@ -1,1 +1,2 @@
 POSTGRES_BASE_URL: postgres://postgres:password@localhost:5432/hanami_cli_test
+JRUBY_OPTS: "-X+O"
