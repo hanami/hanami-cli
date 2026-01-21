@@ -8,7 +8,9 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
 
   def build_db_url(filename)
     if RUBY_ENGINE == "jruby"
-      "jdbc:sqlite:#{filename}"
+      # with JDBC driver we need to specify the absolute path inside a temp directory,
+      # because somehow it does not use Dir.chmod as a base for resolving a relative path
+      "jdbc:sqlite:#{File.join(@dir, filename)}"
     else
       "sqlite://#{filename}"
     end

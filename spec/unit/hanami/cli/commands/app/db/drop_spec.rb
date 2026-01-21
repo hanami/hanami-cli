@@ -18,7 +18,9 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
 
   def build_db_url(filename)
     if RUBY_ENGINE == "jruby"
-      "jdbc:sqlite:#{filename}"
+      # with JDBC driver we need to specify the absolute path inside a temp directory,
+      # because somehow it does not use Dir.chmod as a base for resolving a relative path
+      "jdbc:sqlite:#{File.join(@dir, filename)}"
     else
       "sqlite://#{filename}"
     end
@@ -261,8 +263,9 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
 
   describe "postgres", :postgres do
     before do
-      ENV["DATABASE_URL"] = "#{POSTGRES_BASE_URL}_app"
-      ENV["MAIN__DATABASE_URL"] = "#{POSTGRES_BASE_URL}_main"
+      base_url = RUBY_ENGINE == "jruby" ? "jdbc:#{POSTGRES_BASE_URL}" : POSTGRES_BASE_URL
+      ENV["DATABASE_URL"] = "#{base_url}_app"
+      ENV["MAIN__DATABASE_URL"] = "#{base_url}_main"
     end
 
     it "drops each database" do
