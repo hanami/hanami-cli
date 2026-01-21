@@ -46,7 +46,7 @@ module Hanami
                   require_relative("jdbc_sqlite")
                   JdbcSqlite
                 },
-                "jdbc:postgresql" => -> {
+                "jdbc:postgres" => -> {
                   require_relative("jdbc_postgres")
                   JdbcPostgres
                 },

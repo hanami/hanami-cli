@@ -198,8 +198,9 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Load, :app_integration
 
   describe "postgres", :postgres do
     before do
-      ENV["DATABASE_URL"] = "#{POSTGRES_BASE_URL}_app"
-      ENV["MAIN__DATABASE_URL"] = "#{POSTGRES_BASE_URL}_main"
+      base_url = RUBY_ENGINE == "jruby" ? "jdbc:#{POSTGRES_BASE_URL}" : POSTGRES_BASE_URL
+      ENV["DATABASE_URL"] = "#{base_url}_app"
+      ENV["MAIN__DATABASE_URL"] = "#{base_url}_main"
       db_structure_dump
     end
 

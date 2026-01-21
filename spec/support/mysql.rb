@@ -5,7 +5,11 @@ require "uri"
 
 MYSQL_BASE_DB_NAME = "hanami_cli_test"
 # Connect to "127.0.0.1" instead of "localhost" so MySQL uses TCP rather than a Unix socket
-MYSQL_BASE_URL = ENV.fetch("MYSQL_BASE_URL", "mysql2://root:password@127.0.0.1:3307/#{MYSQL_BASE_DB_NAME}")
+MYSQL_BASE_URL = if RUBY_ENGINE == "jruby"
+                   ENV.fetch("MYSQL_BASE_URL", "jdbc:mysql://root:password@127.0.0.1:3307/#{MYSQL_BASE_DB_NAME}")
+                 else
+                   ENV.fetch("MYSQL_BASE_URL", "mysql2://root:password@127.0.0.1:3307/#{MYSQL_BASE_DB_NAME}")
+                 end
 MYSQL_BASE_URI = URI(MYSQL_BASE_URL)
 
 RSpec.configure do |config|
@@ -25,11 +29,10 @@ RSpec.configure do |config|
       mysql_cli_env, mysql_cli_args + %( -e "SHOW DATABASES")
     )
 
-    test_db_prefix = MYSQL_BASE_URI.path.sub(%r{^/}, "")
     test_databases = mysql_databases
       .split("\n")
       .then { Array(_1[1..]) } # Ignore the header row
-      .select { _1.start_with?(test_db_prefix) }
+      .select { _1.start_with?(MYSQL_BASE_DB_NAME) }
 
     test_databases.each do |database|
       system(mysql_cli_env, mysql_cli_args + %( -e "DROP DATABASE #{database}"))

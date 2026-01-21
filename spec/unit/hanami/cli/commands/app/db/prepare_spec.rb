@@ -17,7 +17,9 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Prepare, :app_integration do
 
   def build_db_url(filename)
     if RUBY_ENGINE == "jruby"
-      "jdbc:sqlite:#{filename}"
+      # with JDBC driver we need to specify the absolute path inside a temp directory,
+      # because somehow it does not use Dir.chmod as a base for resolving a relative path
+      "jdbc:sqlite:#{File.join(@dir, filename)}"
     else
       "sqlite://#{filename}"
     end
@@ -181,15 +183,16 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Prepare, :app_integration do
           ('20240604201330_create_main_extras.rb');
         SQL
 
+        prefix = RUBY_ENGINE == "jruby" ? "#{@dir}/" : ""
         expect(output).to include_in_order(
-          "database db/app.sqlite3 created",
-          "db/app.sqlite3 structure loaded from config/db/structure.sql",
-          "database db/main.sqlite3 created",
-          "db/main.sqlite3 structure loaded from slices/main/config/db/structure.sql",
-          "database db/app.sqlite3 migrated",
-          "db/app.sqlite3 structure dumped to config/db/structure.sql",
-          "database db/main.sqlite3 migrated",
-          "db/main.sqlite3 structure dumped to slices/main/config/db/structure.sql",
+          "database #{prefix}db/app.sqlite3 created",
+          "#{prefix}db/app.sqlite3 structure loaded from config/db/structure.sql",
+          "database #{prefix}db/main.sqlite3 created",
+          "#{prefix}db/main.sqlite3 structure loaded from slices/main/config/db/structure.sql",
+          "database #{prefix}db/app.sqlite3 migrated",
+          "#{prefix}db/app.sqlite3 structure dumped to config/db/structure.sql",
+          "database #{prefix}db/main.sqlite3 migrated",
+          "#{prefix}db/main.sqlite3 structure dumped to slices/main/config/db/structure.sql",
           "seed data loaded from config/db/seeds.rb",
           "seed data loaded from slices/main/config/db/seeds.rb"
         )

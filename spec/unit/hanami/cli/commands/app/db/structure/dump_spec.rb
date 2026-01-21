@@ -11,6 +11,14 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Dump, :app_integration
   let(:out) { StringIO.new }
   def output = out.string
 
+  def build_db_url(filename)
+    if RUBY_ENGINE == "jruby"
+      "jdbc:sqlite:#{filename}"
+    else
+      "sqlite://#{filename}"
+    end
+  end
+
   before do
     # Prevent the command from exiting the spec run in the case of unexpected system call failures
     allow(command).to receive(:exit)
@@ -75,8 +83,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Dump, :app_integration
 
   describe "sqlite" do
     before do
-      ENV["DATABASE_URL"] = "sqlite://db/app.sqlite3"
-      ENV["MAIN__DATABASE_URL"] = "sqlite://db/main.sqlite3"
+      ENV["DATABASE_URL"] = build_db_url("db/app.sqlite3")
+      ENV["MAIN__DATABASE_URL"] = build_db_url("db/main.sqlite3")
       db_migrate
     end
 
@@ -125,7 +133,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Dump, :app_integration
 
     context "app with gateways" do
       def before_prepare
-        ENV["DATABASE_URL__EXTRA"] = "sqlite://db/app_extra.sqlite3"
+        ENV["DATABASE_URL__EXTRA"] = build_db_url("db/app_extra.sqlite3")
 
         write "config/db/extra_migrate/20240602201330_create_users.rb", <<~RUBY
           ROM::SQL.migration do
@@ -162,7 +170,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Dump, :app_integration
 
     context "slice with gateways" do
       def before_prepare
-        ENV["MAIN__DATABASE_URL__EXTRA"] = "sqlite://db/main_extra.sqlite3"
+        ENV["MAIN__DATABASE_URL__EXTRA"] = build_db_url("db/main_extra.sqlite3")
 
         write "slices/main/config/db/extra_migrate/20240602201330_create_users.rb", <<~RUBY
           ROM::SQL.migration do
