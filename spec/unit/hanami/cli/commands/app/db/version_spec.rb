@@ -83,16 +83,18 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Version, :app_integration do
   it "prints the versions for all databases" do
     command.call
 
+    prefix = RUBY_ENGINE == "jruby" ? "#{@dir}/" : ""
     expect(output).to include_in_order(
-      "db/app.sqlite3 current schema version is 20240602191330_create_categories",
-      "db/main.sqlite3 current schema version is 20240602211330_create_comments"
+      "#{prefix}db/app.sqlite3 current schema version is 20240602191330_create_categories",
+      "#{prefix}db/main.sqlite3 current schema version is 20240602211330_create_comments"
     )
   end
 
   it "prints the version of the app db only when given --app" do
     command.call(app: true)
 
-    expect(output).to include "db/app.sqlite3 current schema version is 20240602191330_create_categories"
+    prefix = RUBY_ENGINE == "jruby" ? "#{@dir}/" : ""
+    expect(output).to include "#{prefix}db/app.sqlite3 current schema version is 20240602191330_create_categories"
     expect(output).not_to include "db/main.sqlite3"
   end
 
@@ -106,7 +108,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Version, :app_integration do
   it "prints an error when given a slice without migrations" do
     command.call(slice: "admin")
 
-    expect(output).to include %(Cannot find version for database db/app.sqlite3: no migrations directory at slices/admin/config/db/migrate/)
+    prefix = RUBY_ENGINE == "jruby" ? "#{@dir}/" : ""
+    expect(output).to include %(Cannot find version for database #{prefix}db/app.sqlite3: no migrations directory at slices/admin/config/db/migrate/)
     expect(output).not_to include "current schema version"
   end
 
@@ -129,9 +132,10 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Version, :app_integration do
     it "prints the versions for all an app's databases when given --app" do
       command.call(app: true)
 
+      prefix = RUBY_ENGINE == "jruby" ? "#{@dir}/" : ""
       expect(output).to include_in_order(
-        "db/app.sqlite3 current schema version is 20240602191330_create_categories",
-        "db/app_extra.sqlite3 current schema version is 20240921211330_create_users"
+        "#{prefix}db/app.sqlite3 current schema version is 20240602191330_create_categories",
+        "#{prefix}db/app_extra.sqlite3 current schema version is 20240921211330_create_users"
       )
     end
 

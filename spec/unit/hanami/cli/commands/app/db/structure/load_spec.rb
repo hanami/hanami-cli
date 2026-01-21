@@ -111,9 +111,10 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Load, :app_integration
         .and change { Main::Slice["db.gateway"].connection.tables.include?(:comments) }
         .to true
 
+      prefix = RUBY_ENGINE == "jruby" ? "#{@dir}/" : ""
       expect(output).to include_in_order(
-        "db/app.sqlite3 structure loaded from config/db/structure.sql",
-        "db/main.sqlite3 structure loaded from slices/main/config/db/structure.sql"
+        "#{prefix}db/app.sqlite3 structure loaded from config/db/structure.sql",
+        "#{prefix}db/main.sqlite3 structure loaded from slices/main/config/db/structure.sql"
       )
     end
 
@@ -139,9 +140,10 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Load, :app_integration
           .and change { Hanami.app["db.gateways.extra"].connection.tables.include?(:users) }
           .to true
 
+        prefix = RUBY_ENGINE == "jruby" ? "#{@dir}/" : ""
         expect(output).to include_in_order(
-          "db/app.sqlite3 structure loaded from config/db/structure.sql in",
-          "db/app_extra.sqlite3 structure loaded from config/db/extra_structure.sql in"
+          "#{prefix}db/app.sqlite3 structure loaded from config/db/structure.sql in",
+          "#{prefix}db/app_extra.sqlite3 structure loaded from config/db/extra_structure.sql in"
         )
       end
 
@@ -152,7 +154,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Load, :app_integration
           .and not_change { Hanami.app["db.gateways.default"].connection.tables.include?(:posts) }
           .from false
 
-        expect(output).to include "db/app_extra.sqlite3 structure loaded from config/db/extra_structure.sql in"
+        prefix = RUBY_ENGINE == "jruby" ? "#{@dir}/" : ""
+        expect(output).to include "#{prefix}db/app_extra.sqlite3 structure loaded from config/db/extra_structure.sql in"
         expect(output).not_to include "db/app.sqlite3"
       end
     end

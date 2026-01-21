@@ -109,9 +109,10 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
         expect(dump_command).to have_received(:call).with(hash_including(app: false, slice: nil))
         expect(dump_command).to have_received(:call).once
 
+        prefix = RUBY_ENGINE == "jruby" ? "#{@dir}/" : ""
         expect(output).to include_in_order(
-          "database db/app.sqlite3 migrated",
-          "database db/main.sqlite3 migrated"
+          "database #{prefix}db/app.sqlite3 migrated",
+          "database #{prefix}db/main.sqlite3 migrated"
         )
       end
 
@@ -124,7 +125,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
         expect(dump_command).to have_received(:call).with(hash_including(app: true, slice: nil))
         expect(dump_command).to have_received(:call).once
 
-        expect(output).to include "database db/app.sqlite3 migrated"
+        prefix = RUBY_ENGINE == "jruby" ? "#{@dir}/" : ""
+        expect(output).to include "database #{prefix}db/app.sqlite3 migrated"
         expect(output).not_to include "main.sqlite3"
       end
 
@@ -137,7 +139,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
         expect(dump_command).to have_received(:call).with(hash_including(app: false, slice: "main"))
         expect(dump_command).to have_received(:call).exactly(1).time
 
-        expect(output).to include "database db/main.sqlite3 migrated"
+        prefix = RUBY_ENGINE == "jruby" ? "#{@dir}/" : ""
+        expect(output).to include "database #{prefix}db/main.sqlite3 migrated"
         expect(output).not_to include "app.sqlite3"
       end
 
@@ -186,9 +189,10 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
           expect(dump_command).to have_received(:call).with(hash_including(app: true, slice: nil))
           expect(dump_command).to have_received(:call).once
 
+          prefix = RUBY_ENGINE == "jruby" ? "#{@dir}/" : ""
           expect(output).to include_in_order(
-            "database db/app.sqlite3 migrated in",
-            "database db/app_extra.sqlite3 migrated in"
+            "database #{prefix}db/app.sqlite3 migrated in",
+            "database #{prefix}db/app_extra.sqlite3 migrated in"
           )
         end
 
@@ -201,7 +205,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
           expect(dump_command).to have_received(:call).with(hash_including(app: true, slice: nil, gateway: "extra"))
           expect(dump_command).to have_received(:call).once
 
-          expect(output).to include "database db/app_extra.sqlite3 migrated in"
+          prefix = RUBY_ENGINE == "jruby" ? "#{@dir}/" : ""
+          expect(output).to include "database #{prefix}db/app_extra.sqlite3 migrated in"
           expect(output).not_to include "db/app.sqlite3"
         end
       end
@@ -417,8 +422,9 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
     it "prints a warning, and does not migrate the database" do
       command.call
 
+      prefix = RUBY_ENGINE == "jruby" ? "#{@dir}/" : ""
       expect(output).to include(
-        "WARNING: Database db/app.sqlite3 expects the folder config/db/ to exist but it does not."
+        "WARNING: Database #{prefix}db/app.sqlite3 expects the folder config/db/ to exist but it does not."
       )
       expect(output).not_to include "migrated"
     end
@@ -550,8 +556,9 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
     it "prints a warning, and does not migrate the database" do
       command.call
 
+      prefix = RUBY_ENGINE == "jruby" ? "#{@dir}/" : ""
       expect(output).to include(
-        "WARNING: Database db/app.sqlite3 expects migrations to be located within config/db/migrate/ but that folder does not exist."
+        "WARNING: Database #{prefix}db/app.sqlite3 expects migrations to be located within config/db/migrate/ but that folder does not exist."
       )
       expect(output).to include("No database migrations can be run for this database.")
       expect(output).not_to include "migrated"
@@ -573,8 +580,9 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
     it "prints a warning, and does not migrate the database" do
       command.call
 
+      prefix = RUBY_ENGINE == "jruby" ? "#{@dir}/" : ""
       expect(output).to include(
-        "NOTE: Empty database migrations folder (config/db/migrate/) for db/app.sqlite3"
+        "NOTE: Empty database migrations folder (config/db/migrate/) for #{prefix}db/app.sqlite3"
       )
       expect(output).not_to include "migrated"
     end
