@@ -26,9 +26,18 @@ if ENV["RACK_MATRIX_VALUE"]
 end
 
 gem "puma"
-gem "mysql2"
-gem "pg"
-gem "sqlite3"
+
+platforms :ruby do
+  gem "mysql2"
+  gem "pg"
+  gem "sqlite3"
+end
+
+platforms :jruby do
+  gem "jdbc-sqlite3"
+  gem "jdbc-mysql"
+  gem "jdbc-postgres"
+end
 
 gem "hanami-devtools", github: "hanami/devtools", branch: "main"
 
