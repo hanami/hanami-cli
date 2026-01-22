@@ -21,7 +21,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
-[Unreleased]: https://github.com/hanami/cli/compare/v2.3.3...HEAD
+[Unreleased]: https://github.com/hanami/cli/compare/v2.3.4...HEAD
+
+## [2.3.4] - 2026-01-23
+
+### Fixed
+
+- Avoid an unhandled exception in the "are we inside a Hanami app?" check that happens at the beginning of every CLI invocation. This would occur when a bundled gem is already activated (from our testing: bigdecimal) but in conflict with the required version of that gem by a Hanami dependency. (@timriley in #380).
+
+[2.3.4]: https://github.com/hanami/cli/compare/v2.3.3...v2.3.4
 
 ## [2.3.3] - 2025-12-04
 
