@@ -43,6 +43,8 @@ jobs:
       RACK_MATRIX_VALUE: ${{ matrix.rack || '' }}
       # Env below included from ./repo-sync-extensions/ci-env.yml
       POSTGRES_BASE_URL: postgres://postgres:password@localhost:5432/hanami_cli_test
+      # Enable ObjectSpace for tests
+      JRUBY_OPTS: "-X+O"
     # Services included from ./repo-sync-extensions/ci-services.yml
     services:
       mysql:
