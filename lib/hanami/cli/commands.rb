@@ -16,11 +16,19 @@ module Hanami
 
       !!Hanami.app_path
     rescue LoadError => exception
-      raise exception unless exception.path == "hanami"
+      # Only rescue:
+      #
+      # 1. LoadError, due to hanami itself being missing, or
+      # 2. Gem::LoadError, indicating gem version conflicts or other gem-related issues while
+      #    loading hanami.
+      #
+      # This allows us to work around global gem version conflicts (e.g. with gems like bigdecimal,
+      # which can come bundled with Ruby while also being upgraded independently) while still
+      # raising errors for other missing requires.
+      raise exception unless exception.path == "hanami" || exception.is_a?(Gem::LoadError)
 
-      # If for any reason the hanami gem isn't installed, make a simple best effort to determine
-      # whether we're inside an app.
-      File.exist?("config/app.rb") || File.exist?("app.rb")
+      # If we can't load the hanami gem, fall back to a simple file check.
+      File.exist?("config/app.rb")
     end
 
     # Contains the commands available for the current `hanami` CLI execution, depending on whether
@@ -35,13 +43,14 @@ module Hanami
 
     # @api private
     def self.register_commands!(within_hanami_app = within_hanami_app?)
-      commands = if within_hanami_app
-                   require_relative "commands/app"
-                   Commands::App
-                 else
-                   require_relative "commands/gem"
-                   Commands::Gem
-                 end
+      commands =
+        if within_hanami_app
+          require_relative "commands/app"
+          Commands::App
+        else
+          require_relative "commands/gem"
+          Commands::Gem
+        end
 
       extend(commands)
     end
