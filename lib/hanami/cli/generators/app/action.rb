@@ -123,7 +123,7 @@ module Hanami
               view_generator.call(
                 key: key,
                 namespace: namespace,
-                base_path: base_path,
+                base_path: base_path
               )
             end
           end
