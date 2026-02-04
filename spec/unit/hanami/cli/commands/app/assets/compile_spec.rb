@@ -50,7 +50,7 @@ RSpec.describe Hanami::CLI::Commands::App::Assets::Compile, "#call", :app_integr
       it "compiles the app assets" do
         expect(interactive_system_call).to receive(:call).with(
           "node",
-          Hanami.app.root.join("config", "assets.js").to_s,
+          "config/assets.js",
           "--",
           "--path=app",
           "--dest=public/assets",
@@ -81,7 +81,7 @@ RSpec.describe Hanami::CLI::Commands::App::Assets::Compile, "#call", :app_integr
       it "compiles the slice assets" do
         expect(interactive_system_call).to receive(:call).with(
           "node",
-          Hanami.app.root.join("config", "assets.js").to_s,
+          "config/assets.js",
           "--",
           "--path=slices/admin",
           "--dest=public/assets/_admin",
@@ -101,7 +101,7 @@ RSpec.describe Hanami::CLI::Commands::App::Assets::Compile, "#call", :app_integr
       it "compiles the slice assets using the slice's assets config" do
         expect(interactive_system_call).to receive(:call).with(
           "node",
-          Hanami.app.root.join("slices", "admin", "config", "assets.js").to_s,
+          "slices/admin/config/assets.js",
           "--",
           "--path=slices/admin",
           "--dest=public/assets/_admin",
@@ -134,7 +134,7 @@ RSpec.describe Hanami::CLI::Commands::App::Assets::Compile, "#call", :app_integr
     it "compiles the assets for each slice" do
       expect(interactive_system_call).to receive(:call).with(
         "node",
-        Hanami.app.root.join("config", "assets.js").to_s,
+        "config/assets.js",
         "--",
         "--path=slices/admin",
         "--dest=public/assets/_admin",
@@ -143,7 +143,7 @@ RSpec.describe Hanami::CLI::Commands::App::Assets::Compile, "#call", :app_integr
 
       expect(interactive_system_call).to receive(:call).with(
         "node",
-        Hanami.app.root.join("config", "assets.js").to_s,
+        "config/assets.js",
         "--",
         "--path=slices/main",
         "--dest=public/assets/_main",
@@ -163,7 +163,7 @@ RSpec.describe Hanami::CLI::Commands::App::Assets::Compile, "#call", :app_integr
     it "passes the setting via the --sri flag" do
       expect(interactive_system_call).to receive(:call).with(
         "node",
-        Hanami.app.root.join("config", "assets.js").to_s,
+        "config/assets.js",
         "--",
         "--path=app",
         "--dest=public/assets",

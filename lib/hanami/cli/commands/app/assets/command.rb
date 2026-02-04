@@ -94,7 +94,8 @@ module Hanami
             # @since 2.1.0
             # @api private
             def assets_command(slice)
-              cmd = [config.node_command, assets_config(slice).to_s, "--"]
+              assets_config = assets_config(slice).relative_path_from(slice.app.root).to_s
+              cmd = [config.node_command, assets_config, "--"]
 
               if slice.eql?(slice.app)
                 cmd << "--path=app"
