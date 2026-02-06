@@ -6,6 +6,6 @@ module Hanami
     #
     # @api public
     # @since 2.0.0
-    VERSION = "2.3.4"
+    VERSION = "2.3.5"
   end
 end
