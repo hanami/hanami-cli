@@ -13,6 +13,8 @@ and this project adheres to [Break Versioning](https://www.taoensso.com/break-ve
 
 ### Changed
 
+- In `assets` commands, provide the node command with the assets config path _relative to app root_ instead of an absolute path (`config/assets.js` instead of `/full/path/to/config/assets.js`). This allows the assets commands to work in environments where Node.js is "sandboxed" in such a way that it doesn't share the same absolute path. (@haileys in #381).
+
 ### Deprecated
 
 ### Removed
