@@ -49,7 +49,7 @@ RSpec.describe Hanami::CLI::Commands::App::Assets::Watch, "#call", :app_integrat
       it "watches the app assets" do
         expect(interactive_system_call).to receive(:call).with(
           "node",
-          Hanami.app.root.join("config", "assets.js").to_s,
+          "config/assets.js",
           "--",
           "--path=app",
           "--dest=public/assets",
@@ -81,7 +81,7 @@ RSpec.describe Hanami::CLI::Commands::App::Assets::Watch, "#call", :app_integrat
       it "watches the slice assets" do
         expect(interactive_system_call).to receive(:call).with(
           "node",
-          Hanami.app.root.join("config", "assets.js").to_s,
+          "config/assets.js",
           "--",
           "--path=slices/admin",
           "--dest=public/assets/_admin",
@@ -102,7 +102,7 @@ RSpec.describe Hanami::CLI::Commands::App::Assets::Watch, "#call", :app_integrat
       it "watches the slice assets using the slice's assets config" do
         expect(interactive_system_call).to receive(:call).with(
           "node",
-          Hanami.app.root.join("slices", "admin", "config", "assets.js").to_s,
+          "slices/admin/config/assets.js",
           "--",
           "--path=slices/admin",
           "--dest=public/assets/_admin",
@@ -136,7 +136,7 @@ RSpec.describe Hanami::CLI::Commands::App::Assets::Watch, "#call", :app_integrat
     it "watches the assets for each slice" do
       expect(interactive_system_call).to receive(:call).with(
         "node",
-        Hanami.app.root.join("config", "assets.js").to_s,
+        "config/assets.js",
         "--",
         "--path=slices/admin",
         "--dest=public/assets/_admin",
@@ -146,7 +146,7 @@ RSpec.describe Hanami::CLI::Commands::App::Assets::Watch, "#call", :app_integrat
 
       expect(interactive_system_call).to receive(:call).with(
         "node",
-        Hanami.app.root.join("config", "assets.js").to_s,
+        "config/assets.js",
         "--",
         "--path=slices/main",
         "--dest=public/assets/_main",
