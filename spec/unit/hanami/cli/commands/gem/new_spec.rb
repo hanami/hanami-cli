@@ -1386,6 +1386,42 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
     end
   end
 
+  context "with --name" do
+    it "creates the app in the positional arg directory with the given name as module" do
+      expect(bundler).to receive(:install!)
+        .and_return(true)
+
+      expect(bundler).to receive(:exec)
+        .with("hanami install")
+        .and_return(successful_system_call_result)
+
+      expect(bundler).to receive(:exec)
+        .with("check")
+        .at_least(1)
+        .and_return(successful_system_call_result)
+
+      subject.call(app: "my_blog", name: "bookshelf")
+
+      expect(fs.directory?("my_blog")).to be(true)
+
+      fs.chdir("my_blog") do
+        expect(fs.read("config/app.rb")).to include("module Bookshelf")
+      end
+    end
+
+    it "raises PathAlreadyExistsError when the directory already exists" do
+      fs.mkdir("my_blog")
+
+      expect(bundler).to_not receive(:install!)
+      expect(bundler).to_not receive(:exec)
+
+      expect { subject.call(app: "my_blog", name: "bookshelf") }.to raise_error(
+        Hanami::CLI::PathAlreadyExistsError,
+        "Cannot create new Hanami app in an existing path: `my_blog'"
+      )
+    end
+  end
+
   it "doesn't create app in existing folder" do
     fs.mkdir("bookshelf")
 

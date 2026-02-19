@@ -107,6 +107,10 @@ module Hanami
                             default: DATABASE_SQLITE,
                             desc: "Database adapter (supported: sqlite, mysql, postgres)"
 
+          # @api private
+          option :name, type: :string, required: false,
+                        desc: "App name to use for the module namespace"
+
           # rubocop:disable Layout/LineLength
           example [
             "bookshelf                                    # Generate a new Hanami app in `bookshelf/' directory, using `Bookshelf' namespace",
@@ -116,7 +120,8 @@ module Hanami
             "bookshelf --skip-assets                      # Generate a new Hanami app without hanami-assets",
             "bookshelf --skip-db                          # Generate a new Hanami app without hanami-db",
             "bookshelf --skip-view                        # Generate a new Hanami app without hanami-view",
-            "bookshelf --database={sqlite|postgres|mysql} # Generate a new Hanami app with a specified database (default: sqlite)"
+            "bookshelf --database={sqlite|postgres|mysql} # Generate a new Hanami app with a specified database (default: sqlite)",
+            "my_bookshelf --name=bookshelf                # Generate a new Hanami app in `my_bookshelf/' directory, using `Bookshelf' namespace"
           ]
           # rubocop:enable Layout/LineLength
 
@@ -147,17 +152,19 @@ module Hanami
             skip_assets: SKIP_ASSETS_DEFAULT,
             skip_db: SKIP_DB_DEFAULT,
             skip_view: SKIP_VIEW_DEFAULT,
-            database: nil
+            database: nil,
+            name: nil
           )
-            app = inflector.underscore(app)
+            directory = inflector.underscore(app)
+            app = inflector.underscore(name || app)
 
-            raise PathAlreadyExistsError.new(app) if fs.exist?(app)
+            raise PathAlreadyExistsError.new(directory) if fs.exist?(directory)
             raise ForbiddenAppNameError.new(app) if FORBIDDEN_APP_NAMES.include?(app)
 
             normalized_database ||= normalize_database(database)
 
-            fs.mkdir(app)
-            fs.chdir(app) do
+            fs.mkdir(directory)
+            fs.chdir(directory) do
               context = Generators::Context.new(
                 inflector,
                 app,
