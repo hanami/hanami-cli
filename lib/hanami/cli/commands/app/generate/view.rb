@@ -38,12 +38,21 @@ module Hanami
             # @since 2.0.0
             # @api private
             def call(name:, slice: nil, template_engine: nil, **opts)
-              template_engine_from_app_config = app.config.views.default_template_engine if Hanami.bundled?("hanami-view") && app.config.views.respond_to?(:default_template_engine)
               super(
                 name: name,
                 slice: slice,
-                template_engine: template_engine || template_engine_from_app_config || DEFAULT_TEMPLATE_ENGINE
+                template_engine: template_engine || default_template_engine
               )
+            end
+
+            private
+
+            def default_template_engine
+              if Hanami.bundled?("hanami-view") && app.config.views.respond_to?(:default_template_engine)
+                app.config.views.default_template_engine
+              else
+                DEFAULT_TEMPLATE_ENGINE
+              end
             end
           end
         end

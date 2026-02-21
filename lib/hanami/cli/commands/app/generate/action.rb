@@ -84,8 +84,15 @@ module Hanami
 
             # @since 2.0.0
             # @api private
-            def call(name:, url_path: nil, http_method: nil, skip_view: DEFAULT_SKIP_VIEW, skip_route: DEFAULT_SKIP_ROUTE, skip_tests: DEFAULT_SKIP_TESTS, template_engine: nil, slice: nil, **opts)
-              template_engine_from_app_config = app.config.views.default_template_engine if Hanami.bundled?("hanami-view") && app.config.views.respond_to?(:default_template_engine)
+            def call(name:,
+                     slice: nil,
+                     url_path: nil,
+                     http_method: nil,
+                     skip_view: DEFAULT_SKIP_VIEW,
+                     skip_route: DEFAULT_SKIP_ROUTE,
+                     skip_tests: DEFAULT_SKIP_TESTS,
+                     template_engine: nil,
+                     **opts)
               name = Naming.new(inflector:).action_name(name)
 
               raise InvalidActionNameError.new(name) unless name.include?(".")
@@ -98,8 +105,18 @@ module Hanami
                 http_method: http_method,
                 skip_view: skip_view || !Hanami.bundled?("hanami-view"),
                 skip_tests: skip_tests,
-                template_engine: template_engine || template_engine_from_app_config || DEFAULT_TEMPLATE_ENGINE
+                template_engine: template_engine || default_template_engine
               )
+            end
+
+            private
+
+            def default_template_engine
+              if Hanami.bundled?("hanami-view") && app.config.views.respond_to?(:default_template_engine)
+                app.config.views.default_template_engine
+              else
+                DEFAULT_TEMPLATE_ENGINE
+              end
             end
           end
         end
