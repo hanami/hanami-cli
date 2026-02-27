@@ -11,6 +11,7 @@ and this project adheres to [Break Versioning](https://www.taoensso.com/break-ve
 
 - Add `--name` option to `hanami new`, to specify a custom module namespace while using the positional argument as the directory path. For example, `hanami new my_bookshelf --name=bookshelf` creates the app in `my_bookshelf/` with `Bookshelf` as the module name. (@aaronmallen in #387)
 - Add `--template-engine` option to `hanami generate`, to specify which template engine should be used for generated template file. Supports `erb`, `haml` and `slim`. (@katafrakt in #280)
+- If the option above won't be used, generator will respect `:default_template_engine` setting from the app (@katafrakt in #389)
 
 ### Changed
 
