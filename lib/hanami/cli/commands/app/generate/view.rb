@@ -22,7 +22,7 @@ module Hanami
             argument :name, required: true, desc: "View name"
             option :template_engine, required: false,
                                      values: %w[erb haml slim],
-                                     desc: "Template engine to use (default: set in application config or erb)"
+                                     desc: "Template engine to use (default: set in app config or erb)"
 
             example [
               %(books.index               (MyApp::Actions::Books::Index)),
@@ -38,11 +38,7 @@ module Hanami
             # @since 2.0.0
             # @api private
             def call(name:, slice: nil, template_engine: nil, **opts)
-              super(
-                name: name,
-                slice: slice,
-                template_engine: template_engine || default_template_engine
-              )
+              super(name:, slice:, template_engine: template_engine || default_template_engine)
             end
 
             private
