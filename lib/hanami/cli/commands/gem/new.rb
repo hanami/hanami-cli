@@ -59,6 +59,10 @@ module Hanami
           # @api private
           FORBIDDEN_APP_NAMES = %w[app slice].freeze
 
+          # @since 2.4.0
+          # @api private
+          TEMPLATE_ENGINE_DEFAULT = "erb"
+
           desc "Generate a new Hanami app"
 
           # @since 2.0.0
@@ -111,6 +115,13 @@ module Hanami
           option :name, type: :string, required: false,
                         desc: "App name to use for the module namespace"
 
+          # @since 2.4.0
+          # @api private
+          option :template_engine, type: :string, required: false,
+                                   values: %w[erb haml slim],
+                                   default: TEMPLATE_ENGINE_DEFAULT,
+                                   desc: "Default template engine to use with generators"
+
           # rubocop:disable Layout/LineLength
           example [
             "bookshelf                                    # Generate a new Hanami app in `bookshelf/' directory, using `Bookshelf' namespace",
@@ -121,6 +132,7 @@ module Hanami
             "bookshelf --skip-db                          # Generate a new Hanami app without hanami-db",
             "bookshelf --skip-view                        # Generate a new Hanami app without hanami-view",
             "bookshelf --database={sqlite|postgres|mysql} # Generate a new Hanami app with a specified database (default: sqlite)",
+            "bookshelf --template-engine={erb|haml|slim}  # Generate a new Hanami app which will use HAML for templates by default (default: erb)",
             "my_bookshelf --name=bookshelf                # Generate a new Hanami app in `my_bookshelf/' directory, using `Bookshelf' namespace"
           ]
           # rubocop:enable Layout/LineLength
@@ -153,7 +165,8 @@ module Hanami
             skip_db: SKIP_DB_DEFAULT,
             skip_view: SKIP_VIEW_DEFAULT,
             database: nil,
-            name: nil
+            name: nil,
+            template_engine: TEMPLATE_ENGINE_DEFAULT
           )
             directory = inflector.underscore(app)
             app = inflector.underscore(name || app)
@@ -168,12 +181,13 @@ module Hanami
               context = Generators::Context.new(
                 inflector,
                 app,
-                head: head,
-                gem_source: gem_source,
-                skip_assets: skip_assets,
-                skip_db: skip_db,
-                skip_view: skip_view,
-                database: normalized_database
+                head:,
+                gem_source:,
+                skip_assets:,
+                skip_db:,
+                skip_view:,
+                database: normalized_database,
+                template_engine:
               )
               generator.call(app, context: context) do
                 if skip_install
