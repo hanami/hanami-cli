@@ -59,7 +59,7 @@ module Hanami
               desc: "Skip route generation"
 
             option :slice, required: false, desc: "Slice name"
-            option :template_engine, required: false, type: :string, default: DEFAULT_TEMPLATE_ENGINE,
+            option :template_engine, required: false,
                                      values: %w[erb haml slim],
                                      desc: "Template engine to use"
 
@@ -92,22 +92,33 @@ module Hanami
               skip_view: DEFAULT_SKIP_VIEW,
               skip_route: DEFAULT_SKIP_ROUTE,
               skip_tests: DEFAULT_SKIP_TESTS,
-              template_engine: DEFAULT_TEMPLATE_ENGINE
+              template_engine: nil,
+              **opts
             )
               name = Naming.new(inflector:).action_name(name)
 
               raise InvalidActionNameError.new(name) unless name.include?(".")
 
               super(
-                name: name,
-                slice: slice,
-                url_path: url_path,
-                skip_route: skip_route,
-                http_method: http_method,
+                name:,
+                slice:,
+                url_path:,
+                skip_route:,
+                http_method:,
                 skip_view: skip_view || !Hanami.bundled?("hanami-view"),
-                skip_tests: skip_tests,
-                template_engine:
+                skip_tests:,
+                template_engine: template_engine || default_template_engine
               )
+            end
+
+            private
+
+            def default_template_engine
+              if Hanami.bundled?("hanami-view") && app.config.views.respond_to?(:default_template_engine)
+                app.config.views.default_template_engine
+              else
+                DEFAULT_TEMPLATE_ENGINE
+              end
             end
           end
         end

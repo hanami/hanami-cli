@@ -408,6 +408,40 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
       end
     end
 
+    context "with default_template_engine configured" do
+      before do
+        allow(Hanami).to receive(:prepare)
+        views_config = double(default_template_engine: "slim")
+        allow(Hanami.app.config).to receive(:views).and_return(views_config)
+      end
+
+      it "uses the configured template engine" do
+        within_application_directory do
+          subject.call(name: action_name)
+
+          template_file = <<~EXPECTED
+            h1 #{inflector.camelize(app)}::Views::#{inflector.camelize(controller)}::#{inflector.camelize(action)}
+          EXPECTED
+
+          expect(fs.read("app/templates/#{controller}/#{action}.html.slim")).to eq(template_file)
+          expect(output).to include("Created app/templates/#{controller}/#{action}.html.slim")
+        end
+      end
+
+      it "allows overriding the configured template engine" do
+        within_application_directory do
+          subject.call(name: action_name, template_engine: "haml")
+
+          template_file = <<~EXPECTED
+            %h1 #{inflector.camelize(app)}::Views::#{inflector.camelize(controller)}::#{inflector.camelize(action)}
+          EXPECTED
+
+          expect(fs.read("app/templates/#{controller}/#{action}.html.haml")).to eq(template_file)
+          expect(output).to include("Created app/templates/#{controller}/#{action}.html.haml")
+        end
+      end
+    end
+
     context "with nested action name" do
       it "allows to specify nested action name" do
         within_application_directory do

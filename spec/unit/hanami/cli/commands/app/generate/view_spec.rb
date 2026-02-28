@@ -115,6 +115,43 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::View, :app do
       end
     end
 
+    context "with default_template_engine configured" do
+      before do
+        allow(Hanami).to receive(:bundled?).and_call_original
+        allow(Hanami).to receive(:bundled?).with("hanami-view").and_return(true)
+        allow(Hanami).to receive(:prepare)
+
+        views_config = double(default_template_engine: "slim")
+        allow(Hanami.app.config).to receive(:views).and_return(views_config)
+      end
+
+      it "uses the configured template engine" do
+        within_application_directory do
+          subject.call(name: "users.index")
+
+          template_file = <<~EXPECTED
+            h1 Test::Views::Users::Index
+          EXPECTED
+
+          expect(fs.read("app/templates/users/index.html.slim")).to eq(template_file)
+          expect(output).to include("Created app/templates/users/index.html.slim")
+        end
+      end
+
+      it "allows overriding the configured template engine" do
+        within_application_directory do
+          subject.call(name: "users.index", template_engine: "haml")
+
+          template_file = <<~EXPECTED
+            %h1 Test::Views::Users::Index
+          EXPECTED
+
+          expect(fs.read("app/templates/users/index.html.haml")).to eq(template_file)
+          expect(output).to include("Created app/templates/users/index.html.haml")
+        end
+      end
+    end
+
     context "with existing view file" do
       let(:file_path) { "app/views/users/index.rb" }
 
