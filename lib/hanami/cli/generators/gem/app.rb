@@ -69,9 +69,9 @@ module Hanami
               when "erb"
                 fs.create("app/templates/layouts/app.html.erb", t("app_layout.erb", context))
               when "haml"
-                fs.create("app/templates/layouts/app.html.haml", t("app_layout.haml", context))
+                fs.create("app/templates/layouts/app.html.haml", t("app_layout.haml.erb", context))
               when "slim"
-                fs.create("app/templates/layouts/app.html.slim", t("app_layout.slim", context))
+                fs.create("app/templates/layouts/app.html.slim", t("app_layout.slim.erb", context))
               end
 
               fs.create("public/404.html", file("404.html"))
