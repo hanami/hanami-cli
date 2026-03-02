@@ -1607,7 +1607,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
     end
 
     it "generates app with erb template engine by default" do
-      subject.call(app: app, **kwargs)
+      subject.call(app:, **kwargs)
 
       fs.chdir(app) do
         expect(fs.read("config/app.rb")).to_not include("default_template_engine")
@@ -1618,7 +1618,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
     end
 
     it "generates app with haml template engine" do
-      subject.call(app: app, **kwargs.merge(template_engine: "haml"))
+      subject.call(app:, **kwargs.merge(template_engine: "haml"))
 
       fs.chdir(app) do
         expect(fs.read("config/app.rb")).to include('config.views.default_template_engine = "haml"')
@@ -1631,7 +1631,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
     end
 
     it "generates app with slim template engine" do
-      subject.call(app: app, **kwargs.merge(template_engine: "slim"))
+      subject.call(app:, **kwargs.merge(template_engine: "slim"))
 
       fs.chdir(app) do
         expect(fs.read("config/app.rb")).to include('config.views.default_template_engine = "slim"')
@@ -1640,6 +1640,15 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         expect(fs.read("app/templates/layouts/app.html.slim")).to include("doctype html")
 
         expect(fs.read("Gemfile")).to include("gem \"slim\"")
+      end
+    end
+
+    it "ignores the option when --skip-view is passed" do
+      subject.call(app:, **kwargs.merge(template_engine: "haml", skip_view: true))
+
+      fs.chdir(app) do
+        expect(fs.read("config/app.rb")).to_not include("default_template_engine")
+        expect(fs.read("Gemfile")).to_not include("gem \"haml\"")
       end
     end
   end

@@ -31,10 +31,10 @@ gem "pg"
 <%- elsif generate_mysql? -%>
 gem "mysql2"
 <%- end -%>
-<%- if template_engine == "haml" -%>
+<%- if generate_view? && template_engine == "haml" -%>
 gem "haml"
 <%- end -%>
-<%- if template_engine == "slim" -%>
+<%- if generate_view? && template_engine == "slim" -%>
 gem "slim"
 <%- end -%>
 

@@ -4,7 +4,7 @@ require "hanami"
 
 module <%= camelized_app_name %>
   class App < Hanami::App
-    <%- if template_engine != "erb" -%>
+    <%- if generate_view? && template_engine != "erb" -%>
     config.views.default_template_engine = "<%= template_engine %>"
     <%- end -%>
   end
