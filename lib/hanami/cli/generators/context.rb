@@ -161,6 +161,10 @@ module Hanami
           RUBY_VERSION >= "3.1"
         end
 
+        def template_engine
+          options.fetch(:template_engine)
+        end
+
         private
 
         def database_option

@@ -1582,6 +1582,77 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
     end
   end
 
+  describe "--template-engine" do
+    before do
+      allow(bundler).to receive(:install!)
+        .at_least(1)
+        .and_return(true)
+
+      allow(bundler).to receive(:exec)
+        .with("hanami install")
+        .at_least(1)
+        .and_return(successful_system_call_result)
+
+      allow(bundler).to receive(:exec)
+        .with("check")
+        .at_least(1)
+        .and_return(
+          instance_double(Hanami::CLI::SystemCall::Result, successful?: false)
+        )
+
+      allow(bundler).to receive(:exec)
+        .with("install")
+        .once
+        .and_return(successful_system_call_result)
+    end
+
+    it "generates app with erb template engine by default" do
+      subject.call(app:, **kwargs)
+
+      fs.chdir(app) do
+        expect(fs.read("config/app.rb")).to_not include("default_template_engine")
+
+        expect(fs.exist?("app/templates/layouts/app.html.erb")).to be(true)
+        expect(fs.read("app/templates/layouts/app.html.erb")).to include("<!DOCTYPE html>")
+      end
+    end
+
+    it "generates app with haml template engine" do
+      subject.call(app:, **kwargs.merge(template_engine: "haml"))
+
+      fs.chdir(app) do
+        expect(fs.read("config/app.rb")).to include('config.views.default_template_engine = "haml"')
+
+        expect(fs.exist?("app/templates/layouts/app.html.haml")).to be(true)
+        expect(fs.read("app/templates/layouts/app.html.haml")).to include("!!!")
+
+        expect(fs.read("Gemfile")).to include("gem \"haml\"")
+      end
+    end
+
+    it "generates app with slim template engine" do
+      subject.call(app:, **kwargs.merge(template_engine: "slim"))
+
+      fs.chdir(app) do
+        expect(fs.read("config/app.rb")).to include('config.views.default_template_engine = "slim"')
+
+        expect(fs.exist?("app/templates/layouts/app.html.slim")).to be(true)
+        expect(fs.read("app/templates/layouts/app.html.slim")).to include("doctype html")
+
+        expect(fs.read("Gemfile")).to include("gem \"slim\"")
+      end
+    end
+
+    it "ignores the option when --skip-view is passed" do
+      subject.call(app:, **kwargs.merge(template_engine: "haml", skip_view: true))
+
+      fs.chdir(app) do
+        expect(fs.read("config/app.rb")).to_not include("default_template_engine")
+        expect(fs.read("Gemfile")).to_not include("gem \"haml\"")
+      end
+    end
+  end
+
   it "installs binstubs for hanami and rake" do
     expect(bundler).to receive(:install!)
       .and_return(true)
