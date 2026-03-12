@@ -48,7 +48,7 @@ jobs:
     # Services included from ./repo-sync-extensions/ci-services.yml
     services:
       mysql:
-        image: mysql:latest
+        image: mysql:9.6.0
         env:
           MYSQL_ROOT_PASSWORD: password
         ports:
