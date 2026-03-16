@@ -41,6 +41,11 @@ module Hanami
                    default: DEFAULT_SKIP_ROUTE,
                    desc: "Skip route generation"
 
+            # @since 2.2.0
+            # @api private
+            option :force, required: false, type: :flag, default: false,
+                           desc: "Overwrite existing files during generation"
+
             example [
               "admin          # Admin slice (/admin URL prefix)",
               "users --url=/u # Users slice (/u URL prefix)"
@@ -63,7 +68,8 @@ module Hanami
               name:,
               url: nil,
               skip_db: SKIP_DB_DEFAULT,
-              skip_route: DEFAULT_SKIP_ROUTE
+              skip_route: DEFAULT_SKIP_ROUTE,
+              force: false
             )
               require "hanami/setup"
 
@@ -71,7 +77,7 @@ module Hanami
               name = inflector.underscore(Shellwords.shellescape(name))
               url = sanitize_url_prefix(name, url)
 
-              generator.call(app, name, url, skip_db: skip_db, skip_route: skip_route)
+              generator.call(app, name, url, skip_db: skip_db, skip_route: skip_route, force: force)
             end
 
             private

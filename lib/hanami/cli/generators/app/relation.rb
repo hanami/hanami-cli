@@ -19,7 +19,7 @@ module Hanami
 
           # @since 2.2.0
           # @api private
-          def call(key:, namespace:, base_path:, gateway:)
+          def call(key:, namespace:, base_path:, gateway:, force: false)
             schema_name = inflector.underscore(key.split(KEY_SEPARATOR).last)
             body_content = ["schema :#{schema_name}, infer: true"]
 
@@ -34,7 +34,7 @@ module Hanami
               extra_namespace: "Relations",
               parent_class_name: "#{inflector.camelize(namespace)}::DB::Relation",
               body: body_content
-            ).create
+            ).create(force:)
           end
 
           private

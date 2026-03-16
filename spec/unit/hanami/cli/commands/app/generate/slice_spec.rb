@@ -4,7 +4,7 @@ require "hanami"
 require "securerandom"
 
 RSpec.describe Hanami::CLI::Commands::App::Generate::Slice, :app do
-  subject { described_class.new(fs: fs, generator: generator) }
+  subject { described_class.new(fs: fs, out: out, err: err, generator: generator) }
 
   before do
     allow(Hanami).to receive(:bundled?)
@@ -14,6 +14,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Slice, :app do
   end
 
   let(:out) { StringIO.new }
+  let(:err) { StringIO.new }
   let(:fs) { Hanami::CLI::Files.new(memory: true, out: out) }
   let(:inflector) { Dry::Inflector.new }
   let(:generator) { Hanami::CLI::Generators::App::Slice.new(fs: fs, inflector: inflector) }
@@ -25,6 +26,8 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Slice, :app do
   def output
     out.rewind && out.read.chomp
   end
+
+  def error_output = err.string.chomp
 
   it "generates slice" do
     within_application_directory do
@@ -358,6 +361,45 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Slice, :app do
         CODE
 
         expect(fs.read("config/routes.rb")).to include(blank_routes)
+      end
+    end
+  end
+
+  context "with existing file" do
+    let(:file_path) { "slices/#{slice}/action.rb" }
+
+    before do
+      # Ensure config/routes.rb exists for route injection
+      fs.mkdir("config")
+      fs.write("config/routes.rb", <<~RUBY
+        # frozen_string_literal: true
+
+        require "hanami/routes"
+
+        module #{app}
+          class Routes < Hanami::Routes
+            root { "Hello from Hanami" }
+          end
+        end
+      RUBY
+      )
+      fs.write(file_path, "existing content")
+    end
+
+    it "exits with error message" do
+      expect do
+        subject.call(name: slice)
+      end.to raise_error SystemExit do |exception|
+        expect(exception.status).to eq 1
+        expect(error_output).to eq Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
+      end
+    end
+
+    it "overwrites the file if force flag is passed" do
+      within_application_directory do
+        subject.call(name: slice, force: true)
+        expect(output).to include("Created #{file_path}")
+        expect(fs.read(file_path)).to include("class Action < #{app}::Action")
       end
     end
   end

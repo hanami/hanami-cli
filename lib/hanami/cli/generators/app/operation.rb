@@ -19,7 +19,7 @@ module Hanami
 
           # @since 2.2.0
           # @api private
-          def call(key:, namespace:, base_path:)
+          def call(key:, namespace:, base_path:, force: false)
             RubyClassFile.new(
               fs: fs,
               inflector: inflector,
@@ -28,7 +28,7 @@ module Hanami
               base_path: base_path,
               parent_class_name: "#{inflector.camelize(namespace)}::Operation",
               body: ["def call", "end"]
-            ).create
+            ).create(force:)
 
             unless key.match?(KEY_SEPARATOR)
               out.puts(

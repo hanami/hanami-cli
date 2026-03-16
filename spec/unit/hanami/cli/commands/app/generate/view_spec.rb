@@ -3,9 +3,10 @@
 require "hanami"
 
 RSpec.describe Hanami::CLI::Commands::App::Generate::View, :app do
-  subject { described_class.new(fs: fs, out: out) }
+  subject { described_class.new(fs: fs, out: out, err: err) }
 
   let(:out) { StringIO.new }
+  let(:err) { StringIO.new }
   let(:fs) { Hanami::CLI::Files.new(memory: true, out: out) }
   let(:inflector) { Dry::Inflector.new }
   let(:app) { Hanami.app.namespace }
@@ -14,6 +15,8 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::View, :app do
   def output
     out.rewind && out.read.chomp
   end
+
+  def error_output = err.string.chomp
 
   # it "raises error if action name doesn't respect the convention" do
   #   expect {
@@ -148,6 +151,74 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::View, :app do
         end
       end
     end
+
+    context "with existing view file" do
+      let(:file_path) { "app/views/users/index.rb" }
+
+      before do
+        within_application_directory do
+          fs.write(file_path, "existing content")
+        end
+      end
+
+      it "exits with error message" do
+        expect do
+          within_application_directory { subject.call(name: "users.index") }
+        end.to raise_error SystemExit do |exception|
+          expect(exception.status).to eq 1
+          expect(error_output).to eq Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
+        end
+      end
+    end
+
+    context "with existing template file" do
+      let(:file_path) { "app/templates/users/index.html.erb" }
+
+      before do
+        within_application_directory do
+          fs.write(file_path, "existing content")
+        end
+      end
+
+      it "raises error" do
+        within_application_directory do
+          expect do
+            subject.call(name: "users.index")
+          end.to raise_error SystemExit do |exception|
+            expect(exception.status).to eq 1
+            expect(error_output).to eq Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
+          end
+        end
+      end
+    end
+
+    context "with existing files and force flag" do
+      let(:view_file_path) { "app/views/users/index.rb" }
+      let(:template_file_path) { "app/templates/users/index.html.erb" }
+
+      before do
+        within_application_directory do
+          fs.write(view_file_path, "existing view content")
+          fs.write(template_file_path, "existing template content")
+        end
+      end
+
+      it "overwrites the view file" do
+        within_application_directory do
+          subject.call(name: "users.index", force: true)
+          expect(output).to include("Created #{view_file_path}")
+          expect(fs.read(view_file_path)).to include("class Index < Test::View")
+        end
+      end
+
+      it "overwrites the template file" do
+        within_application_directory do
+          subject.call(name: "users.index", force: true)
+          expect(output).to include("Created #{template_file_path}")
+          expect(fs.read(template_file_path)).to eq("<h1>Test::Views::Users::Index</h1>\n")
+        end
+      end
+    end
   end
 
   context "generating for a slice" do
@@ -184,7 +255,6 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::View, :app do
         expect(output).to include("Created slices/main/templates/users/index.html.erb")
       end
     end
-
     it "allows to specify slim template engine" do
       within_application_directory do
         fs.mkdir("slices/main")
@@ -206,6 +276,48 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::View, :app do
           %h1 Main::Views::Users::Index
         EXPECTED
         expect(fs.read("slices/main/templates/users/index.html.haml")).to eq(template_file)
+      end
+    end
+
+    context "with existing view file" do
+      let(:file_path) { "slices/main/views/users/index.rb" }
+
+      before do
+        within_application_directory do
+          fs.mkdir("slices/main")
+          fs.write(file_path, "existing content")
+        end
+      end
+
+      it "exits with error message" do
+        expect do
+          within_application_directory { subject.call(name: "users.index", slice: "main") }
+        end.to raise_error SystemExit do |exception|
+          expect(exception.status).to eq 1
+          expect(error_output).to eq Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
+        end
+      end
+    end
+
+    context "with existing template file" do
+      let(:file_path) { "slices/main/templates/users/index.html.erb" }
+
+      before do
+        within_application_directory do
+          fs.mkdir("slices/main")
+          fs.write(file_path, "existing content")
+        end
+      end
+
+      it "raises error" do
+        within_application_directory do
+          expect do
+            subject.call(name: "users.index", slice: "main")
+          end.to raise_error SystemExit do |exception|
+            expect(exception.status).to eq 1
+            expect(error_output).to eq Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
+          end
+        end
       end
     end
   end

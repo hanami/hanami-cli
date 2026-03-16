@@ -30,11 +30,11 @@ module Hanami
 
           # @since 2.0.0
           # @api private
-          def call(key:, namespace:, base_path:, template_engine: DEFAULT_TEMPLATE_ENGINE)
+          def call(key:, namespace:, base_path:, template_engine: DEFAULT_TEMPLATE_ENGINE, force: false)
             view_class_file(key:, namespace:, base_path:).then do |view_class|
-              view_class.create
+              view_class.create(force:)
               view_class_name = view_class.fully_qualified_name
-              create_template_file(key:, base_path:, view_class_name:, template_engine:)
+              create_template_file(key:, base_path:, view_class_name:, template_engine:, force:)
             end
           end
 
@@ -54,7 +54,7 @@ module Hanami
             )
           end
 
-          def create_template_file(key:, base_path:, view_class_name:, template_engine:)
+          def create_template_file(key:, base_path:, view_class_name:, template_engine:, force: false)
             key_parts = key.split(KEY_SEPARATOR)
             class_name_from_key = key_parts.pop # takes last segment as the class name
             module_names_from_key = key_parts # the rest of the segments are the module names
@@ -65,7 +65,7 @@ module Hanami
               module_names_from_key,
               template_file_name(class_name_from_key, DEFAULT_FORMAT, template_engine)
             )
-            fs.create(file_path, body_for_engine(view_class_name, template_engine))
+            fs.create(file_path, body_for_engine(view_class_name, template_engine), force:)
           end
 
           def template_file_name(name, format, engine)

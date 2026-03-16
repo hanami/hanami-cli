@@ -10,6 +10,8 @@ module Hanami
           class Relation < Command
             argument :name, required: true, desc: "Relation name"
             option :gateway, desc: "Generate relation for gateway"
+            option :force, required: false, type: :flag, default: false,
+                           desc: "Overwrite existing files during generation"
 
             example [
               %(books               (MyApp::Relation::Book)),
@@ -24,20 +26,22 @@ module Hanami
               Generators::App::Relation
             end
 
-            def call(name:, slice: nil, gateway: nil)
+            def call(name:, slice: nil, gateway: nil, force: false)
               if slice
                 generator.call(
                   key: name,
                   namespace: slice,
                   base_path: fs.join("slices", inflector.underscore(slice)),
-                  gateway: gateway
+                  gateway: gateway,
+                  force: force
                 )
               else
                 generator.call(
                   key: name,
                   namespace: app.namespace,
                   base_path: "app",
-                  gateway: gateway
+                  gateway: gateway,
+                  force: force
                 )
               end
             end

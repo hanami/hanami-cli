@@ -17,7 +17,7 @@ module Hanami
 
           # @since 2.2.0
           # @api private
-          def call(key:, namespace:, base_path:)
+          def call(key:, namespace:, base_path:, force: false)
             RubyClassFile.new(
               fs: fs,
               inflector: inflector,
@@ -26,7 +26,7 @@ module Hanami
               base_path: base_path,
               extra_namespace: "Structs",
               parent_class_name: "#{inflector.camelize(namespace)}::DB::Struct"
-            ).create
+            ).create(force:)
           end
 
           private

@@ -3,9 +3,10 @@
 require "hanami"
 
 RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
-  subject { described_class.new(fs: fs, out: out) }
+  subject { described_class.new(fs: fs, out: out, err: err) }
 
   let(:out) { StringIO.new }
+  let(:err) { StringIO.new }
   let(:fs) { Hanami::CLI::Files.new(memory: true, out: out) }
   let(:inflector) { Dry::Inflector.new }
   let(:app) { Hanami.app.namespace }
@@ -17,6 +18,8 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
   def output
     out.rewind && out.read.chomp
   end
+
+  def error_output = err.string.chomp
 
   shared_context "with existing files" do
     before do
@@ -33,6 +36,89 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
           expect(output).to include("Created app/actions/#{controller}/#{action}.rb")
           expect(output).to include("Created app/views/#{controller}/#{action}.rb")
           expect(output).to include("Created app/templates/#{controller}/#{action}.html.erb")
+        end
+      end
+    end
+
+    context "with existing action file" do
+      let(:file_path) { "app/actions/#{controller}/#{action}.rb" }
+
+      before do
+        within_application_directory do
+          fs.write(file_path, "")
+        end
+      end
+
+      it "exits with error message" do
+        expect do
+          within_application_directory { generate_action }
+        end.to raise_error SystemExit do |exception|
+          expect(exception.status).to eq 1
+          expect(error_output).to eq Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
+        end
+      end
+
+      it "overwrites the file if force flag is passed" do
+        within_application_directory do
+          subject.call(name: action_name, force: true)
+          expect(output).to include("Created #{file_path}")
+          expect(fs.read(file_path)).to include("class Index < Test::Action")
+        end
+      end
+    end
+
+    context "with existing view file" do
+      let(:file_path) { "app/views/#{controller}/#{action}.rb" }
+
+      before do
+        within_application_directory do
+          fs.write(file_path, "")
+        end
+      end
+
+      it "exits with error message" do
+        expect do
+          within_application_directory { generate_action }
+        end.to raise_error SystemExit do |exception|
+          expect(exception.status).to eq 1
+          expect(error_output).to eq Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
+        end
+      end
+
+      it "overwrites the file if force flag is passed" do
+        within_application_directory do
+          subject.call(name: action_name, force: true)
+          expect(output).to include("Created #{file_path}")
+          expect(fs.read(file_path)).to include("class Index < Test::View")
+        end
+      end
+    end
+
+    context "with existing template file" do
+      let(:file_path) { "app/templates/#{controller}/#{action}.html.erb" }
+
+      before do
+        within_application_directory do
+          fs.write(file_path, "")
+        end
+      end
+
+      it "exits with error message" do
+        expect do
+          within_application_directory do
+            generate_action
+          end
+        end.to raise_error SystemExit do |exception|
+          expect(exception.status).to eq 1
+          expect(error_output).to eq Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
+        end
+      end
+
+      it "overwrites the file if force flag is passed" do
+        within_application_directory do
+          subject.call(name: action_name, force: true)
+          expect(output).to include("Created #{file_path}")
+          expect(fs.read(file_path)).to include("<h1>Test::Views::Users::Index</h1>")
         end
       end
     end

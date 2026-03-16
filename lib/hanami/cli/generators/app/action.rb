@@ -30,12 +30,13 @@ module Hanami
           # @since 2.0.0
           # @api private
           def call(key:, namespace:, base_path:, url_path:, http_method:, skip_view:, skip_route:, skip_tests:,
-                   template_engine: DEFAULT_TEMPLATE_ENGINE)
+                   force:, template_engine: DEFAULT_TEMPLATE_ENGINE)
             insert_route(key:, namespace:, url_path:, http_method:) unless skip_route
 
-            generate_action(key: key, namespace: namespace, base_path: base_path, include_placeholder_body: skip_view)
+            generate_action(key: key, namespace: namespace, base_path: base_path, include_placeholder_body: skip_view,
+                            force:)
 
-            generate_view(key:, namespace:, base_path:, template_engine:) unless skip_view
+            generate_view(key:, namespace:, base_path:, template_engine:, force:) unless skip_view
           end
 
           private
@@ -99,7 +100,7 @@ module Hanami
 
           # @api private
           # @since 2.2.2
-          def generate_action(key:, namespace:, base_path:, include_placeholder_body:)
+          def generate_action(key:, namespace:, base_path:, include_placeholder_body:, force:)
             RubyClassFile.new(
               fs: fs,
               inflector: inflector,
@@ -113,18 +114,18 @@ module Hanami
                 ("  response.body = self.class.name" if include_placeholder_body),
                 "end"
               ].compact
-            ).create
+            ).create(force:)
           end
 
           # @api private
           # @since 2.2.2
-          def generate_view(key:, namespace:, base_path:, template_engine:)
+          def generate_view(key:, namespace:, base_path:, template_engine:, force:)
             *controller_name_parts, action_name = key.split(KEY_SEPARATOR)
 
             view_directory = fs.join(base_path, "views", controller_name_parts)
 
             if generate_view?(action_name, view_directory)
-              view_generator.call(key:, namespace:, base_path:, template_engine:)
+              view_generator.call(key:, namespace:, base_path:, template_engine:, force:)
             end
           end
 
