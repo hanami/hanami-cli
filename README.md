@@ -1,9 +1,14 @@
 <!--- This file is synced from hanakai-rb/repo-sync -->
 
-[rubygem]: https://rubygems.org/gems/hanami-cli
 [actions]: https://github.com/hanami/hanami-cli/actions
+[chat]: https://discord.gg/naQApPAsZB
+[forum]: https://discourse.hanamirb.org
+[rubygem]: https://rubygems.org/gems/hanami-cli
 
 # Hanami CLI [![Gem Version](https://badge.fury.io/rb/hanami-cli.svg)][rubygem] [![CI Status](https://github.com/hanami/hanami-cli/workflows/CI/badge.svg)][actions]
+
+[![Forum](https://img.shields.io/badge/Forum-dc360f?logo=discourse&logoColor=white)][forum]
+[![Chat](https://img.shields.io/badge/Chat-717cf8?logo=discord&logoColor=white)][chat]
 
 This library contains all of the CLI commands for [full-stack Hanami applications](`https://github.com/hanami/hanami`).
 
