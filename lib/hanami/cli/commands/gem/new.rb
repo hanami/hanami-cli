@@ -7,120 +7,73 @@ module Hanami
   module CLI
     module Commands
       module Gem
-        # @since 2.0.0
         # @api private
         class New < Command
-          # @since 2.1.0
-          # @api private
-          HEAD_DEFAULT = false
-          private_constant :HEAD_DEFAULT
-
-          # @since 2.3.0
-          # @api private
-          GEM_SOURCE_DEFAULT = "rubygems.org"
-          private_constant :GEM_SOURCE_DEFAULT
-
-          # @since 2.0.0
-          # @api private
-          SKIP_INSTALL_DEFAULT = false
-          private_constant :SKIP_INSTALL_DEFAULT
-
-          # @since 2.1.0
-          # @api private
-          SKIP_ASSETS_DEFAULT = false
-          private_constant :SKIP_ASSETS_DEFAULT
-
-          # @since 2.2.0
-          # @api private
-          SKIP_DB_DEFAULT = false
-          private_constant :SKIP_DB_DEFAULT
-
-          # @since 2.2.0
-          # @api private
-          SKIP_VIEW_DEFAULT = false
-          private_constant :SKIP_VIEW_DEFAULT
-
-          # @since 2.2.0
-          # @api private
-          DATABASE_SQLITE = "sqlite"
-
-          # @since 2.2.0
-          # @api private
-          DATABASE_POSTGRES = "postgres"
-
-          # @since 2.2.0
-          # @api private
-          DATABASE_MYSQL = "mysql"
-
-          # @since 2.2.0
-          # @api private
-          SUPPORTED_DATABASES = [DATABASE_SQLITE, DATABASE_POSTGRES, DATABASE_MYSQL].freeze
-
-          # @api private
           FORBIDDEN_APP_NAMES = %w[app slice].freeze
 
-          # @since 2.4.0
-          # @api private
+          HEAD_DEFAULT = false
+          GEM_SOURCE_DEFAULT = "rubygems.org"
+
+          SKIP_INSTALL_DEFAULT = false
+          SKIP_ASSETS_DEFAULT = false
+          SKIP_DB_DEFAULT = false
+          SKIP_VIEW_DEFAULT = false
+
+          DATABASE_SQLITE = "sqlite"
+          DATABASE_POSTGRES = "postgres"
+          DATABASE_MYSQL = "mysql"
+          SUPPORTED_DATABASES = [DATABASE_SQLITE, DATABASE_POSTGRES, DATABASE_MYSQL].freeze
+
           TEMPLATE_ENGINE_DEFAULT = "erb"
+
+          TEST_FRAMEWORK_DEFAULT = "rspec"
+          TEST_FRAMEWORK_RSPEC = "rspec"
+          TEST_FRAMEWORK_MINITEST = "minitest"
 
           desc "Generate a new Hanami app"
 
-          # @since 2.0.0
-          # @api private
           argument :app, required: true, desc: "App name"
 
-          # @since 2.1.0
-          # @api private
           option :head, type: :flag, required: false,
                         default: HEAD_DEFAULT,
                         desc: "Use Hanami HEAD version (from GitHub `main` branches)"
 
-          # @since 2.3.0
-          # @api private
           option :gem_source, required: true,
                               default: GEM_SOURCE_DEFAULT,
                               desc: "Where to source Ruby gems from"
 
-          # @since 2.0.0
-          # @api private
           option :skip_install, type: :flag, required: false,
                                 default: SKIP_INSTALL_DEFAULT,
                                 desc: "Skip app installation (Bundler, third-party Hanami plugins)"
 
-          # @since 2.1.0
-          # @api private
           option :skip_assets, type: :flag, required: false,
                                default: SKIP_ASSETS_DEFAULT,
                                desc: "Skip including hanami-assets"
 
-          # @since 2.2.0
-          # @api private
           option :skip_db, type: :flag, required: false,
                            default: SKIP_DB_DEFAULT,
                            desc: "Skip including hanami-db"
 
-          # @since 2.2.0
-          # @api private
           option :skip_view, type: :flag, required: false,
                              default: SKIP_VIEW_DEFAULT,
                              desc: "Skip including hanami-view"
 
-          # @since 2.2.0
-          # @api private
           option :database, type: :string, required: false,
                             default: DATABASE_SQLITE,
                             desc: "Database adapter (supported: sqlite, mysql, postgres)"
 
-          # @api private
           option :name, type: :string, required: false,
                         desc: "App name to use for the module namespace"
 
-          # @since 2.4.0
-          # @api private
           option :template_engine, type: :string, required: false,
                                    values: %w[erb haml slim],
                                    default: TEMPLATE_ENGINE_DEFAULT,
                                    desc: "Default template engine to use with generators"
+
+          option :test, type: :string, required: false,
+                        values: %w[rspec minitest],
+                        default: TEST_FRAMEWORK_DEFAULT,
+                        desc: "Test framework (supported: rspec, minitest)"
 
           # rubocop:disable Layout/LineLength
           example [
@@ -133,12 +86,11 @@ module Hanami
             "bookshelf --skip-view                        # Generate a new Hanami app without hanami-view",
             "bookshelf --database={sqlite|postgres|mysql} # Generate a new Hanami app with a specified database (default: sqlite)",
             "bookshelf --template-engine={erb|haml|slim}  # Generate a new Hanami app which will use HAML for templates by default (default: erb)",
+            "bookshelf --test={rspec|minitest}            # Generate a new Hanami app with specified test framework (default: rspec)",
             "my_bookshelf --name=bookshelf                # Generate a new Hanami app in `my_bookshelf/' directory, using `Bookshelf' namespace"
           ]
           # rubocop:enable Layout/LineLength
 
-          # @since 2.0.0
-          # @api private
           def initialize(
             fs:,
             bundler: CLI::Bundler.new(fs: fs),
@@ -154,8 +106,6 @@ module Hanami
 
           # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
 
-          # @since 2.0.0
-          # @api private
           def call(
             app:,
             head: HEAD_DEFAULT,
@@ -166,7 +116,8 @@ module Hanami
             skip_view: SKIP_VIEW_DEFAULT,
             database: nil,
             name: nil,
-            template_engine: TEMPLATE_ENGINE_DEFAULT
+            template_engine: TEMPLATE_ENGINE_DEFAULT,
+            test: TEST_FRAMEWORK_DEFAULT
           )
             directory = inflector.underscore(app)
             app = inflector.underscore(name || app)
@@ -187,7 +138,8 @@ module Hanami
                 skip_db:,
                 skip_view:,
                 database: normalized_database,
-                template_engine:
+                template_engine:,
+                test_framework: test
               )
               generator.call(app, context: context) do
                 if skip_install

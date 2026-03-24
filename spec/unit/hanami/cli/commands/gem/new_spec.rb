@@ -1653,6 +1653,58 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
     end
   end
 
+  describe "--test" do
+    before do
+      allow(bundler).to receive(:install!)
+        .at_least(1)
+        .and_return(true)
+
+      allow(bundler).to receive(:exec)
+        .with("hanami install")
+        .at_least(1)
+        .and_return(successful_system_call_result)
+
+      allow(bundler).to receive(:exec)
+        .with("check")
+        .at_least(1)
+        .and_return(
+          instance_double(Hanami::CLI::SystemCall::Result, successful?: false)
+        )
+
+      allow(bundler).to receive(:exec)
+        .with("install")
+        .once
+        .and_return(successful_system_call_result)
+    end
+
+    it "defaults to rspec" do
+      subject.call(app:, **kwargs)
+
+      fs.chdir(app) do
+        expect(fs.read("Gemfile")).to include('gem "hanami-rspec"')
+        expect(fs.read("Gemfile")).to_not include('gem "hanami-minitest"')
+      end
+    end
+
+    it "generates app for --test=rspec" do
+      subject.call(app:, **kwargs.merge(test: "rspec"))
+
+      fs.chdir(app) do
+        expect(fs.read("Gemfile")).to include('gem "hanami-rspec"')
+        expect(fs.read("Gemfile")).to_not include('gem "hanami-minitest"')
+      end
+    end
+
+    it "generates app for --test=minitest" do
+      subject.call(app:, **kwargs.merge(test: "minitest"))
+
+      fs.chdir(app) do
+        expect(fs.read("Gemfile")).to include('gem "hanami-minitest"')
+        expect(fs.read("Gemfile")).to_not include('gem "hanami-rspec"')
+      end
+    end
+  end
+
   it "installs binstubs for hanami and rake" do
     expect(bundler).to receive(:install!)
       .and_return(true)
