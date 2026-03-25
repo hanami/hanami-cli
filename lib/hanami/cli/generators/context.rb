@@ -165,10 +165,22 @@ module Hanami
           options.fetch(:template_engine)
         end
 
+        def generate_rspec?
+          test_framework_option == "rspec"
+        end
+
+        def generate_minitest?
+          test_framework_option == "minitest"
+        end
+
         private
 
         def database_option
           options.fetch(:database, Commands::Gem::New::DATABASE_SQLITE)
+        end
+
+        def test_framework_option
+          options.fetch(:test_framework, Commands::Gem::New::TEST_FRAMEWORK_DEFAULT)
         end
 
         # @since 2.0.0
