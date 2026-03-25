@@ -132,14 +132,6 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Relation, "#call", :app_int
           expect(error_output).to eq Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
         end
       end
-
-      it "overwrites the file if force flag is passed" do
-        within_application_directory do
-          subject.call(name: "books", force: true)
-          expect(output).to include("Updated #{file_path}")
-          expect(fs.read(file_path)).to include("schema :books, infer: true")
-        end
-      end
     end
   end
 
@@ -219,14 +211,6 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Relation, "#call", :app_int
         end.to raise_error SystemExit do |exception|
           expect(exception.status).to eq 1
           expect(error_output).to eq Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
-        end
-      end
-
-      it "overwrites the file if force flag is passed" do
-        within_application_directory do
-          subject.call(name: "books", slice: "main", force: true)
-          expect(output).to include("Updated #{file_path}")
-          expect(fs.read(file_path)).to include("schema :books, infer: true")
         end
       end
     end

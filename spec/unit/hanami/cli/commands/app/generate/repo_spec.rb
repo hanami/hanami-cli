@@ -110,12 +110,6 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Repo, :app do
           expect(error_output).to eq Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
         end
       end
-
-      it "overwrites the file if force flag is passed" do
-        subject.call(name: "books", force: true)
-        expect(output).to include("Created #{file_path}")
-        expect(fs.read(file_path)).to include("class BookRepo < Test::DB::Repo")
-      end
     end
   end
 

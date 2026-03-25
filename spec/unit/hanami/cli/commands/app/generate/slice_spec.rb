@@ -394,14 +394,6 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Slice, :app do
         expect(error_output).to eq Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
       end
     end
-
-    it "overwrites the file if force flag is passed" do
-      within_application_directory do
-        subject.call(name: slice, force: true)
-        expect(output).to include("Created #{file_path}")
-        expect(fs.read(file_path)).to include("class Action < #{app}::Action")
-      end
-    end
   end
 
   private

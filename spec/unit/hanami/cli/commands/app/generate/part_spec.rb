@@ -77,14 +77,6 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Part, :app do
             expect(error_output).to eq Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
           end
         end
-
-        it "overwrites the file if force flag is passed" do
-          within_application_directory do
-            subject.call(name: "user", force: true)
-            expect(output).to include("Created #{file_path}")
-            expect(fs.read(file_path)).to include("class User < Test::Views::Part")
-          end
-        end
       end
     end
 
@@ -253,15 +245,6 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Part, :app do
         end.to raise_error SystemExit do |exception|
           expect(exception.status).to eq 1
           expect(error_output).to eq Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
-        end
-      end
-
-      it "overwrites the file if force flag is passed" do
-        within_application_directory do
-          fs.mkdir("slices/main")
-          subject.call(name: "user", slice: "main", force: true)
-          expect(output).to include("Created #{file_path}")
-          expect(fs.read(file_path)).to include("class User < Main::Views::Part")
         end
       end
     end

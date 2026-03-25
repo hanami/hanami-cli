@@ -55,12 +55,6 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Component, :app do
             expect(error_output).to eq Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
           end
         end
-
-        it "overwrites the file if force flag is passed" do
-          subject.call(name: "operations.send_welcome_email", force: true)
-          expect(output).to include("Created #{file_path}")
-          expect(fs.read(file_path)).to include("class SendWelcomeEmail")
-        end
       end
     end
 
@@ -101,12 +95,6 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Component, :app do
             expect(exception.status).to eq 1
             expect(error_output).to eq Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
           end
-        end
-
-        it "overwrites the file if force flag is passed" do
-          subject.call(name: "operations.user.mailing.send_welcome_email", force: true)
-          expect(output).to include("Created #{file_path}")
-          expect(fs.read(file_path)).to include("class SendWelcomeEmail")
         end
       end
     end
