@@ -15,6 +15,8 @@ module Hanami
           # @api private
           class Repo < Command
             argument :name, required: true, desc: "Repo name"
+            option :force, required: false, type: :flag, default: false,
+                           desc: "Overwrite existing files during generation"
 
             example [
               %(books               (MyApp::Repos::BooksRepo)),
@@ -30,7 +32,7 @@ module Hanami
 
             # @since 2.2.0
             # @api private
-            def call(name:, **opts)
+            def call(name:, force: false, **opts)
               name = "#{inflector.singularize(name)}_repo" unless name.end_with?("_repo")
               super
             end

@@ -30,8 +30,8 @@ module Hanami
           end
 
           # @api private
-          def create
-            fs.create(path, file_contents)
+          def create(force: false)
+            fs.create(path, file_contents, force:)
           end
 
           # @api private

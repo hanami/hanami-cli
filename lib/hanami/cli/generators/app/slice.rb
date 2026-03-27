@@ -19,7 +19,7 @@ module Hanami
 
           # @since 2.0.0
           # @api private
-          def call(app, slice, url, **opts) # rubocop:disable Metrics/AbcSize
+          def call(app, slice, url, force: false, **opts) # rubocop:disable Metrics/AbcSize
             skip_route = opts.fetch(:skip_route, false)
 
             unless skip_route
@@ -44,7 +44,7 @@ module Hanami
               base_path: directory,
               parent_class_name: "#{Hanami.app.namespace}::Action",
               auto_register: false
-            ).create
+            ).create(force:)
 
             RubyClassFile.new(
               fs: fs,
@@ -54,7 +54,7 @@ module Hanami
               base_path: directory,
               parent_class_name: "#{Hanami.app.namespace}::View",
               auto_register: false
-            ).create
+            ).create(force:)
 
             RubyModuleFile.new(
               fs: fs,
@@ -64,7 +64,7 @@ module Hanami
               base_path: directory,
               auto_register: false,
               body: ["# Add your view helpers here"]
-            ).create
+            ).create(force:)
 
             RubyClassFile.new(
               fs: fs,
@@ -75,13 +75,14 @@ module Hanami
               parent_class_name: "#{Hanami.app.namespace}::View::Context",
               auto_register: false,
               body: ["# Define your view context here. See https://guides.hanamirb.org/views/context/ for details."]
-            ).create
+            ).create(force:)
 
             fs.create(
               fs.join(directory, "templates", "layouts", "app.html.erb"),
               app_layout_template(
                 page_title: "#{inflector.humanize(app)} - #{inflector.humanize(slice)}"
-              )
+              ),
+              force:
             )
 
             if Hanami.bundled?("dry-operation")
@@ -93,25 +94,27 @@ module Hanami
                 base_path: directory,
                 parent_class_name: "#{Hanami.app.namespace}::Operation",
                 auto_register: false
-              ).create
+              ).create(force:)
             end
 
             if Hanami.bundled?("hanami-assets")
               fs.create(
                 fs.join(directory, "assets", "js", "app.js"),
-                %(import "../css/app.css";\n)
+                %(import "../css/app.css";\n),
+                force:
               )
               fs.create(
                 fs.join(directory, "assets", "css", "app.css"),
-                <<~CSS
+                <<~CSS,
                   body {
                     background-color: #fff;
                     color: #000;
                     font-family: sans-serif;
                   }
                 CSS
+                force:
               )
-              fs.create(fs.join(directory, "assets", "images", "favicon.ico"), file("favicon.ico"))
+              fs.create(fs.join(directory, "assets", "images", "favicon.ico"), file("favicon.ico"), force:)
             end
 
             if Hanami.bundled?("hanami-db") && !opts.fetch(:skip_db, false)
@@ -122,7 +125,7 @@ module Hanami
                 key: "db.relation",
                 base_path: directory,
                 parent_class_name: "#{Hanami.app.namespace}::DB::Relation"
-              ).create
+              ).create(force:)
 
               RubyClassFile.new(
                 fs: fs,
@@ -131,7 +134,7 @@ module Hanami
                 key: "db.repo",
                 base_path: directory,
                 parent_class_name: "#{Hanami.app.namespace}::DB::Repo"
-              ).create
+              ).create(force:)
 
               RubyClassFile.new(
                 fs: fs,
@@ -140,7 +143,7 @@ module Hanami
                 key: "db.struct",
                 base_path: directory,
                 parent_class_name: "#{Hanami.app.namespace}::DB::Struct"
-              ).create
+              ).create(force:)
 
               fs.touch(fs.join(directory, "relations", ".keep"))
               fs.touch(fs.join(directory, "repos", ".keep"))

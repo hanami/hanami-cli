@@ -15,8 +15,8 @@ module Hanami
       end
 
       # @api private
-      def create(path, *content)
-        raise FileAlreadyExistsError.new(path) if exist?(path)
+      def create(path, *content, force: false)
+        raise FileAlreadyExistsError.new(path) if exist?(path) and !force
 
         write(path, *content)
       end

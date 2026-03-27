@@ -23,6 +23,8 @@ module Hanami
             option :template_engine, required: false,
                                      values: %w[erb haml slim],
                                      desc: "Template engine to use (default: set in app config or erb)"
+            option :force, required: false, type: :flag, default: false,
+                           desc: "Overwrite existing files during generation"
 
             example [
               %(books.index               (MyApp::Actions::Books::Index)),
@@ -37,8 +39,8 @@ module Hanami
 
             # @since 2.0.0
             # @api private
-            def call(name:, slice: nil, template_engine: nil, **opts)
-              super(name:, slice:, template_engine: template_engine || default_template_engine)
+            def call(name:, slice: nil, template_engine: nil, force: false, **opts)
+              super(name:, slice:, template_engine: template_engine || default_template_engine, force: force)
             end
 
             private

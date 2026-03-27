@@ -9,6 +9,8 @@ module Hanami
           # @api private
           class Operation < Command
             argument :name, required: true, desc: "Operation name"
+            option :force, required: false, type: :flag, default: false,
+                           desc: "Overwrite existing files during generation"
 
             example [
               %(books.add               (MyApp::Books::Add)),

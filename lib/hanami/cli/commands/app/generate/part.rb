@@ -24,6 +24,9 @@ module Hanami
               default: DEFAULT_SKIP_TESTS,
               desc: "Skip test generation"
 
+            option :force, required: false, type: :flag, default: false,
+                           desc: "Overwrite existing files during generation"
+
             example [
               %(book               (MyApp::Views::Parts::Book)),
               %(book --slice=admin (Admin::Views::Parts::Book))

@@ -63,6 +63,9 @@ module Hanami
                                      values: %w[erb haml slim],
                                      desc: "Template engine to use"
 
+            option :force, required: false, type: :flag, default: false,
+                           desc: "Overwrite existing files during generation"
+
             # option :format, required: false, type: :string, default: DEFAULT_FORMAT, desc: "Template format"
 
             example [
@@ -93,6 +96,7 @@ module Hanami
               skip_route: DEFAULT_SKIP_ROUTE,
               skip_tests: DEFAULT_SKIP_TESTS,
               template_engine: nil,
+              force: false,
               **opts
             )
               name = Naming.new(inflector:).action_name(name)
@@ -107,7 +111,8 @@ module Hanami
                 http_method:,
                 skip_view: skip_view || !Hanami.bundled?("hanami-view"),
                 skip_tests:,
-                template_engine: template_engine || default_template_engine
+                template_engine: template_engine || default_template_engine,
+                force:
               )
             end
 

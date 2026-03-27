@@ -20,10 +20,10 @@ module Hanami
 
           # @since 2.1.0
           # @api private
-          def call(key:, namespace:, base_path:, **)
+          def call(key:, namespace:, base_path:, force: false, **)
             create_app_base_part_if_missing(key:, namespace:, base_path:)
             create_slice_part_if_missing(key:, namespace:, base_path:) unless namespace == Hanami.app.namespace
-            create_generated_part(key:, namespace:, base_path:)
+            create_generated_part(key:, namespace:, base_path:, force:)
           end
 
           private
@@ -60,7 +60,7 @@ module Hanami
             ).create
           end
 
-          def create_generated_part(key:, namespace:, base_path:)
+          def create_generated_part(key:, namespace:, base_path:, force: false)
             RubyClassFile.new(
               fs: fs,
               inflector: inflector,
@@ -69,7 +69,7 @@ module Hanami
               base_path: base_path,
               parent_class_name: "#{inflector.camelize(namespace)}::Views::Part",
               auto_register: false
-            ).create
+            ).create(force:)
           end
         end
       end

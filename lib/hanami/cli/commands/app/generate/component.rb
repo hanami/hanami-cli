@@ -13,6 +13,8 @@ module Hanami
           # @since 2.2.0
           class Component < Command
             argument :name, required: true, desc: "Component name"
+            option :force, required: false, type: :flag, default: false,
+                           desc: "Overwrite existing files during generation"
 
             example [
               %(isbn_decoder               (MyApp::IsbnDecoder)),
