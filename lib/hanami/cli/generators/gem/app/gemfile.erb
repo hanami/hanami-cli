@@ -15,13 +15,13 @@ source "<%= gem_source %>"
 <%= hanami_gem("db") %>
 <%- end -%>
 <%= hanami_gem("router") %>
-<%= hanami_gem("validations") %>
 <%- if generate_view? -%>
 <%= hanami_gem("view") %>
 <%- end -%>
 
 gem "dry-types", "~> 1.7"
 gem "dry-operation", ">= 1.0.1"
+gem "dry-validation", "~> 1.11"
 gem "puma", ">= 7.1"
 gem "rake"
 <%- if generate_sqlite? -%>
