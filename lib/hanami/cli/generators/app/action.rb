@@ -120,9 +120,9 @@ module Hanami
           # @api private
           # @since 2.2.2
           def generate_view(key:, namespace:, base_path:, template_engine:, force:)
-            *controller_name_parts, action_name = key.split(KEY_SEPARATOR)
+            *namespace_parts, action_name = key.split(KEY_SEPARATOR)
 
-            view_directory = fs.join(base_path, "views", controller_name_parts)
+            view_directory = fs.join(base_path, "views", namespace_parts)
 
             if generate_view?(action_name, view_directory)
               view_generator.call(key:, namespace:, base_path:, template_engine:, force:)
@@ -132,10 +132,10 @@ module Hanami
           # @api private
           # @since 2.2.2
           def route_definition(key:, url_path:, http_method:)
-            *controller_name_parts, action_name = key.split(KEY_SEPARATOR)
+            *namespace_parts, action_name = key.split(KEY_SEPARATOR)
 
             method = route_http(action_name, http_method)
-            path = route_url(controller_name_parts, action_name, url_path)
+            path = route_url(namespace_parts, action_name, url_path)
 
             %(#{method} "#{path}", to: "#{key}")
           end
@@ -172,9 +172,9 @@ module Hanami
 
           # @api private
           # @since 2.1.0
-          def route_url(controller, action, url_path)
+          def route_url(namespace, action, url_path)
             action = ROUTE_RESTFUL_URL_SUFFIXES.fetch(action) { [action] }
-            url_path ||= "#{PATH_SEPARATOR}#{(controller + action).join(PATH_SEPARATOR)}"
+            url_path ||= "#{PATH_SEPARATOR}#{(namespace + action).join(PATH_SEPARATOR)}"
 
             CLI::URL.call(url_path)
           end

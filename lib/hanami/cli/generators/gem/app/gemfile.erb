@@ -10,7 +10,7 @@ source "<%= gem_source %>"
 <%- if generate_assets? -%>
 <%= hanami_gem("assets") %>
 <%- end -%>
-<%= hanami_gem("controller") %>
+<%= hanami_gem("action") %>
 <%- if generate_db? -%>
 <%= hanami_gem("db") %>
 <%- end -%>
