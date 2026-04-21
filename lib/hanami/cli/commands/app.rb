@@ -46,7 +46,7 @@ module Hanami
               prefix.register "slice", Generate::Slice
               prefix.register "component", Generate::Component
 
-              if Hanami.bundled?("hanami-controller")
+              if Hanami.bundled?("hanami-action")
                 prefix.register "action", Generate::Action
               end
 

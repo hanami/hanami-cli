@@ -21,7 +21,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::View, :app do
   # it "raises error if action name doesn't respect the convention" do
   #   expect {
   #     subject.call(name: "foo")
-  #   }.to raise_error(Hanami::CLI::InvalidActionNameError, "cannot parse controller and action name: `foo'\n\texample: `hanami generate action users.show'")
+  #   }.to raise_error(Hanami::CLI::InvalidActionNameError, "cannot parse action name: `foo'\n\texample: `hanami generate action users.show'")
   # end
 
   context "generating for app" do

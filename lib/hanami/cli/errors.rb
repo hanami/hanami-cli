@@ -90,7 +90,7 @@ module Hanami
     # @api public
     class InvalidActionNameError < Error
       def initialize(name)
-        super("cannot parse controller and action name: `#{name}'\n\texample: `hanami generate action users.show'")
+        super("cannot parse action name: `#{name}'\n\texample: `hanami generate action users.show'")
       end
     end
 

@@ -13,11 +13,11 @@ unless ENV["CI"]
 end
 
 gem "hanami", github: "hanami/hanami", branch: "main"
-gem "hanami-assets", github: "hanami/assets", branch: "main"
-gem "hanami-controller", github: "hanami/controller", branch: "main"
-gem "hanami-db", github: "hanami/db", branch: "main"
-gem "hanami-router", github: "hanami/router", branch: "main"
-gem "hanami-utils", github: "hanami/utils", branch: "main"
+gem "hanami-assets", github: "hanami/hanami-assets", branch: "main"
+gem "hanami-action", github: "hanami/hanami-action", branch: "main"
+gem "hanami-db", github: "hanami/hanami-db", branch: "main"
+gem "hanami-router", github: "hanami/hanami-router", branch: "main"
+gem "hanami-utils", github: "hanami/hanami-utils", branch: "main"
 
 gem "dry-system", github: "dry-rb/dry-system", branch: "main"
 

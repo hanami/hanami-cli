@@ -160,7 +160,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
 
         gem "hanami", "#{hanami_version}"
         gem "hanami-assets", "#{hanami_version}"
-        gem "hanami-controller", "#{hanami_version}"
+        gem "hanami-action", "#{hanami_version}"
         gem "hanami-db", "#{hanami_version}"
         gem "hanami-router", "#{hanami_version}"
         gem "hanami-view", "#{hanami_version}"
@@ -564,7 +564,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           gem "hanami-cli", github: "hanami/hanami-cli", branch: "main"
           gem "hanami-utils", github: "hanami/hanami-utils", branch: "main"
           gem "hanami-assets", github: "hanami/hanami-assets", branch: "main"
-          gem "hanami-controller", github: "hanami/hanami-controller", branch: "main"
+          gem "hanami-action", github: "hanami/hanami-action", branch: "main"
           gem "hanami-db", github: "hanami/hanami-db", branch: "main"
           gem "hanami-router", github: "hanami/hanami-router", branch: "main"
           gem "hanami-view", github: "hanami/hanami-view", branch: "main"
@@ -725,7 +725,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
 
           gem "hanami", "#{hanami_version}"
           gem "hanami-assets", "#{hanami_version}"
-          gem "hanami-controller", "#{hanami_version}"
+          gem "hanami-action", "#{hanami_version}"
           gem "hanami-db", "#{hanami_version}"
           gem "hanami-router", "#{hanami_version}"
           gem "hanami-view", "#{hanami_version}"
