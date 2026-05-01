@@ -11,8 +11,8 @@ module Hanami
         module Assets
           # Base class for assets commands.
           #
-          # Finds slices with assets present (anything in an `assets/` dir), then forks a child
-          # process for each slice to run the assets command (`config/assets.js`) for the slice.
+          # Finds slices with assets present (anything in an `assets/` dir), then spawns a thread
+          # for each slice to run the assets command (`config/assets.js`) for the slice.
           #
           # Prefers the slice's own `config/assets.js` if present, otherwise falls back to the
           # app-level file.
@@ -58,15 +58,13 @@ module Hanami
                 end
               end
 
-              pids = slices_with_assets.map { |slice| fork_child_assets_command(slice) }
+              threads = slices_with_assets.map { |slice| spawn_assets_thread(slice) }
 
               Signal.trap("INT") do
-                pids.each do |pid|
-                  Process.kill("INT", pid)
-                end
+                threads.each(&:kill)
               end
 
-              Process.waitall
+              threads.each(&:join)
             end
 
             private
@@ -81,8 +79,8 @@ module Hanami
 
             # @since 2.1.0
             # @api private
-            def fork_child_assets_command(slice)
-              Process.fork do
+            def spawn_assets_thread(slice)
+              Thread.new do
                 cmd, *args = assets_command(slice)
                 system_call.call(cmd, *args, out_prefix: "[#{slice.slice_name}] ")
               rescue Interrupt
