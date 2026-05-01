@@ -37,6 +37,9 @@ gem "haml"
 <%- if generate_view? && template_engine == "slim" -%>
 gem "slim"
 <%- end -%>
+<%- if generate_db? -%>
+gem "rouge"
+<%- end -%>
 
 group :development do
   <%= hanami_gem("webconsole") %>
