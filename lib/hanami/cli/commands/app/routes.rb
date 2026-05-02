@@ -45,8 +45,8 @@ module Hanami
                  desc: "Output format"
 
           example [
-            "routes              # Print app routes",
-            "routes --format=csv # Print app routes, using CSV format"
+            "             # Print app routes",
+            "--format=csv # Print app routes, using CSV format"
           ]
 
           # @since 2.0.0

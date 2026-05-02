@@ -37,8 +37,8 @@ module Hanami
                                   desc: "Include inspected arguments", type: :flag
 
           example [
-            "middleware                  # Print app Rack middleware stack",
-            "middleware --with-arguments # Print app Rack middleware stack, including initialize arguments"
+            "                 # Print app Rack middleware stack",
+            "--with-arguments # Print app Rack middleware stack, including initialize arguments"
           ]
 
           # @since 2.0.0
