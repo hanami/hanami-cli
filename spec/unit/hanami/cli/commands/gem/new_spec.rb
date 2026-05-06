@@ -171,7 +171,6 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         gem "puma", ">= 7.1"
         gem "rake"
         gem "sqlite3"
-        gem "rouge"
 
         group :development do
           gem "hanami-webconsole", "#{hanami_version}"
@@ -179,6 +178,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
 
         group :development, :test do
           gem "dotenv"
+          gem "rouge"
         end
 
         group :cli, :development do
@@ -576,7 +576,6 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           gem "puma", ">= 7.1"
           gem "rake"
           gem "sqlite3"
-          gem "rouge"
 
           group :development do
             gem "hanami-webconsole", github: "hanami/hanami-webconsole", branch: "main"
@@ -584,6 +583,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
 
           group :development, :test do
             gem "dotenv"
+            gem "rouge"
           end
 
           group :cli, :development do
@@ -738,7 +738,6 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           gem "puma", ">= 7.1"
           gem "rake"
           gem "sqlite3"
-          gem "rouge"
 
           group :development do
             gem "hanami-webconsole", "#{hanami_version}"
@@ -746,6 +745,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
 
           group :development, :test do
             gem "dotenv"
+            gem "rouge"
           end
 
           group :cli, :development do
