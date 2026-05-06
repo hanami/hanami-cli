@@ -45,6 +45,7 @@ end
 group :development, :test do
   gem "dotenv"
   <%- if generate_db? -%>
+  # Syntax highlighting SQL logs
   gem "rouge"
   <%- end -%>
 end

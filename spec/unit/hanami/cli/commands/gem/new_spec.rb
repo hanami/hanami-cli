@@ -178,6 +178,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
 
         group :development, :test do
           gem "dotenv"
+          # Syntax highlighting SQL logs
           gem "rouge"
         end
 
@@ -583,6 +584,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
 
           group :development, :test do
             gem "dotenv"
+            # Syntax highlighting SQL logs
             gem "rouge"
           end
 
@@ -745,6 +747,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
 
           group :development, :test do
             gem "dotenv"
+            # Syntax highlighting SQL logs
             gem "rouge"
           end
 
