@@ -178,6 +178,8 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
 
         group :development, :test do
           gem "dotenv"
+          # Syntax highlighting SQL logs
+          gem "rouge"
         end
 
         group :cli, :development do
@@ -582,6 +584,8 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
 
           group :development, :test do
             gem "dotenv"
+            # Syntax highlighting SQL logs
+            gem "rouge"
           end
 
           group :cli, :development do
@@ -743,6 +747,8 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
 
           group :development, :test do
             gem "dotenv"
+            # Syntax highlighting SQL logs
+            gem "rouge"
           end
 
           group :cli, :development do
@@ -1204,6 +1210,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
 
       fs.chdir(app) do
         expect(fs.read("Gemfile")).to_not match(/hanami-db/)
+        expect(fs.read("Gemfile")).to_not match(/rouge/)
         expect(fs.read(".env")).to_not include("DATABASE_URL")
         expect(fs.exist?("app/db/repo.rb")).to be(false)
         expect(fs.exist?("app/db/struct.rb")).to be(false)
