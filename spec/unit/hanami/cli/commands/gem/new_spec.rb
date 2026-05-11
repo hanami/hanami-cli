@@ -146,7 +146,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         ## Useful links
 
         - [Hanami](http://hanamirb.org)
-        - [Hanami guides](https://guides.hanamirb.org/)
+        - [Hanami guides](https://hanakai.org/learn#hanami)
       EXPECTED
       expect(fs.read("README.md")).to eq(readme)
       expect(output).to include("Created README.md")
@@ -307,7 +307,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         // Assets are managed by esbuild (https://esbuild.github.io), and can be
         // customized below.
         //
-        // Learn more at https://guides.hanamirb.org/assets/customization/.
+        // Learn more at https://hanakai.org/learn/hanami/assets/customization/.
 
         await assets.run({
           esbuildOptionsFn: (args, esbuildOptions) => {
@@ -344,7 +344,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
 
         module Bookshelf
           class Routes < Hanami::Routes
-            # Add your routes here. See https://guides.hanamirb.org/routing/overview/ for details.
+            # Add your routes here. See https://hanakai.org/learn/hanami/routing/ for details.
           end
         end
       EXPECTED
@@ -715,7 +715,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           ## Useful links
 
           - [Hanami](http://hanamirb.org)
-          - [Hanami guides](https://guides.hanamirb.org/)
+          - [Hanami guides](https://hanakai.org/learn#hanami)
         EXPECTED
         expect(fs.read("README.md")).to eq(readme)
         expect(output).to include("Created README.md")
@@ -876,7 +876,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           // Assets are managed by esbuild (https://esbuild.github.io), and can be
           // customized below.
           //
-          // Learn more at https://guides.hanamirb.org/assets/customization/.
+          // Learn more at https://hanakai.org/learn/hanami/assets/customization/.
 
           await assets.run({
             esbuildOptionsFn: (args, esbuildOptions) => {
@@ -913,7 +913,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
 
           module Bookshelf
             class Routes < Hanami::Routes
-              # Add your routes here. See https://guides.hanamirb.org/routing/overview/ for details.
+              # Add your routes here. See https://hanakai.org/learn/hanami/routing/ for details.
             end
           end
         EXPECTED
@@ -1035,7 +1035,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           module #{inflector.camelize(app)}
             module Views
               class Context < Hanami::View::Context
-                # Define your view context here. See https://guides.hanamirb.org/views/context/ for details.
+                # Define your view context here. See https://hanakai.org/learn/hanami/views/context/ for details.
               end
             end
           end
@@ -1374,7 +1374,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         ## Useful links
 
         - [Hanami](http://hanamirb.org)
-        - [Hanami guides](https://guides.hanamirb.org/)
+        - [Hanami guides](https://hanakai.org/learn#hanami)
       EXPECTED
       expect(fs.read("README.md")).to eq(readme)
 
