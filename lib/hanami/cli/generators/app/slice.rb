@@ -74,7 +74,7 @@ module Hanami
               base_path: directory,
               parent_class_name: "#{Hanami.app.namespace}::View::Context",
               auto_register: false,
-              body: ["# Define your view context here. See https://guides.hanamirb.org/views/context/ for details."]
+              body: ["# Define your view context here. See https://hanakai.org/learn/hanami/views/context/ for details."] # rubocop:disable Layout/LineLength
             ).create(force:)
 
             fs.create(
