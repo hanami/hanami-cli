@@ -168,6 +168,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         gem "dry-types", "~> 1.7"
         gem "dry-operation", ">= 1.0.1"
         gem "dry-validation", "~> 1.11"
+        gem "i18n", "~> 1.14"
         gem "puma", ">= 7.1"
         gem "rake"
         gem "sqlite3"
@@ -401,6 +402,15 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
       expect(fs.read("config/puma.rb")).to eq(puma)
       expect(output).to include("Created config/puma.rb")
 
+      # config/i18n/en.yml
+      i18n = <<~EXPECTED
+        # Add your translations here. See https://hanakai.org/learn/hanami/i18n for details.
+        en:
+          hello: "Hello"
+      EXPECTED
+      expect(fs.read("config/i18n/en.yml")).to eq(i18n)
+      expect(output).to include("Created config/i18n/en.yml")
+
       # lib/tasks/.keep
       tasks_keep = <<~EXPECTED
       EXPECTED
@@ -574,6 +584,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           gem "dry-types", "~> 1.7"
           gem "dry-operation", ">= 1.0.1"
           gem "dry-validation", "~> 1.11"
+          gem "i18n", "~> 1.14"
           gem "puma", ">= 7.1"
           gem "rake"
           gem "sqlite3"
@@ -737,6 +748,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           gem "dry-types", "~> 1.7"
           gem "dry-operation", ">= 1.0.1"
           gem "dry-validation", "~> 1.11"
+          gem "i18n", "~> 1.14"
           gem "puma", ">= 7.1"
           gem "rake"
           gem "sqlite3"

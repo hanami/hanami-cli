@@ -193,6 +193,15 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Slice, :app do
       expect(fs.read("slices/#{slice}/templates/layouts/app.html.erb")).to eq(layout)
       expect(output).to include("Created slices/#{slice}/templates/layouts/app.html.erb")
 
+      # slices/admin/config/i18n/en.yml
+      i18n = <<~EXPECTED
+        # Add your translations here. See https://hanakai.org/learn/hanami/i18n for details.
+        en:
+          hello: "Hello"
+      EXPECTED
+      expect(fs.read("slices/#{slice}/config/i18n/en.yml")).to eq(i18n)
+      expect(output).to include("Created slices/#{slice}/config/i18n/en.yml")
+
       # slices/admin/assets/js/app.js
       app_js = <<~EXPECTED
         import "../css/app.css";

@@ -9,6 +9,7 @@ and this project adheres to [Break Versioning](https://www.taoensso.com/break-ve
 
 ### Added
 
+- Add `i18n` gem to the default `Gemfile`, and generate a placeholder `config/i18n/en.yml` for the app and each generated slice. (@timriley)
 - Add `--name` option to `hanami new`, to specify a custom module namespace while using the positional argument as the directory path. For example, `hanami new my_bookshelf --name=bookshelf` creates the app in `my_bookshelf/` with `Bookshelf` as the module name. (@aaronmallen in #387)
 - Add `--template-engine` option to `hanami generate` and `hanami new` to specify which template engine should be used for generated template files. Supports `erb`, `haml` and `slim`. (@katafrakt in #280, #389, #390)
 - Add `--test` option to `hanami new` to specify which test framework to use. Supports `rspec` (default) and `minitest`. (@timriley in #399)
