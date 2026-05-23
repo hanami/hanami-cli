@@ -85,6 +85,12 @@ module Hanami
               force:
             )
 
+            fs.create(
+              fs.join(directory, "config", "i18n", "en.yml"),
+              File.read(File.join(__dir__, "..", "i18n.yml")),
+              force:
+            )
+
             if Hanami.bundled?("dry-operation")
               RubyClassFile.new(
                 fs: fs,

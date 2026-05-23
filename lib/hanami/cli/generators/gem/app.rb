@@ -53,6 +53,7 @@ module Hanami
             fs.create("config/settings.rb", t("settings.erb", context))
             fs.create("config/routes.rb", t("routes.erb", context))
             fs.create("config/puma.rb", t("puma.erb", context))
+            fs.create("config/i18n/en.yml", File.read(File.join(__dir__, "..", "i18n.yml")))
 
             fs.create("lib/tasks/.keep", t("keep.erb", context))
             fs.create("lib/#{app}/types.rb", t("types.erb", context))
