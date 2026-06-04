@@ -86,12 +86,10 @@ module Hanami
                 Shellwords.escape(name)
               end
 
-              def cli_env_vars # rubocop:disable Metrics/AbcSize
-                @cli_env_vars ||= {}.tap do |vars|
-                  vars["PGHOST"] = database_uri.host.to_s if database_uri.host
-                  vars["PGPORT"] = database_uri.port.to_s if database_uri.port
-                  vars["PGUSER"] = database_uri.user.to_s if database_uri.user
-                  vars["PGPASSWORD"] = database_uri.password.to_s if database_uri.password
+              def cli_env_vars
+                @cli_env_vars ||= %i[host port user password].each_with_object({}) do |field, vars|
+                  value = database_uri.public_send(field).to_s
+                  vars["PG#{field}".upcase] = value unless value.empty?
                 end
               end
             end
