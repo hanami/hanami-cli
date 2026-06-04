@@ -103,6 +103,10 @@ module Hanami
               if context.generate_sqlite?
                 fs.create("db/.keep", t("keep.erb", context))
               end
+
+              if context.generate_postgres? || context.generate_mysql?
+                fs.create("compose.yml", t("compose.yml.erb", context))
+              end
             end
 
             fs.create("app/operation.rb", t("operation.erb", context))

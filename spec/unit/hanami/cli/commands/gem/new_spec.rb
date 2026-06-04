@@ -1230,6 +1230,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         expect(fs.exist?("config/db/")).to be(false)
         expect(fs.read(".gitignore")).to_not include("db/*.sqlite")
         expect(fs.exist?("db/")).to be(false)
+        expect(fs.exist?("compose.yml")).to be(false)
 
         # bin/setup
         bin_setup = <<~EXPECTED
@@ -1510,6 +1511,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           expect(fs.read(".env")).to include("DATABASE_URL=sqlite://db/#{app}.sqlite")
           expect(fs.read(".gitignore")).to include("db/*.sqlite")
           expect(fs.exist?("db/.keep")).to be(true)
+          expect(fs.exist?("compose.yml")).to be(false)
         end
       end
 
@@ -1522,6 +1524,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           expect(fs.read(".env")).to include("DATABASE_URL=sqlite://db/#{app}.sqlite")
           expect(fs.read(".gitignore")).to include("db/*.sqlite")
           expect(fs.exist?("db/.keep")).to be(true)
+          expect(fs.exist?("compose.yml")).to be(false)
         end
       end
     end
@@ -1536,6 +1539,8 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           expect(fs.read(".env")).to include("DATABASE_URL=postgres://localhost/#{app}")
           expect(fs.read(".gitignore")).to_not include("db/*.sqlite")
           expect(fs.exist?("db/")).to be(false)
+          expect(fs.read("compose.yml")).to include("postgres:")
+          expect(fs.read("compose.yml")).to include("POSTGRES_DB: #{app}")
         end
       end
 
@@ -1548,6 +1553,8 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           expect(fs.read(".env")).to include("DATABASE_URL=postgres://localhost/#{app}")
           expect(fs.read(".gitignore")).to_not include("db/*.sqlite")
           expect(fs.exist?("db/")).to be(false)
+          expect(fs.read("compose.yml")).to include("postgres:")
+          expect(fs.read("compose.yml")).to include("POSTGRES_DB: #{app}")
         end
       end
 
@@ -1560,6 +1567,8 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           expect(fs.read(".env")).to include("DATABASE_URL=postgres://localhost/#{app}")
           expect(fs.read(".gitignore")).to_not include("db/*.sqlite")
           expect(fs.exist?("db/")).to be(false)
+          expect(fs.read("compose.yml")).to include("postgres:")
+          expect(fs.read("compose.yml")).to include("POSTGRES_DB: #{app}")
         end
       end
     end
@@ -1574,6 +1583,8 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           expect(fs.read(".env")).to include("DATABASE_URL=mysql2://root@localhost/#{app}")
           expect(fs.read(".gitignore")).to_not include("db/*.sqlite")
           expect(fs.exist?("db/")).to be(false)
+          expect(fs.read("compose.yml")).to include("mysql:")
+          expect(fs.read("compose.yml")).to include("MYSQL_DATABASE: #{app}")
         end
       end
 
@@ -1586,6 +1597,8 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           expect(fs.read(".env")).to include("DATABASE_URL=mysql2://root@localhost/#{app}")
           expect(fs.read(".gitignore")).to_not include("db/*.sqlite")
           expect(fs.exist?("db/")).to be(false)
+          expect(fs.read("compose.yml")).to include("mysql:")
+          expect(fs.read("compose.yml")).to include("MYSQL_DATABASE: #{app}")
         end
       end
     end
