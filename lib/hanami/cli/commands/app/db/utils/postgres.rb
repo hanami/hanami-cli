@@ -87,19 +87,10 @@ module Hanami
               end
 
               def cli_env_vars
-                @cli_env_vars ||= {}.tap do |vars|
-                  add_cli_env_var(vars, "PGHOST", database_uri.host)
-                  add_cli_env_var(vars, "PGPORT", database_uri.port)
-                  add_cli_env_var(vars, "PGUSER", database_uri.user)
-                  add_cli_env_var(vars, "PGPASSWORD", database_uri.password)
+                @cli_env_vars ||= %i[host port user password].each_with_object({}) do |field, vars|
+                  value = database_uri.public_send(field).to_s
+                  vars["PG#{field}".upcase] = value unless value.empty?
                 end
-              end
-
-              def add_cli_env_var(vars, name, value)
-                value = value.to_s
-                return if value.empty?
-
-                vars[name] = value
               end
             end
           end
