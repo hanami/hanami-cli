@@ -26,6 +26,8 @@ and this project adheres to [Break Versioning](https://www.taoensso.com/break-ve
 
 ### Fixed
 
+- Don't overwrite libpq ENV vars with empty strings (@StantonMatt in #414).
+
 ### Security
 
 [Unreleased]: https://github.com/hanami/cli/compare/v2.3.5...HEAD
