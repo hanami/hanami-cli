@@ -147,5 +147,13 @@ module Hanami
         TEXT
       end
     end
+
+    # @since 3.0.0
+    # @api public
+    class RouteAlreadyExistsError < Error
+      def initialize(route)
+        super("Route #{route} already exists")
+      end
+    end
   end
 end

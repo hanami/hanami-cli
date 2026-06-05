@@ -60,6 +60,13 @@ module Hanami
         created(path)
       end
 
+      def block_contains?(path, target, contents)
+        content = adapter.read(path)
+        class_start = content.index(target)
+        class_end = content.index(/(?:^|\s)#{CLOSE_BLOCK}(?:$|\s)/, class_start)
+        content[class_start..class_end].include? contents
+      end
+
       private
 
       attr_reader :out
