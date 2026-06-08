@@ -21,10 +21,10 @@ module Hanami
 
             argument :name, required: true, desc: "View name"
             option :template_engine, required: false,
-                                     values: %w[erb haml slim],
-                                     desc: "Template engine to use (default: set in app config or erb)"
+              values: %w[erb haml slim],
+              desc: "Template engine to use (default: set in app config or erb)"
             option :force, required: false, type: :flag, default: false,
-                           desc: "Overwrite existing files during generation"
+              desc: "Overwrite existing files during generation"
 
             example [
               %(books.index               (MyApp::Actions::Books::Index)),

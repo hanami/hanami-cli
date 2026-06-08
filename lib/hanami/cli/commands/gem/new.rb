@@ -35,45 +35,45 @@ module Hanami
           argument :app, required: true, desc: "App name"
 
           option :head, type: :flag, required: false,
-                        default: HEAD_DEFAULT,
-                        desc: "Use Hanami HEAD version (from GitHub `main` branches)"
+            default: HEAD_DEFAULT,
+            desc: "Use Hanami HEAD version (from GitHub `main` branches)"
 
           option :gem_source, required: true,
-                              default: GEM_SOURCE_DEFAULT,
-                              desc: "Where to source Ruby gems from"
+            default: GEM_SOURCE_DEFAULT,
+            desc: "Where to source Ruby gems from"
 
           option :skip_install, type: :flag, required: false,
-                                default: SKIP_INSTALL_DEFAULT,
-                                desc: "Skip app installation (Bundler, third-party Hanami plugins)"
+            default: SKIP_INSTALL_DEFAULT,
+            desc: "Skip app installation (Bundler, third-party Hanami plugins)"
 
           option :skip_assets, type: :flag, required: false,
-                               default: SKIP_ASSETS_DEFAULT,
-                               desc: "Skip including hanami-assets"
+            default: SKIP_ASSETS_DEFAULT,
+            desc: "Skip including hanami-assets"
 
           option :skip_db, type: :flag, required: false,
-                           default: SKIP_DB_DEFAULT,
-                           desc: "Skip including hanami-db"
+            default: SKIP_DB_DEFAULT,
+            desc: "Skip including hanami-db"
 
           option :skip_view, type: :flag, required: false,
-                             default: SKIP_VIEW_DEFAULT,
-                             desc: "Skip including hanami-view"
+            default: SKIP_VIEW_DEFAULT,
+            desc: "Skip including hanami-view"
 
           option :database, type: :string, required: false,
-                            default: DATABASE_SQLITE,
-                            desc: "Database adapter (supported: sqlite, mysql, postgres)"
+            default: DATABASE_SQLITE,
+            desc: "Database adapter (supported: sqlite, mysql, postgres)"
 
           option :name, type: :string, required: false,
-                        desc: "App name to use for the module namespace"
+            desc: "App name to use for the module namespace"
 
           option :template_engine, type: :string, required: false,
-                                   values: %w[erb haml slim],
-                                   default: TEMPLATE_ENGINE_DEFAULT,
-                                   desc: "Default template engine to use with generators"
+            values: %w[erb haml slim],
+            default: TEMPLATE_ENGINE_DEFAULT,
+            desc: "Default template engine to use with generators"
 
           option :test, type: :string, required: false,
-                        values: %w[rspec minitest],
-                        default: TEST_FRAMEWORK_DEFAULT,
-                        desc: "Test framework (supported: rspec, minitest)"
+            values: %w[rspec minitest],
+            default: TEST_FRAMEWORK_DEFAULT,
+            desc: "Test framework (supported: rspec, minitest)"
 
           # rubocop:disable Layout/LineLength
           example [

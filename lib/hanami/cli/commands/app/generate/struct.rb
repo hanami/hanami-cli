@@ -10,7 +10,7 @@ module Hanami
           class Struct < Command
             argument :name, required: true, desc: "Struct name"
             option :force, required: false, type: :flag, default: false,
-                           desc: "Overwrite existing files during generation"
+              desc: "Overwrite existing files during generation"
 
             example [
               %(book                (MyApp::Structs::Book)),

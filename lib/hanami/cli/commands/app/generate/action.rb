@@ -60,11 +60,11 @@ module Hanami
 
             option :slice, required: false, desc: "Slice name"
             option :template_engine, required: false,
-                                     values: %w[erb haml slim],
-                                     desc: "Template engine to use"
+              values: %w[erb haml slim],
+              desc: "Template engine to use"
 
             option :force, required: false, type: :flag, default: false,
-                           desc: "Overwrite existing files during generation"
+              desc: "Overwrite existing files during generation"
 
             # option :format, required: false, type: :string, default: DEFAULT_FORMAT, desc: "Template format"
 

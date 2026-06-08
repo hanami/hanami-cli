@@ -34,7 +34,7 @@ module Hanami
             insert_route(key:, namespace:, url_path:, http_method:) unless skip_route
 
             generate_action(key: key, namespace: namespace, base_path: base_path, include_placeholder_body: skip_view,
-                            force:)
+              force:)
 
             generate_view(key:, namespace:, base_path:, template_engine:, force:) unless skip_view
           end

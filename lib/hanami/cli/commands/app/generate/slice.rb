@@ -29,22 +29,22 @@ module Hanami
             # @since 2.2.0
             # @api private
             option :skip_db,
-                   type: :flag,
-                   required: false,
-                   default: SKIP_DB_DEFAULT,
-                   desc: "Skip database"
+              type: :flag,
+              required: false,
+              default: SKIP_DB_DEFAULT,
+              desc: "Skip database"
             # @since 2.2.0
             # @api private
             option :skip_route,
-                   type: :flag,
-                   required: false,
-                   default: DEFAULT_SKIP_ROUTE,
-                   desc: "Skip route generation"
+              type: :flag,
+              required: false,
+              default: DEFAULT_SKIP_ROUTE,
+              desc: "Skip route generation"
 
             # @since 2.2.0
             # @api private
             option :force, required: false, type: :flag, default: false,
-                           desc: "Overwrite existing files during generation"
+              desc: "Overwrite existing files during generation"
 
             example [
               "admin          # Admin slice (/admin URL prefix)",

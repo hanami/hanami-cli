@@ -25,7 +25,7 @@ module Hanami
               desc: "Skip test generation"
 
             option :force, required: false, type: :flag, default: false,
-                           desc: "Overwrite existing files during generation"
+              desc: "Overwrite existing files during generation"
 
             example [
               %(book               (MyApp::Views::Parts::Book)),

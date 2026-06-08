@@ -40,9 +40,9 @@ module Hanami
           desc "Print app routes"
 
           option :format,
-                 default: DEFAULT_FORMAT,
-                 required: false,
-                 desc: "Output format"
+            default: DEFAULT_FORMAT,
+            required: false,
+            desc: "Output format"
 
           example [
             "             # Print app routes",

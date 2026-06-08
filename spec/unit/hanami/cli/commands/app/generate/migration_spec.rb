@@ -58,9 +58,9 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Migration, :app do
       expect {
         subject.call(name: "create posts")
       }.to raise_error(include_in_order(
-                         "Invalid migration name: create posts",
-                         "Name must contain only letters, numbers, and underscores."
-                       ))
+        "Invalid migration name: create posts",
+        "Name must contain only letters, numbers, and underscores."
+      ))
     end
   end
 

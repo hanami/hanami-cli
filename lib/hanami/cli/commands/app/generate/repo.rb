@@ -16,7 +16,7 @@ module Hanami
           class Repo < Command
             argument :name, required: true, desc: "Repo name"
             option :force, required: false, type: :flag, default: false,
-                           desc: "Overwrite existing files during generation"
+              desc: "Overwrite existing files during generation"
 
             example [
               %(books               (MyApp::Repos::BooksRepo)),

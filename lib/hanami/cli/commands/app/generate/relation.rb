@@ -11,7 +11,7 @@ module Hanami
             argument :name, required: true, desc: "Relation name"
             option :gateway, desc: "Generate relation for gateway"
             option :force, required: false, type: :flag, default: false,
-                           desc: "Overwrite existing files during generation"
+              desc: "Overwrite existing files during generation"
 
             example [
               %(books               (MyApp::Relation::Book)),
