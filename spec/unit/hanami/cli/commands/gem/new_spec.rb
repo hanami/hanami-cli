@@ -614,6 +614,76 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
   end
 
   context "with gem-source" do
+    context "with gem.coop" do
+      it "generates an app with gem.coop as gem source and scoped sources" do
+        expect(bundler).to receive(:install!)
+          .and_return(true)
+
+        expect(bundler).to receive(:exec)
+          .with("hanami install")
+          .and_return(successful_system_call_result)
+
+        expect(bundler).to receive(:exec)
+          .with("check")
+          .at_least(1)
+          .and_return(successful_system_call_result)
+
+        expect(system_call).to receive(:call).with("npm", ["install"])
+
+        subject.call(app: app, **kwargs.merge(gem_source: "gem.coop"))
+
+        expect(fs.directory?(app)).to be(true)
+
+        fs.chdir(app) do
+          hanami_version = Hanami::CLI::Generators::Version.gem_requirement
+          gemfile = <<~EXPECTED
+            # frozen_string_literal: true
+
+            source "https://gem.coop"
+
+            source "https://gem.coop/@hanami" do
+              gem "hanami", "#{hanami_version}"
+              gem "hanami-assets", "#{hanami_version}"
+              gem "hanami-action", "#{hanami_version}"
+              gem "hanami-db", "#{hanami_version}"
+              gem "hanami-router", "#{hanami_version}"
+              gem "hanami-view", "#{hanami_version}"
+            end
+
+            source "https://gem.coop/@dry" do
+              gem "dry-types", "~> 1.7"
+              gem "dry-operation", ">= 1.0.1"
+              gem "dry-validation", "~> 1.11"
+            end
+
+            gem "i18n", "~> 1.14"
+            gem "puma", ">= 7.1"
+            gem "rake"
+            gem "sqlite3"
+
+            group :development do
+              gem "hanami-webconsole", "#{hanami_version}", source: "https://gem.coop/@hanami"
+            end
+
+            group :development, :test do
+              gem "dotenv"
+              # Syntax highlighting SQL logs
+              gem "rouge"
+            end
+
+            group :cli, :development do
+              gem "hanami-reloader", "#{hanami_version}", source: "https://gem.coop/@hanami"
+            end
+
+            group :cli, :development, :test do
+              gem "hanami-rspec", "#{hanami_version}", source: "https://gem.coop/@hanami"
+            end
+          EXPECTED
+          expect(fs.read("Gemfile")).to eq(gemfile)
+        end
+      end
+    end
+
     context "without scheme" do
       it "generates an app with a custom gem source" do
         expect(bundler).to receive(:install!)

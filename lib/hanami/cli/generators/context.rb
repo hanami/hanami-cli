@@ -85,6 +85,13 @@ module Hanami
           "https://#{value}"
         end
 
+        # @since NEXT
+        # @api private
+        def gem_coop?
+          value = options.fetch(:gem_source)
+          value.match? %r{(\A\w+://)?gem.coop}
+        end
+
         # @since 2.1.0
         # @api private
         def generate_assets?
