@@ -14,6 +14,9 @@ source "<%= gem_source %>"
 <%- if generate_db? -%>
 <%= hanami_gem("db") %>
 <%- end -%>
+<%- if generate_mailer? -%>
+<%= hanami_gem("mailer") %>
+<%- end -%>
 <%= hanami_gem("router") %>
 <%- if generate_view? -%>
 <%= hanami_gem("view") %>

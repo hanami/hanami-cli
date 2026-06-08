@@ -103,6 +103,11 @@ module Hanami
           !options.fetch(:skip_view, false)
         end
 
+        # @api private
+        def generate_mailer?
+          !options.fetch(:skip_mailer, false)
+        end
+
         # @since 2.2.0
         # @api private
         def generate_sqlite?

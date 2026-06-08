@@ -11,6 +11,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Slice, :app do
     allow(Hanami).to receive(:bundled?).with("hanami-assets").and_return(true)
     allow(Hanami).to receive(:bundled?).with("dry-operation").and_return(true)
     allow(Hanami).to receive(:bundled?).with("hanami-db").and_return(true)
+    allow(Hanami).to receive(:bundled?).with("hanami-mailer").and_return(true)
   end
 
   let(:out) { StringIO.new }
@@ -131,6 +132,21 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Slice, :app do
       RUBY
       expect(fs.read("slices/#{slice}/view.rb")).to eq(view)
       expect(output).to include("Created slices/#{slice}/view.rb")
+
+      mailer = <<~RUBY
+        # auto_register: false
+        # frozen_string_literal: true
+
+        module Admin
+          class Mailer < Test::Mailer
+            # Add common mailer behavior here. See https://hanakai.org/learn/hanami/mailers for details.
+          end
+        end
+      RUBY
+      expect(fs.read("slices/#{slice}/mailer.rb")).to eq(mailer)
+      expect(output).to include("Created slices/#{slice}/mailer.rb")
+      expect(fs.read("slices/#{slice}/mailers/.keep")).to eq("")
+      expect(output).to include("Created slices/#{slice}/mailers/.keep")
 
       helpers = <<~RUBY
         # auto_register: false
@@ -317,6 +333,21 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Slice, :app do
         subject.call(name: slice)
 
         expect(fs.exist?("slices/#{slice}/operation.rb")).to be(false)
+      end
+    end
+  end
+
+  context "without hanami-mailer bundled" do
+    before do
+      allow(Hanami).to receive(:bundled?).with("hanami-mailer").and_return(false)
+    end
+
+    it "generates a slice without base mailer" do
+      within_application_directory do
+        subject.call(name: slice)
+
+        expect(fs.exist?("slices/#{slice}/mailer.rb")).to be(false)
+        expect(fs.exist?("slices/#{slice}/mailers")).to be(false)
       end
     end
   end
