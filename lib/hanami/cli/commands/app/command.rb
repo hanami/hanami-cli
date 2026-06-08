@@ -44,7 +44,7 @@ module Hanami
               Hanami::Env.load
 
               super
-            rescue FileAlreadyExistsError, RouteAlreadyExistsError => exception
+            rescue FileAlreadyExistsError => exception
               err.puts(exception.message)
               exit(1)
             end

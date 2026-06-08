@@ -193,7 +193,7 @@ module Hanami
           def add_route_to_file(file:, route:)
             target_class = "class Routes"
             if fs.block_contains?(file, target_class, route)
-              raise RouteAlreadyExistsError.new(route)
+              out.puts "Route (#{route}) already exists, skipping..."
             else
               fs.inject_line_at_class_bottom(file, "class Routes", route)
             end
@@ -202,10 +202,10 @@ module Hanami
           def add_route_to_block(file:, namespace:, route:)
             slice_matcher = /slice[[:space:]]*:#{namespace}/
             if fs.block_contains?(file, slice_matcher, route)
-              raise RouteAlreadyExistsError.new(route)
+              out.puts "Route (#{route}) already exists, skipping..."
+            else
+              fs.inject_line_at_block_bottom(file, slice_matcher, route)
             end
-
-            fs.inject_line_at_block_bottom(file, slice_matcher, route)
           end
         end
       end

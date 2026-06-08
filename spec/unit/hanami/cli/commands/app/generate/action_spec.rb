@@ -41,27 +41,26 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
     end
 
     context "when route already exists in route file" do
-      it "exits with error message" do
-        expect do
-          within_application_directory do
-            routes_contents = <<~CODE
-              # frozen_string_literal: true
+      it "does not add a duplicate route" do
+        within_application_directory do
+          routes_contents = <<~CODE
+            # frozen_string_literal: true
 
-              require "hanami/routes"
+            require "hanami/routes"
 
-              module #{app}
-                class Routes < Hanami::Routes
-                  root { "Hello from Hanami" }
-                  get "/users", to: "users.index"
-                end
+            module #{app}
+              class Routes < Hanami::Routes
+                root { "Hello from Hanami" }
+                get "/users", to: "users.index"
               end
-            CODE
-            fs.write("config/routes.rb", routes_contents)
-            generate_action
-          end
-        end.to raise_error SystemExit do |exception|
-          expect(exception.status).to eq 1
-          expect(error_output).to eq 'Route get "/users", to: "users.index" already exists'
+            end
+          CODE
+          fs.write("config/routes.rb", routes_contents)
+
+          generate_action
+
+          expect(fs.read("config/routes.rb")).to eq routes_contents
+          expect(output).to include 'Route (get "/users", to: "users.index") already exists, skipping...'
         end
       end
     end
@@ -1300,12 +1299,10 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
           CODE
           fs.write("config/routes.rb", routes_contents)
 
-          expect do
-            subject.call(slice:, name: "home.index")
-          end.to raise_error SystemExit do |exception|
-            expect(exception.status).to eq 1
-            expect(error_output).to eq 'Route get "/home", to: "home.index" already exists'
-          end
+          subject.call(slice:, name: "home.index")
+
+          expect(fs.read("config/routes.rb")).to eq routes_contents
+          expect(output).to include 'Route (get "/home", to: "home.index") already exists, skipping...'
         end
       end
 
