@@ -61,6 +61,22 @@ module Hanami
             fs.create("app/actions/.keep", t("keep.erb", context))
             fs.create("app/action.rb", t("action.erb", context))
 
+            if context.generate_mailer?
+              Generators::App::RubyClassFile.new(
+                fs: fs,
+                inflector: inflector,
+                namespace: app,
+                key: "mailer",
+                base_path: "app",
+                parent_class_name: "Hanami::Mailer",
+                requires: ["hanami/mailer"],
+                auto_register: false,
+                body: ["# Add common mailer behavior here. See https://hanakai.org/learn/hanami/mailers for details."]
+              ).create
+
+              fs.create("app/mailers/.keep", t("keep.erb", context))
+            end
+
             if context.generate_view?
               fs.create("app/view.rb", t("view.erb", context))
               fs.create("app/views/helpers.rb", t("helpers.erb", context))

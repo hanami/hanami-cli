@@ -16,6 +16,7 @@ module Hanami
             base_path:,
             extra_namespace: nil,
             auto_register: nil,
+            requires: [],
             body: [],
             **_opts
           )
@@ -26,6 +27,7 @@ module Hanami
             @base_path = base_path
             @extra_namespace = extra_namespace&.downcase
             @auto_register = auto_register
+            @requires = requires
             @body = body
           end
 
@@ -62,6 +64,7 @@ module Hanami
             :namespace,
             :extra_namespace,
             :auto_register,
+            :requires,
             :body
           )
 
@@ -108,7 +111,8 @@ module Hanami
             [
               # Intentional ternary logic. Skip if nil, else 'true' or 'false'
               ("# auto_register: #{auto_register}" unless auto_register.nil?),
-              "# frozen_string_literal: true"
+              "# frozen_string_literal: true",
+              *(requires.any? ? ["", *requires.map { |name| %(require "#{name}") }] : [])
             ].compact
           end
 

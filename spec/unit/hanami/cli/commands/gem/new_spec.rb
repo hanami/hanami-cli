@@ -11,12 +11,13 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
   let(:inflector) { Dry::Inflector.new }
   let(:system_call) { instance_double(Hanami::CLI::SystemCall, call: successful_system_call_result) }
   let(:app) { "bookshelf" }
-  let(:kwargs) { {head: hanami_head, skip_assets: skip_assets, skip_db: skip_db, skip_view: skip_view, database: database} }
+  let(:kwargs) { {head: hanami_head, skip_assets:, skip_db:, skip_view:, skip_mailer:, database:} }
 
   let(:hanami_head) { false }
   let(:skip_assets) { false }
   let(:skip_db) { false }
   let(:skip_view) { false }
+  let(:skip_mailer) { false }
   let(:database) { nil }
 
   let(:output) { out.rewind && out.read.chomp }
@@ -162,6 +163,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         gem "hanami-assets", "#{hanami_version}"
         gem "hanami-action", "#{hanami_version}"
         gem "hanami-db", "#{hanami_version}"
+        gem "hanami-mailer", "#{hanami_version}"
         gem "hanami-router", "#{hanami_version}"
         gem "hanami-view", "#{hanami_version}"
 
@@ -435,6 +437,24 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
       expect(fs.read("app/action.rb")).to eq(action)
       expect(output).to include("Created app/action.rb")
 
+      # app/mailer.rb
+      mailer = <<~RUBY
+        # auto_register: false
+        # frozen_string_literal: true
+
+        require "hanami/mailer"
+
+        module #{inflector.camelize(app)}
+          class Mailer < Hanami::Mailer
+            # Add common mailer behavior here. See https://hanakai.org/learn/hanami/mailers for details.
+          end
+        end
+      RUBY
+      expect(fs.read("app/mailer.rb")).to eq(mailer)
+      expect(output).to include("Created app/mailer.rb")
+      expect(fs.read("app/mailers/.keep")).to eq("")
+      expect(output).to include("Created app/mailers/.keep")
+
       # app/view.rb
       view = <<~RUBY
         # auto_register: false
@@ -578,6 +598,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           gem "hanami-assets", github: "hanami/hanami-assets", branch: "main"
           gem "hanami-action", github: "hanami/hanami-action", branch: "main"
           gem "hanami-db", github: "hanami/hanami-db", branch: "main"
+          gem "hanami-mailer", github: "hanami/hanami-mailer", branch: "main"
           gem "hanami-router", github: "hanami/hanami-router", branch: "main"
           gem "hanami-view", github: "hanami/hanami-view", branch: "main"
 
@@ -742,6 +763,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           gem "hanami-assets", "#{hanami_version}"
           gem "hanami-action", "#{hanami_version}"
           gem "hanami-db", "#{hanami_version}"
+          gem "hanami-mailer", "#{hanami_version}"
           gem "hanami-router", "#{hanami_version}"
           gem "hanami-view", "#{hanami_version}"
 
@@ -1346,6 +1368,34 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         expect(fs.exist?("app/view.rb")).to be(false)
         expect(fs.exist?("app/views")).to be(false)
         expect(fs.exist?("app/templates")).to be(false)
+      end
+    end
+  end
+
+  context "without hanami-mailer" do
+    let(:skip_mailer) { true }
+
+    it "generates a new app without hanami-mailer" do
+      expect(bundler).to receive(:install!)
+        .and_return(true)
+
+      expect(bundler).to receive(:exec)
+        .with("hanami install")
+        .and_return(successful_system_call_result)
+
+      expect(bundler).to receive(:exec)
+        .with("check")
+        .at_least(1)
+        .and_return(successful_system_call_result)
+
+      expect(system_call).to receive(:call).with("npm", ["install"])
+
+      subject.call(app: app, **kwargs)
+
+      fs.chdir(app) do
+        expect(fs.read("Gemfile")).to_not match(/hanami-mailer/)
+        expect(fs.exist?("app/mailer.rb")).to be(false)
+        expect(fs.exist?("app/mailers")).to be(false)
       end
     end
   end

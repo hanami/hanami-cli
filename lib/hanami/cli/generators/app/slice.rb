@@ -56,6 +56,20 @@ module Hanami
               auto_register: false
             ).create(force:)
 
+            if Hanami.bundled?("hanami-mailer")
+              RubyClassFile.new(
+                fs:, inflector:,
+                namespace: slice,
+                key: "mailer",
+                base_path: directory,
+                parent_class_name: "#{Hanami.app.namespace}::Mailer",
+                auto_register: false,
+                body: ["# Add common mailer behavior here. See https://hanakai.org/learn/hanami/mailers for details."]
+              ).create(force:)
+
+              fs.touch(fs.join(directory, "mailers/.keep"))
+            end
+
             RubyModuleFile.new(
               fs: fs,
               inflector: inflector,
