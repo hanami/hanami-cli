@@ -45,6 +45,7 @@ module Hanami
             register "generate", aliases: ["g"] do |prefix|
               prefix.register "slice", Generate::Slice
               prefix.register "component", Generate::Component
+              prefix.register "provider", Generate::Provider
 
               if Hanami.bundled?("hanami-action")
                 prefix.register "action", Generate::Action
