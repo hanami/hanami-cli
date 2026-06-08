@@ -145,7 +145,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
 
         ## Useful links
 
-        - [Hanami](http://hanamirb.org)
+        - [Hanami](https://hanakai.org/hanami)
         - [Hanami guides](https://hanakai.org/learn#hanami)
       EXPECTED
       expect(fs.read("README.md")).to eq(readme)
@@ -725,7 +725,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
 
           ## Useful links
 
-          - [Hanami](http://hanamirb.org)
+          - [Hanami](https://hanakai.org/hanami)
           - [Hanami guides](https://hanakai.org/learn#hanami)
         EXPECTED
         expect(fs.read("README.md")).to eq(readme)
@@ -1385,7 +1385,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
 
         ## Useful links
 
-        - [Hanami](http://hanamirb.org)
+        - [Hanami](https://hanakai.org/hanami)
         - [Hanami guides](https://hanakai.org/learn#hanami)
       EXPECTED
       expect(fs.read("README.md")).to eq(readme)
