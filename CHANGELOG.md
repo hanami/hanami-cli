@@ -29,6 +29,7 @@ and this project adheres to [Break Versioning](https://www.taoensso.com/break-ve
 ### Fixed
 
 - Don't overwrite libpq ENV vars with empty strings (@StantonMatt in #414).
+- Skip generating duplicate routes when running `generate action`. (@sandbergja in #417)
 
 ### Security
 

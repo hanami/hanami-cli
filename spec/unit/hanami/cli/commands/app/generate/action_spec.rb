@@ -40,6 +40,31 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
       end
     end
 
+    context "when route already exists in route file" do
+      it "does not add a duplicate route" do
+        within_application_directory do
+          routes_contents = <<~CODE
+            # frozen_string_literal: true
+
+            require "hanami/routes"
+
+            module #{app}
+              class Routes < Hanami::Routes
+                root { "Hello from Hanami" }
+                get "/users", to: "users.index"
+              end
+            end
+          CODE
+          fs.write("config/routes.rb", routes_contents)
+
+          generate_action
+
+          expect(fs.read("config/routes.rb")).to eq routes_contents
+          expect(output).to include 'Route (get "/users", to: "users.index") already exists, skipping...'
+        end
+      end
+    end
+
     context "with existing action file" do
       let(:file_path) { "app/actions/#{namespace}/#{action}.rb" }
 
@@ -1249,6 +1274,35 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
           subject.call(slice: "api", name: "users.show")
 
           expect(fs.read("config/routes.rb")).to eq(expected)
+        end
+      end
+
+      it "does not add a duplicate route to the slice block" do
+        within_application_directory do
+          prepare_slice!
+          fs.mkdir("slices/api")
+
+          routes_contents = <<~CODE
+            # frozen_string_literal: true
+
+            require "hanami/routes"
+
+            module #{app}
+              class Routes < Hanami::Routes
+                root { "Hello from Hanami" }
+
+                slice :#{slice}, at: "/#{slice}" do
+                  get "/home", to: "home.index"
+                end
+              end
+            end
+          CODE
+          fs.write("config/routes.rb", routes_contents)
+
+          subject.call(slice:, name: "home.index")
+
+          expect(fs.read("config/routes.rb")).to eq routes_contents
+          expect(output).to include 'Route (get "/home", to: "home.index") already exists, skipping...'
         end
       end
 

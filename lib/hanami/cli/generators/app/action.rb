@@ -85,15 +85,14 @@ module Hanami
             route = route_definition(key:, url_path:, http_method:)
 
             if namespace == Hanami.app.namespace
-              fs.inject_line_at_class_bottom(routes_location, "class Routes", route)
+              add_route_to_file(file: routes_location, route:)
             else
               slice_routes = fs.join("slices", namespace, "config", "routes.rb")
 
               if fs.exist?(slice_routes)
-                fs.inject_line_at_class_bottom(slice_routes, "class Routes", route)
+                add_route_to_file(file: slice_routes, route:)
               else
-                slice_matcher = /slice[[:space:]]*:#{namespace}/
-                fs.inject_line_at_block_bottom(routes_location, slice_matcher, route)
+                add_route_to_block(file: routes_location, namespace:, route:)
               end
             end
           end
@@ -189,6 +188,24 @@ module Hanami
             end
 
             result
+          end
+
+          def add_route_to_file(file:, route:)
+            target_class = "class Routes"
+            if fs.block_contains?(file, target_class, route)
+              out.puts "Route (#{route}) already exists, skipping..."
+            else
+              fs.inject_line_at_class_bottom(file, "class Routes", route)
+            end
+          end
+
+          def add_route_to_block(file:, namespace:, route:)
+            slice_matcher = /slice[[:space:]]*:#{namespace}/
+            if fs.block_contains?(file, slice_matcher, route)
+              out.puts "Route (#{route}) already exists, skipping..."
+            else
+              fs.inject_line_at_block_bottom(file, slice_matcher, route)
+            end
           end
         end
       end
