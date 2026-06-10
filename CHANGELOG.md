@@ -21,6 +21,7 @@ and this project adheres to [Break Versioning](https://www.taoensso.com/break-ve
 
 - `hanami new` puts `dry-validation` in the app's `Gemfile` instead of `hanami-validations`. Hanami Validations will no longer be used; Hanami Action now checks for Dry Validation directly. (@timriley)
 - Update for `hanami-controller` gem rename to `hanami-action`. (@cllns in #402)
+- When `--gem-source=gem.coop` is used, Hanami and Dry gems are installed from their respective namespaces on gem.coop (@katafrakt in #424)
 
 ### Deprecated
 

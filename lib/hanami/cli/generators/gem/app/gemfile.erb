@@ -2,6 +2,22 @@
 
 source "<%= gem_source %>"
 
+<%- if gem_coop? and !hanami_head? -%>
+source "https://gem.coop/@hanami" do
+  <%= hanami_gem("hanami") %>
+  <%- if generate_assets? -%>
+  <%= hanami_gem("assets") %>
+  <%- end -%>
+  <%= hanami_gem("action") %>
+  <%- if generate_db? -%>
+  <%= hanami_gem("db") %>
+  <%- end -%>
+  <%= hanami_gem("router") %>
+  <%- if generate_view? -%>
+  <%= hanami_gem("view") %>
+  <%- end -%>
+end
+<%- else -%>
 <%= hanami_gem("hanami") %>
 <%- if hanami_head? -%>
 <%= hanami_gem("cli") %>
@@ -21,10 +37,20 @@ source "<%= gem_source %>"
 <%- if generate_view? -%>
 <%= hanami_gem("view") %>
 <%- end -%>
+<%- end -%>
 
+<%- if gem_coop? -%>
+source "https://gem.coop/@dry" do
+  gem "dry-types", "~> 1.7"
+  gem "dry-operation", ">= 1.0.1"
+  gem "dry-validation", "~> 1.11"
+end
+
+<%- else -%>
 gem "dry-types", "~> 1.7"
 gem "dry-operation", ">= 1.0.1"
 gem "dry-validation", "~> 1.11"
+<%- end -%>
 gem "i18n", "~> 1.14"
 gem "puma", ">= 7.1"
 gem "rake"
@@ -43,7 +69,7 @@ gem "slim"
 <%- end -%>
 
 group :development do
-  <%= hanami_gem("webconsole") %>
+  <%= hanami_gem("webconsole") %><%- if gem_coop? -%>, source: "https://gem.coop/@hanami"<% end %>
 end
 
 group :development, :test do
@@ -55,13 +81,13 @@ group :development, :test do
 end
 
 group :cli, :development do
-  <%= hanami_gem("reloader") %>
+  <%= hanami_gem("reloader") %><%- if gem_coop? -%>, source: "https://gem.coop/@hanami"<% end %>
 end
 
 group :cli, :development, :test do
 <%- if generate_rspec? -%>
-  <%= hanami_gem("rspec") %>
+  <%= hanami_gem("rspec") %><%- if gem_coop? -%>, source: "https://gem.coop/@hanami"<% end %>
 <%- elsif generate_minitest? -%>
-  <%= hanami_gem("minitest") %>
+  <%= hanami_gem("minitest") %><%- if gem_coop? -%>, source: "https://gem.coop/@hanami"<% end %>
 <%- end -%>
 end
