@@ -25,7 +25,7 @@ and this project adheres to [Break Versioning](https://www.taoensso.com/break-ve
 
 ### Added
 
-- Include `hanami-mailer` in the default `Gemfile`, and generate a base `Mailer` class for the app and each slice (`app/mailer.rb` and `mailer.rb` in slices). Use `hanami new --skip-mailer` to opt out. (@timriley in #420)
+- Include `hanami-mailer` in the default `Gemfile`, include sample mailer env vars in `.env`, and generate a base `Mailer` class for the app and each slice (`app/mailer.rb` and `mailer.rb` in slices). Use `hanami new --skip-mailer` to opt out. (@timriley in #420, #425)
 - Add `i18n` gem to the default `Gemfile`, and generate a placeholder `config/i18n/en.yml` for the app and each generated slice. (@timriley in #409)
 - Add `--name` option to `hanami new`, to specify a custom module namespace while using the positional argument as the directory path. For example, `hanami new my_bookshelf --name=bookshelf` creates the app in `my_bookshelf/` with `Bookshelf` as the module name. (@aaronmallen in #387)
 - Add `--test` option to `hanami new` to specify which test framework to use. Supports `rspec` (default) and `minitest`. (@timriley in #399)
@@ -40,6 +40,7 @@ and this project adheres to [Break Versioning](https://www.taoensso.com/break-ve
 - Include rouge gem in generated `Gemfile` to enable SQL syntax highlighting in logs. (@kyleplump in #405)
 - When `--gem-source=gem.coop` is used, Hanami and Dry gems are installed from their respective namespaces on gem.coop (@katafrakt in #424)
 - Require Puma 7.1 or later, and remove unneeded `preload_app!` in generated `config/puma.rb`. Preloading is now enabled by default in Puma's cluster mode. (@joshuay03 in #372)
+- In generated `.env`, include a link the guide explaining how these files are loaded. (@timriley in #425)
 - In generated files, update all guides.hanamirb.org links to hanakai.org. (@yosangwon in #407)
 - Require dry-cli 1.4 or later, allowing for simplified argument handling in hanami-rspec callback methods. (@timriley in #408)
 - Link to new hanakai.org site in generated `README.md`. (@katafrakt in #423)
