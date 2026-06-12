@@ -19,7 +19,7 @@ module Hanami
             @out = out
           end
 
-          def call(key:, namespace:, base_path:, template_engine: DEFAULT_TEMPLATE_ENGINE, force: false)
+          def call(key:, namespace:, base_path:, template_engine: DEFAULT_TEMPLATE_ENGINE, force: false, **)
             mailer_class_file(key:, namespace:, base_path:).then do |mailer_class|
               mailer_class.create(force:)
               mailer_class_name = mailer_class.fully_qualified_name

@@ -45,6 +45,14 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Mailer, :app do
       end
     end
 
+    it "accepts a skip_tests option" do
+      within_application_directory do
+        subject.call(name: "welcome", skip_tests: true)
+
+        expect(fs.exist?("app/mailers/welcome.rb")).to be(true)
+      end
+    end
+
     it "generates a mailer in a deeper namespace" do
       within_application_directory do
         subject.call(name: "notifications.welcome")

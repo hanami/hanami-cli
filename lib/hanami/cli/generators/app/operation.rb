@@ -19,7 +19,7 @@ module Hanami
 
           # @since 2.2.0
           # @api private
-          def call(key:, namespace:, base_path:, force: false)
+          def call(key:, namespace:, base_path:, force: false, **)
             RubyClassFile.new(
               fs: fs,
               inflector: inflector,

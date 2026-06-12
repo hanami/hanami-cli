@@ -12,16 +12,9 @@ module Hanami
           # @since 2.1.0
           # @api private
           class Part < Command
-            DEFAULT_SKIP_TESTS = false
-            private_constant :DEFAULT_SKIP_TESTS
-
             argument :name, required: true, desc: "Part name"
 
-            option \
-              :skip_tests,
-              required: false,
-              type: :flag,
-              default: DEFAULT_SKIP_TESTS,
+            option :skip_tests, required: false, type: :flag, default: false,
               desc: "Skip test generation"
 
             option :force, required: false, type: :flag, default: false,

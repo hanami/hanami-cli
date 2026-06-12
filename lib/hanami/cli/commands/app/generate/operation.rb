@@ -9,6 +9,10 @@ module Hanami
           # @api private
           class Operation < Command
             argument :name, required: true, desc: "Operation name"
+
+            option :skip_tests, required: false, type: :flag, default: false,
+              desc: "Skip test generation"
+
             option :force, required: false, type: :flag, default: false,
               desc: "Overwrite existing files during generation"
 
