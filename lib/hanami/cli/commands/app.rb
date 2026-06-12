@@ -60,6 +60,10 @@ module Hanami
                 prefix.register "part", Generate::Part
               end
 
+              if Hanami.bundled?("hanami-mailer")
+                prefix.register "mailer", Generate::Mailer
+              end
+
               if Hanami.bundled?("hanami-db")
                 prefix.register "migration", Generate::Migration
                 prefix.register "relation", Generate::Relation

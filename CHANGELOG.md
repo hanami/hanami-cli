@@ -26,6 +26,7 @@ and this project adheres to [Break Versioning](https://www.taoensso.com/break-ve
 ### Added
 
 - Include `hanami-mailer` in the default `Gemfile`, include sample mailer env vars in `.env`, and generate a base `Mailer` class for the app and each slice (`app/mailer.rb` and `mailer.rb` in slices). Use `hanami new --skip-mailer` to opt out. (@timriley in #420, #425)
+- Add `generate mailer` command. (@timriley in #426)
 - Add `i18n` gem to the default `Gemfile`, and generate a placeholder `config/i18n/en.yml` for the app and each generated slice. (@timriley in #409)
 - Add `--name` option to `hanami new`, to specify a custom module namespace while using the positional argument as the directory path. For example, `hanami new my_bookshelf --name=bookshelf` creates the app in `my_bookshelf/` with `Bookshelf` as the module name. (@aaronmallen in #387)
 - Add `--test` option to `hanami new` to specify which test framework to use. Supports `rspec` (default) and `minitest`. (@timriley in #399)
