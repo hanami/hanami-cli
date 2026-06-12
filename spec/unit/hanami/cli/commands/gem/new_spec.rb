@@ -125,8 +125,23 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
 
       # .env
       env = <<~EXPECTED
-        # This is checked into source control, so put sensitive values into `.env.local`
+        # This is checked into source control, so put sensitive values into `.env.local`.
+        #
+        # See https://hanakai.org/learn/hanami/app/settings for how `.env` files are loaded.
+
         DATABASE_URL=sqlite://db/#{app}.sqlite
+
+        # SMTP delivery for Hanami Mailer (in development and production envs only).
+        #
+        # See https://hanakai.org/learn/hanami/mailers for details.
+        #
+        # Set these in `.env.local` or another `.env` file not checked into source control.
+        #
+        # SMTP_ADDRESS=smtp.example.com
+        # SMTP_PORT=587
+        # SMTP_USERNAME=mailer@example.com
+        # SMTP_PASSWORD=s3cr3t
+        # SMTP_AUTHENTICATION=plain
       EXPECTED
       expect(fs.read(".env")).to eq(env)
       expect(output).to include("Created .env")
@@ -795,8 +810,23 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
 
         # .env
         env = <<~EXPECTED
-          # This is checked into source control, so put sensitive values into `.env.local`
+          # This is checked into source control, so put sensitive values into `.env.local`.
+          #
+          # See https://hanakai.org/learn/hanami/app/settings for how `.env` files are loaded.
+
           DATABASE_URL=sqlite://db/#{app}.sqlite
+
+          # SMTP delivery for Hanami Mailer (in development and production envs only).
+          #
+          # See https://hanakai.org/learn/hanami/mailers for details.
+          #
+          # Set these in `.env.local` or another `.env` file not checked into source control.
+          #
+          # SMTP_ADDRESS=smtp.example.com
+          # SMTP_PORT=587
+          # SMTP_USERNAME=mailer@example.com
+          # SMTP_PASSWORD=s3cr3t
+          # SMTP_AUTHENTICATION=plain
         EXPECTED
         expect(fs.read(".env")).to eq(env)
         expect(output).to include("Created .env")
