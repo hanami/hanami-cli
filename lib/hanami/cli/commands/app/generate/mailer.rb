@@ -10,9 +10,14 @@ module Hanami
             DEFAULT_TEMPLATE_ENGINE = "erb"
 
             argument :name, required: true, desc: "Mailer name"
+
             option :template_engine, required: false,
               values: %w[erb haml slim],
               desc: "Template engine to use (default: set in app config or erb)"
+
+            option :skip_tests, required: false, type: :flag, default: false,
+              desc: "Skip test generation"
+
             option :force, required: false, type: :flag, default: false,
               desc: "Overwrite existing files during generation"
 
@@ -25,8 +30,9 @@ module Hanami
               Generators::App::Mailer
             end
 
-            def call(name:, slice: nil, template_engine: nil, force: false, **opts)
-              super(name:, slice:, template_engine: template_engine || default_template_engine, force: force)
+            def call(template_engine: nil, **opts)
+              template_engine ||= default_template_engine
+              super(template_engine:, **opts)
             end
 
             private

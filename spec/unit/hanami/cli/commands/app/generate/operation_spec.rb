@@ -81,6 +81,12 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Operation, :app do
       expect(output).to include("Created app/admin/books/add.rb")
     end
 
+    it "accepts a skip_tests option" do
+      subject.call(name: "add_book", skip_tests: true)
+
+      expect(fs.exist?("app/add_book.rb")).to be(true)
+    end
+
     context "with existing file" do
       let(:file_path) { "app/admin/books/add.rb" }
 
