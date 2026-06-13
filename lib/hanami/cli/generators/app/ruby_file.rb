@@ -44,7 +44,7 @@ module Hanami
           # @api private
           def fully_qualified_name
             inflector.camelize(
-              [namespace, extra_namespace, *key_segments].join("/")
+              [namespace, extra_namespace, *key_segments].compact.join("/")
             )
           end
 
