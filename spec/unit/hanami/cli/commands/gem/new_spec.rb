@@ -213,12 +213,14 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
 
       # package.json
       hanami_npm_version = Hanami::CLI::Generators::Version.npm_package_requirement
+      esbuild_npm_version = Hanami::CLI::Generators::Context::ESBUILD_NPM_REQUIREMENT
       package_json = <<~EXPECTED
         {
           "name": "#{app}",
           "private": true,
           "type": "module",
           "dependencies": {
+            "esbuild": "#{esbuild_npm_version}",
             "hanami-assets": "#{hanami_npm_version}"
           }
         }
@@ -898,12 +900,14 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
 
         # package.json
         hanami_npm_version = Hanami::CLI::Generators::Version.npm_package_requirement
+        esbuild_npm_version = Hanami::CLI::Generators::Context::ESBUILD_NPM_REQUIREMENT
         package_json = <<~EXPECTED
           {
             "name": "#{app}",
             "private": true,
             "type": "module",
             "dependencies": {
+              "esbuild": "#{esbuild_npm_version}",
               "hanami-assets": "#{hanami_npm_version}"
             }
           }

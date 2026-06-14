@@ -37,6 +37,7 @@ and this project adheres to [Break Versioning](https://www.taoensso.com/break-ve
 ### Changed
 
 - In generated `Gemfile`, depend on dry-validation rather than hanami-validations. Hanami Validations will no longer be used; Hanami Action now checks for Dry Validation directly. (@timriley in #401)
+- In generated `package.json`, include `esbuild` as a direct dependency. `esbuild` is now a peer dependency of `hanami-assets`, which requires the app to depend on it directly. (@timriley in #428)
 - Check for the hanami-action gem rather than hanami-controller (now retired) across various commands. (@cllns in #402)
 - Include rouge gem in generated `Gemfile` to enable SQL syntax highlighting in logs. (@kyleplump in #405)
 - When `--gem-source=gem.coop` is used, Hanami and Dry gems are installed from their respective namespaces on gem.coop (@katafrakt in #424)

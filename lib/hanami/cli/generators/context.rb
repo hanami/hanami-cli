@@ -4,22 +4,15 @@ require_relative "version"
 
 module Hanami
   module CLI
-    # @since 2.0.0
-    # @api private
     module Generators
-      # @since 2.0.0
       # @api private
       class Context
-        # @since 2.0.0
-        # @api private
         def initialize(inflector, app, **options)
           @inflector = inflector
           @app = app
           @options = options
         end
 
-        # @since 2.0.0
-        # @api private
         def ctx
           binding
         end
@@ -30,8 +23,6 @@ module Hanami
           %(gem "#{gem_name}", #{hanami_gem_version(name)})
         end
 
-        # @since 2.0.0
-        # @api private
         def hanami_gem_version(name)
           gem_name = name == "hanami" ? "hanami" : "hanami-#{name}"
 
@@ -42,8 +33,9 @@ module Hanami
           end
         end
 
-        # @since 2.1.0
-        # @api private
+        # Minimum esbuild version. Keep this in with the hanami-assets peer dependency.
+        ESBUILD_NPM_REQUIREMENT = "^0.28.1"
+
         def hanami_assets_npm_package
           if hanami_head?
             %("hanami-assets": "hanami/assets-js#main")
@@ -52,32 +44,26 @@ module Hanami
           end
         end
 
-        # @since 2.0.0
-        # @api private
+        def esbuild_npm_package
+          %("esbuild": "#{ESBUILD_NPM_REQUIREMENT}")
+        end
+
         def camelized_app_name
           inflector.camelize(app).gsub(/[^\p{Alnum}]/, "")
         end
 
-        # @since 2.0.0
-        # @api private
         def underscored_app_name
           inflector.underscore(app)
         end
 
-        # @since 2.1.0
-        # @api private
         def humanized_app_name
           inflector.humanize(app)
         end
 
-        # @since 2.1.0
-        # @api private
         def hanami_head?
           options.fetch(:head)
         end
 
-        # @since 2.3.0
-        # @api private
         def gem_source
           value = options.fetch(:gem_source)
           return value if value.match? %r{\A\w+://}
@@ -85,56 +71,39 @@ module Hanami
           "https://#{value}"
         end
 
-        # @since NEXT
-        # @api private
         def gem_coop?
           value = options.fetch(:gem_source)
           value.match? %r{(\A\w+://)?gem.coop}
         end
 
-        # @since 2.1.0
-        # @api private
         def generate_assets?
           !options.fetch(:skip_assets, false)
         end
 
-        # @since 2.2.0
-        # @api private
         def generate_db?
           !options.fetch(:skip_db, false)
         end
 
-        # @since 2.2.0
-        # @api private
         def generate_view?
           !options.fetch(:skip_view, false)
         end
 
-        # @api private
         def generate_mailer?
           !options.fetch(:skip_mailer, false)
         end
 
-        # @since 2.2.0
-        # @api private
         def generate_sqlite?
           generate_db? && database_option == Commands::Gem::New::DATABASE_SQLITE
         end
 
-        # @since 2.2.0
-        # @api private
         def generate_postgres?
           generate_db? && database_option == Commands::Gem::New::DATABASE_POSTGRES
         end
 
-        # @since 2.2.0
-        # @api private
         def generate_mysql?
           generate_db? && database_option == Commands::Gem::New::DATABASE_MYSQL
         end
 
-        # @since 2.2.0
-        # @api private
         def database_url
           if generate_sqlite?
             "sqlite://db/#{app}.sqlite"
@@ -147,27 +116,18 @@ module Hanami
           end
         end
 
-        # @since 2.1.0
-        # @api private
         def bundled_views?
           Hanami.bundled?("hanami-view")
         end
 
-        # @since 2.1.0
-        # @api private
         def bundled_assets?
           Hanami.bundled?("hanami-assets")
         end
 
-        # @since 2.2.0
-        # @api private
         def bundled_dry_monads?
           Hanami.bundled?("dry-monads")
         end
 
-        # @since 2.1.0
-        # @api private
-        #
         # @see https://rubyreferences.github.io/rubychanges/3.1.html#values-in-hash-literals-and-keyword-arguments-can-be-omitted
         def ruby_omit_hash_values?
           RUBY_VERSION >= "3.1"
@@ -195,16 +155,8 @@ module Hanami
           options.fetch(:test_framework, Commands::Gem::New::TEST_FRAMEWORK_DEFAULT)
         end
 
-        # @since 2.0.0
-        # @api private
         attr_reader :inflector
-
-        # @since 2.0.0
-        # @api private
         attr_reader :app
-
-        # @since 2.1.0
-        # @api private
         attr_reader :options
       end
     end
