@@ -179,6 +179,9 @@ module Hanami
               # Re-runs in test are for development-env commands only.
               return unless Hanami.env == :development
 
+              # Re-runs have been intentionally switched off
+              return if ENV.fetch("HANAMI_CLI_DB_COMMAND_RE_RUN_IN_TEST", "true") != "true"
+
               cmd = $0
               cmd = "bundle exec #{cmd}" if ENV.key?("BUNDLE_BIN_PATH")
 
@@ -192,7 +195,7 @@ module Hanami
             end
 
             def re_running_in_test?
-              ENV.key?("HANAMI_CLI_DB_COMMAND_RE_RUN_IN_TEST")
+              ENV["HANAMI_CLI_DB_COMMAND_RE_RUN_IN_TEST"] == "true"
             end
 
             # Returns the `ARGV` with every option argument included, but the `-e` or `--env` args
