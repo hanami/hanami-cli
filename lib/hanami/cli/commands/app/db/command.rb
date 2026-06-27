@@ -14,6 +14,42 @@ module Hanami
           # @since 2.2.0
           # @api private
           class Command < App::Command
+            # Overloads {Hanami::CLI::Commands::App::DB::Command#call} to allow skipping test
+            # database operations
+            #
+            # Adds `--skip-test-db` option flag
+            #
+            # @since 3.0.0
+            # @api private
+            module SkipTestDB
+              # @since 3.0.0
+              # @api private
+              def self.prepended(klass)
+                # This module is included each time the class is inherited
+                # Without this check, the --skip-test-db option is duplicated each time
+                unless klass.options.map(&:name).include?(:skip_test_db)
+                  klass.option :skip_test_db, type: :flag, default: false, desc: "Skip test database operations"
+                end
+              end
+
+              # @since 3.0.0
+              # @api private
+              def call(*args, **opts)
+                if opts[:skip_test_db]
+                  ENV["HANAMI_CLI_DB_COMMAND_RE_RUN_IN_TEST"] = "false"
+                end
+
+                super
+              end
+            end
+
+            # @since 3.0.0
+            # @api private
+            def self.inherited(klass)
+              super
+              klass.prepend(SkipTestDB)
+            end
+
             option :app, required: false, type: :flag, default: false, desc: "Use app database"
             option :slice, required: false, desc: "Use database for slice"
 
