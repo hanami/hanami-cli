@@ -71,7 +71,13 @@ module Hanami
                 parent_class_name: "Hanami::Mailer",
                 requires: ["hanami/mailer"],
                 auto_register: false,
-                body: ["# Add common mailer behavior here. See https://hanakai.org/learn/hanami/mailers for details."]
+                body: [
+                  "# Add common mailer behavior here, such as a default sender:",
+                  "#",
+                  '# from "noreply@example.com"',
+                  "#",
+                  "# See https://hanakai.org/learn/hanami/mailers for details."
+                ]
               ).create
 
               fs.create("app/mailers/.keep", t("keep.erb", context))
