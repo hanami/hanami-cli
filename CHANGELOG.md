@@ -19,13 +19,41 @@ and this project adheres to [Break Versioning](https://www.taoensso.com/break-ve
 
 ### Security
 
-[Unreleased]: https://github.com/hanami/cli/compare/v3.0.0.rc1...HEAD
+[Unreleased]: https://github.com/hanami/cli/compare/v3.0.0...HEAD
 
 ## [3.0.0] - 2026-06-30
 
 ### Added
 
+- Include `hanami-mailer` in the default `Gemfile`, include sample mailer env vars in `.env`, and generate a base `Mailer` class for the app and each slice (`app/mailer.rb` and `mailer.rb` in slices). Use `hanami new --skip-mailer` to opt out. (@timriley in #420, #425)
+- Add `generate mailer` command. (@timriley in #426)
+- Add `i18n` gem to the default `Gemfile`, and generate a placeholder `config/i18n/en.yml` for the app and each generated slice. (@timriley in #409)
+- Add `--name` option to `hanami new`, to specify a custom module namespace while using the positional argument as the directory path. For example, `hanami new my_bookshelf --name=bookshelf` creates the app in `my_bookshelf/` with `Bookshelf` as the module name. (@aaronmallen in #387)
+- Add `--test` option to `hanami new` to specify which test framework to use. Supports `rspec` (default) and `minitest`. (@timriley in #399)
+- Add `generate provider` command. (@timriley in #419)
+- Add `--template-engine` option to `hanami generate` and `hanami new` to specify which template engine should be used for generated template files. Supports `erb`, `haml` and `slim`. (@katafrakt in #280, #389, #390)
+- Add `--force` option to all generators (except migration), which will override existing files instead of exiting early (@katafrakt in #397)
 - Add a `--skip-test-db` flag to `hanami db` commands. By default, running a `db` command in development also re-runs against the test database to keep the two in sync; passing `--skip-test-db` operates on the development database only. (@adamlassek in #430)
+
+### Changed
+
+- In generated `Gemfile`, depend on dry-validation rather than hanami-validations. Hanami Validations will no longer be used; Hanami Action now checks for Dry Validation directly. (@timriley in #401)
+- In generated `package.json`, include `esbuild` as a direct dependency. `esbuild` is now a peer dependency of `hanami-assets`, which requires the app to depend on it directly. (@timriley in #428)
+- Check for the hanami-action gem rather than hanami-controller (now retired) across various commands. (@cllns in #402)
+- Include rouge gem in generated `Gemfile` to enable SQL syntax highlighting in logs. (@kyleplump in #405)
+- When `--gem-source=gem.coop` is used, Hanami and Dry gems are installed from their respective namespaces on gem.coop (@katafrakt in #424)
+- Require Puma 7.1 or later, and remove unneeded `preload_app!` in generated `config/puma.rb`. Preloading is now enabled by default in Puma's cluster mode. (@joshuay03 in #372)
+- In generated `.env`, include a link the guide explaining how these files are loaded. (@timriley in #425)
+- In generated files, update all guides.hanamirb.org links to hanakai.org. (@yosangwon in #407)
+- Require dry-cli 1.4 or later, allowing for simplified argument handling in hanami-rspec callback methods. (@timriley in #408)
+- Link to new hanakai.org site in generated `README.md`. (@katafrakt in #423)
+- Require Ruby 3.3 or newer.
+
+### Fixed
+
+- Skip generating duplicate routes when running `generate action`. (@sandbergja in #417)
+- Don't overwrite libpq ENV vars with empty strings derived from certain DATABASE_URLs. (@StantonMatt in #414)
+- Remove duplicate text in `middleware` and `routes` command usage output. (@katafrakt in #406)
 
 [3.0.0]: https://github.com/hanami/cli/compare/v2.3.5...v3.0.0
 
@@ -60,7 +88,7 @@ and this project adheres to [Break Versioning](https://www.taoensso.com/break-ve
 
 - Skip generating duplicate routes when running `generate action`. (@sandbergja in #417)
 - Don't overwrite libpq ENV vars with empty strings derived from certain DATABASE_URLs. (@StantonMatt in #414)
-- Remove duplicate text in `middleware` and `routes` command usage output. (@katafrakt in #406
+- Remove duplicate text in `middleware` and `routes` command usage output. (@katafrakt in #406)
 
 [3.0.0.rc1]: https://github.com/hanami/cli/compare/v2.3.5...v3.0.0.rc1
 
