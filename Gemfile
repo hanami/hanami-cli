@@ -27,6 +27,12 @@ end
 
 gem "puma"
 
+# Work around RDoc/JRuby incompatibiltiy: rdoc 8 depends on rbs 4, whose native C extension can't
+# build on JRuby.
+#
+# Remove this once https://github.com/ruby/rdoc/issues/1746 is resolved.
+gem "rdoc", "< 8.0"
+
 platforms :ruby do
   gem "mysql2"
   gem "pg"
