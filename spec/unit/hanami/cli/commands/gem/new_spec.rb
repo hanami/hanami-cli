@@ -463,7 +463,11 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
 
         module #{inflector.camelize(app)}
           class Mailer < Hanami::Mailer
-            # Add common mailer behavior here. See https://hanakai.org/learn/hanami/mailers for details.
+            # Add common mailer behavior here, such as a default sender:
+            #
+            # from "noreply@example.com"
+            #
+            # See https://hanakai.org/learn/hanami/mailers for details.
           end
         end
       RUBY
