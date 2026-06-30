@@ -21,6 +21,14 @@ and this project adheres to [Break Versioning](https://www.taoensso.com/break-ve
 
 [Unreleased]: https://github.com/hanami/cli/compare/v3.0.0.rc1...HEAD
 
+## [3.0.0] - 2026-06-30
+
+### Added
+
+- Add a `--skip-test-db` flag to `hanami db` commands. By default, running a `db` command in development also re-runs against the test database to keep the two in sync; passing `--skip-test-db` operates on the development database only. (@adamlassek in #430)
+
+[3.0.0]: https://github.com/hanami/cli/compare/v2.3.5...v3.0.0
+
 ## [3.0.0.rc1] - 2026-06-16
 
 ### Added
