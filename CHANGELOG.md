@@ -9,6 +9,10 @@ and this project adheres to [Break Versioning](https://www.taoensso.com/break-ve
 
 ### Added
 
+* Allow an app or slice to specify a custom database table name for the
+migrations.  If no custom table name is specified, the table will be
+named `schema_migrations` as before.
+
 ### Changed
 
 ### Deprecated
