@@ -17,13 +17,15 @@ module Hanami
 
       # @api private
       # @since 2.1.0
-      def call(cmd, *args, env: {}, out_prefix: "")
+      def call(cmd, *args, env: {}, out_prefix: "", &pid_callback)
         ::Bundler.with_original_env do
           threads = []
           exit_status = 0
 
           # rubocop:disable Lint/SuppressedException
           Open3.popen3(env, command(cmd, *args)) do |_stdin, stdout, stderr, wait_thr|
+            pid_callback&.call(wait_thr.pid)
+
             threads << Thread.new do
               stdout.each_line do |line|
                 out.puts("#{out_prefix}#{line}")

@@ -11,8 +11,8 @@ module Hanami
         module Assets
           # Base class for assets commands.
           #
-          # Finds slices with assets present (anything in an `assets/` dir), then forks a child
-          # process for each slice to run the assets command (`config/assets.js`) for the slice.
+          # Finds slices with assets present (anything in an `assets/` dir), then runs the assets
+          # command (`config/assets.js`) for each slice concurrently, each in its own thread.
           #
           # Prefers the slice's own `config/assets.js` if present, otherwise falls back to the
           # app-level file.
@@ -58,15 +58,22 @@ module Hanami
                 end
               end
 
-              pids = slices_with_assets.map { |slice| fork_child_assets_command(slice) }
+              pids = []
+              pids_mutex = Mutex.new
+
+              threads = slices.map { |slice| run_assets_command(slice, pids, pids_mutex) }
 
               Signal.trap("INT") do
-                pids.each do |pid|
-                  Process.kill("INT", pid)
+                pids_mutex.synchronize do
+                  pids.each do |pid|
+                    Process.kill("INT", pid)
+                  rescue Errno::ESRCH
+                    # Already exited
+                  end
                 end
               end
 
-              Process.waitall
+              threads.each(&:join)
             end
 
             private
@@ -79,15 +86,19 @@ module Hanami
             # @api private
             attr_reader :system_call
 
+            # Runs the assets command for the given slice in its own thread, so that all slices'
+            # assets commands run concurrently. Uses a real OS process (via {InteractiveSystemCall},
+            # itself backed by `Open3.popen3`) rather than `Process.fork`, since JRuby's JVM cannot
+            # support `fork`.
+            #
             # @since 2.1.0
             # @api private
-            def fork_child_assets_command(slice)
-              Process.fork do
+            def run_assets_command(slice, pids, pids_mutex)
+              Thread.new do
                 cmd, *args = assets_command(slice)
-                system_call.call(cmd, *args, out_prefix: "[#{slice.slice_name}] ")
-              rescue Interrupt
-                # When this has been interrupted (by the Signal.trap handler in #call), catch the
-                # interrupt and exit cleanly, without showing the default full backtrace.
+                system_call.call(cmd, *args, out_prefix: "[#{slice.slice_name}] ") { |pid|
+                  pids_mutex.synchronize { pids << pid }
+                }
               end
             end
 
