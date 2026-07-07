@@ -91,7 +91,7 @@ module Hanami
             # itself backed by `Open3.popen3`) rather than `Process.fork`, since JRuby's JVM cannot
             # support `fork`.
             #
-            # @since 2.1.0
+            # @since 3.0.1
             # @api private
             def run_assets_command(slice, pids, pids_mutex)
               Thread.new do
