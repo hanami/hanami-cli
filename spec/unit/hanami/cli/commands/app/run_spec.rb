@@ -39,37 +39,25 @@ RSpec.describe Hanami::CLI::Commands::App::Run do
 
       context "with syntax errors" do
         it "prints error message and exits with code 1" do
-          exit_code = catch(:exit) {
-            subject.call(code_or_path: "puts 'unclosed string")
-            0
-          }
+          expect_exit_code(1) { subject.call(code_or_path: "puts 'unclosed string") }
 
           expect(err.string).to include("Syntax error in code")
-          expect(exit_code).to eq(1)
         end
       end
 
       context "with name errors" do
         it "prints error message and exits with code 1" do
-          exit_code = catch(:exit) {
-            subject.call(code_or_path: "undefined_variable")
-            0
-          }
+          expect_exit_code(1) { subject.call(code_or_path: "undefined_variable") }
 
           expect(err.string).to include("Name error in code")
-          expect(exit_code).to eq(1)
         end
       end
 
       context "with runtime errors" do
         it "prints error message and exits with code 1" do
-          exit_code = catch(:exit) {
-            subject.call(code_or_path: "1 / 0")
-            0
-          }
+          expect_exit_code(1) { subject.call(code_or_path: "1 / 0") }
 
           expect(err.string).to include("Error executing code")
-          expect(exit_code).to eq(1)
         end
       end
     end

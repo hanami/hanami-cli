@@ -183,10 +183,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Create, :app_integration do
           .with(a_string_matching(/sqlite3.+app.sqlite3/))
           .and_return Hanami::CLI::SystemCall::Result.new(exit_code: 2, out: "", err: "app-db-err")
 
-        exit_code = catch(:exit) {
-          command.call
-          0
-        }
+        expect_exit_code(2) { command.call }
 
         expect { Main::Slice["db.gateway"] }.not_to raise_error
 
@@ -197,8 +194,6 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Create, :app_integration do
         expect(output).to include "app-db-err"
 
         expect(output).to include "database db/main.sqlite3 created"
-
-        expect(exit_code).to eq(2)
       end
 
       context "app with gateways" do
@@ -279,10 +274,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Create, :app_integration do
           .with(a_string_matching(/createdb.+_app/), anything)
           .and_return Hanami::CLI::SystemCall::Result.new(exit_code: 2, out: "", err: "app-db-err")
 
-        exit_code = catch(:exit) {
-          command.call
-          0
-        }
+        expect_exit_code(2) { command.call }
 
         expect { Hanami.app["db.gateway"] }.to raise_error Sequel::DatabaseConnectionError
         expect { Main::Slice["db.gateway"] }.not_to raise_error
@@ -291,8 +283,6 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Create, :app_integration do
         expect(output).to include "app-db-err"
 
         expect(output).to include "database #{POSTGRES_BASE_DB_NAME}_main created"
-
-        expect(exit_code).to eq(2)
       end
     end
 
