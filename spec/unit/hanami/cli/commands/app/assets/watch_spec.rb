@@ -32,11 +32,14 @@ RSpec.describe Hanami::CLI::Commands::App::Assets::Watch, "#call", :app_integrat
     end
   end
 
+  let(:thread_double) { double("Thread", kill: nil, join: nil) }
+
   before do
-    # Instead of forking a process per slice, run that code directly. This is is necessary becuase
-    # RSpec method expectations won't work on objects in a forked process.
-    allow(Process).to receive(:fork).and_wrap_original do |_original_method, &block|
+    # Instead of spawning a thread per slice, run that code directly. This is necessary because
+    # RSpec method expectations won't work on objects in a different thread.
+    allow(Thread).to receive(:new).and_wrap_original do |_original_method, &block|
       block.call
+      thread_double
     end
   end
 
