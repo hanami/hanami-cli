@@ -85,8 +85,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
 
     describe "sqlite" do
       before do
-        ENV["DATABASE_URL"] = "sqlite://db/app.sqlite3"
-        ENV["MAIN__DATABASE_URL"] = "sqlite://db/main.sqlite3"
+        ENV["DATABASE_URL"] = sqlite_url("db/app.sqlite3", dir: @dir)
+        ENV["MAIN__DATABASE_URL"] = sqlite_url("db/main.sqlite3", dir: @dir)
         db_create
       end
 
@@ -100,8 +100,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
         expect(dump_command).to have_received(:call).once
 
         expect(output).to include_in_order(
-          "database db/app.sqlite3 migrated",
-          "database db/main.sqlite3 migrated"
+          "database #{sqlite_db_name("db/app.sqlite3", dir: @dir)} migrated",
+          "database #{sqlite_db_name("db/main.sqlite3", dir: @dir)} migrated"
         )
       end
 
@@ -114,7 +114,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
         expect(dump_command).to have_received(:call).with(hash_including(app: true, slice: nil))
         expect(dump_command).to have_received(:call).once
 
-        expect(output).to include "database db/app.sqlite3 migrated"
+        expect(output).to include "database #{sqlite_db_name("db/app.sqlite3", dir: @dir)} migrated"
         expect(output).not_to include "main.sqlite3"
       end
 
@@ -127,7 +127,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
         expect(dump_command).to have_received(:call).with(hash_including(app: false, slice: "main"))
         expect(dump_command).to have_received(:call).exactly(1).time
 
-        expect(output).to include "database db/main.sqlite3 migrated"
+        expect(output).to include "database #{sqlite_db_name("db/main.sqlite3", dir: @dir)} migrated"
         expect(output).not_to include "app.sqlite3"
       end
 
@@ -153,7 +153,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
         def before_prepare
           super
 
-          ENV["DATABASE_URL__EXTRA"] = "sqlite://db/app_extra.sqlite3"
+          ENV["DATABASE_URL__EXTRA"] = sqlite_url("db/app_extra.sqlite3", dir: @dir)
 
           write "config/db/extra_migrate/20240602201330_create_comments.rb", <<~RUBY
             ROM::SQL.migration do
@@ -177,8 +177,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
           expect(dump_command).to have_received(:call).once
 
           expect(output).to include_in_order(
-            "database db/app.sqlite3 migrated in",
-            "database db/app_extra.sqlite3 migrated in"
+            "database #{sqlite_db_name("db/app.sqlite3", dir: @dir)} migrated in",
+            "database #{sqlite_db_name("db/app_extra.sqlite3", dir: @dir)} migrated in"
           )
         end
 
@@ -191,8 +191,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
           expect(dump_command).to have_received(:call).with(hash_including(app: true, slice: nil, gateway: "extra"))
           expect(dump_command).to have_received(:call).once
 
-          expect(output).to include "database db/app_extra.sqlite3 migrated in"
-          expect(output).not_to include "db/app.sqlite3"
+          expect(output).to include "database #{sqlite_db_name("db/app_extra.sqlite3", dir: @dir)} migrated in"
+          expect(output).not_to include sqlite_db_name("db/app.sqlite3", dir: @dir)
         end
       end
 
@@ -200,7 +200,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
         def before_prepare
           super
 
-          ENV["MAIN__DATABASE_URL__EXTRA"] = "sqlite://db/main_extra.sqlite3"
+          ENV["MAIN__DATABASE_URL__EXTRA"] = sqlite_url("db/main_extra.sqlite3", dir: @dir)
 
           write "slices/main/config/db/extra_migrate/20240602201330_create_comments.rb", <<~RUBY
             ROM::SQL.migration do
@@ -224,8 +224,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
           expect(dump_command).to have_received(:call).once
 
           expect(output).to include_in_order(
-            "database db/main.sqlite3 migrated in",
-            "database db/main_extra.sqlite3 migrated in"
+            "database #{sqlite_db_name("db/main.sqlite3", dir: @dir)} migrated in",
+            "database #{sqlite_db_name("db/main_extra.sqlite3", dir: @dir)} migrated in"
           )
         end
 
@@ -238,8 +238,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
           expect(dump_command).to have_received(:call).with(hash_including(slice: "main", gateway: "extra"))
           expect(dump_command).to have_received(:call).once
 
-          expect(output).to include "database db/main_extra.sqlite3 migrated in"
-          expect(output).not_to include "db/main.sqlite3"
+          expect(output).to include "database #{sqlite_db_name("db/main_extra.sqlite3", dir: @dir)} migrated in"
+          expect(output).not_to include sqlite_db_name("db/main.sqlite3", dir: @dir)
         end
       end
     end
@@ -330,15 +330,15 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
     end
 
     before do
-      ENV["ADMIN__DATABASE_URL"] = "sqlite://db/shared.sqlite3"
-      ENV["MAIN__DATABASE_URL"] = "sqlite://db/shared.sqlite3"
+      ENV["ADMIN__DATABASE_URL"] = sqlite_url("db/shared.sqlite3", dir: @dir)
+      ENV["MAIN__DATABASE_URL"] = sqlite_url("db/shared.sqlite3", dir: @dir)
       db_create
     end
 
     it "migrates the database using the slice with config/db/" do
       command.call
 
-      expect(output).to include "database db/shared.sqlite3 migrated"
+      expect(output).to include "database #{sqlite_db_name("db/shared.sqlite3", dir: @dir)} migrated"
       expect(output).not_to include "WARNING"
 
       expect(Admin::Slice["db.gateway"].connection.tables).to include :posts
@@ -374,8 +374,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
     end
 
     before do
-      ENV["ADMIN__DATABASE_URL"] = "sqlite://db/confused.sqlite3"
-      ENV["MAIN__DATABASE_URL"] = "sqlite://db/confused.sqlite3"
+      ENV["ADMIN__DATABASE_URL"] = sqlite_url("db/confused.sqlite3", dir: @dir)
+      ENV["MAIN__DATABASE_URL"] = sqlite_url("db/confused.sqlite3", dir: @dir)
       db_create
     end
 
@@ -383,11 +383,11 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
       command.call
 
       expect(output).to include_in_order(
-        "WARNING: Database db/confused.sqlite3 is configured for multiple config/db/ directories",
+        "WARNING: Database #{sqlite_db_name("db/confused.sqlite3", dir: @dir)} is configured for multiple config/db/ directories",
         "- slices/admin/config/db",
         "- slices/main/config/db",
         'Using config in "admin" slice only',
-        "database db/confused.sqlite3 migrated"
+        "database #{sqlite_db_name("db/confused.sqlite3", dir: @dir)} migrated"
       )
 
       expect(Admin::Slice["db.gateway"].connection.tables).to include :posts
@@ -401,14 +401,14 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
     end
 
     before do
-      ENV["DATABASE_URL"] = "sqlite://db/app.sqlite3"
+      ENV["DATABASE_URL"] = sqlite_url("db/app.sqlite3", dir: @dir)
     end
 
     it "prints a warning, and does not migrate the database" do
       command.call
 
       expect(output).to include(
-        "WARNING: Database db/app.sqlite3 expects the folder config/db/ to exist but it does not."
+        "WARNING: Database #{sqlite_db_name("db/app.sqlite3", dir: @dir)} expects the folder config/db/ to exist but it does not."
       )
       expect(output).not_to include "migrated"
     end
@@ -443,18 +443,18 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
     end
 
     before do
-      ENV["ADMIN__DATABASE_URL__POSTS"] = "sqlite://db/posts.sqlite3"
-      ENV["ADMIN__DATABASE_URL__COMMENTS"] = "sqlite://db/comments.sqlite3"
-      ENV["MAIN__DATABASE_URL__POSTS"] = "sqlite://db/posts.sqlite3"
-      ENV["MAIN__DATABASE_URL__COMMENTS"] = "sqlite://db/comments.sqlite3"
+      ENV["ADMIN__DATABASE_URL__POSTS"] = sqlite_url("db/posts.sqlite3", dir: @dir)
+      ENV["ADMIN__DATABASE_URL__COMMENTS"] = sqlite_url("db/comments.sqlite3", dir: @dir)
+      ENV["MAIN__DATABASE_URL__POSTS"] = sqlite_url("db/posts.sqlite3", dir: @dir)
+      ENV["MAIN__DATABASE_URL__COMMENTS"] = sqlite_url("db/comments.sqlite3", dir: @dir)
       db_create
     end
 
     it "migrates the database using the slice with config/db/" do
       command.call
 
-      expect(output).to include "database db/comments.sqlite3 migrated"
-      expect(output).to include "database db/posts.sqlite3 migrated"
+      expect(output).to include "database #{sqlite_db_name("db/comments.sqlite3", dir: @dir)} migrated"
+      expect(output).to include "database #{sqlite_db_name("db/posts.sqlite3", dir: @dir)} migrated"
       expect(output).not_to include "WARNING"
 
       expect(Admin::Slice["db.gateways.posts"].connection.tables).to include :posts
@@ -503,10 +503,10 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
     end
 
     before do
-      ENV["ADMIN__DATABASE_URL__POSTS"] = "sqlite://db/posts.sqlite3"
-      ENV["ADMIN__DATABASE_URL__COMMENTS"] = "sqlite://db/comments.sqlite3"
-      ENV["MAIN__DATABASE_URL__POSTS"] = "sqlite://db/posts.sqlite3"
-      ENV["MAIN__DATABASE_URL__COMMENTS"] = "sqlite://db/comments.sqlite3"
+      ENV["ADMIN__DATABASE_URL__POSTS"] = sqlite_url("db/posts.sqlite3", dir: @dir)
+      ENV["ADMIN__DATABASE_URL__COMMENTS"] = sqlite_url("db/comments.sqlite3", dir: @dir)
+      ENV["MAIN__DATABASE_URL__POSTS"] = sqlite_url("db/posts.sqlite3", dir: @dir)
+      ENV["MAIN__DATABASE_URL__COMMENTS"] = sqlite_url("db/comments.sqlite3", dir: @dir)
       db_create
     end
 
@@ -514,12 +514,12 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
       command.call
 
       expect(output).to include_in_order(
-        "WARNING: Database db/posts.sqlite3 is configured for multiple config/db/ directories:",
+        "WARNING: Database #{sqlite_db_name("db/posts.sqlite3", dir: @dir)} is configured for multiple config/db/ directories:",
         "- slices/admin/config/db",
         "- slices/main/config/db",
         %(Using config in "admin" slice only.),
-        "database db/comments.sqlite3 migrated",
-        "database db/posts.sqlite3 migrated"
+        "database #{sqlite_db_name("db/comments.sqlite3", dir: @dir)} migrated",
+        "database #{sqlite_db_name("db/posts.sqlite3", dir: @dir)} migrated"
       )
 
       expect(Admin::Slice["db.gateways.posts"].connection.tables).to include :posts
@@ -534,14 +534,14 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
     end
 
     before do
-      ENV["DATABASE_URL"] = "sqlite://db/app.sqlite3"
+      ENV["DATABASE_URL"] = sqlite_url("db/app.sqlite3", dir: @dir)
     end
 
     it "prints a warning, and does not migrate the database" do
       command.call
 
       expect(output).to include(
-        "WARNING: Database db/app.sqlite3 expects migrations to be located within config/db/migrate/ but that folder does not exist."
+        "WARNING: Database #{sqlite_db_name("db/app.sqlite3", dir: @dir)} expects migrations to be located within config/db/migrate/ but that folder does not exist."
       )
       expect(output).to include("No database migrations can be run for this database.")
       expect(output).not_to include "migrated"
@@ -556,7 +556,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
     end
 
     before do
-      ENV["DATABASE_URL"] = "sqlite://db/app.sqlite3"
+      ENV["DATABASE_URL"] = sqlite_url("db/app.sqlite3", dir: @dir)
       db_create
     end
 
@@ -564,7 +564,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
       command.call
 
       expect(output).to include(
-        "NOTE: Empty database migrations folder (config/db/migrate/) for db/app.sqlite3"
+        "NOTE: Empty database migrations folder (config/db/migrate/) for #{sqlite_db_name("db/app.sqlite3", dir: @dir)}"
       )
       expect(output).not_to include "migrated"
     end
@@ -572,7 +572,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
 
   describe "automatic test env execution" do
     before do
-      ENV["DATABASE_URL"] = "sqlite://db/app.sqlite3"
+      ENV["DATABASE_URL"] = sqlite_url("db/app.sqlite3", dir: @dir)
       db_create
     end
 

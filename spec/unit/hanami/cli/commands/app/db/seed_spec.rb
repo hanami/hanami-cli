@@ -87,8 +87,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Seed, :app_integration do
   end
 
   before do
-    ENV["DATABASE_URL"] = "sqlite://db/app.sqlite3"
-    ENV["MAIN__DATABASE_URL"] = "sqlite://db/main.sqlite3"
+    ENV["DATABASE_URL"] = sqlite_url("db/app.sqlite3", dir: @dir)
+    ENV["MAIN__DATABASE_URL"] = sqlite_url("db/main.sqlite3", dir: @dir)
 
     db_migrate
   end

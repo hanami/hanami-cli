@@ -64,8 +64,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Version, :app_integration do
   end
 
   before do
-    ENV["DATABASE_URL"] = "sqlite://db/app.sqlite3"
-    ENV["MAIN__DATABASE_URL"] = "sqlite://db/main.sqlite3"
+    ENV["DATABASE_URL"] = sqlite_url("db/app.sqlite3", dir: @dir)
+    ENV["MAIN__DATABASE_URL"] = sqlite_url("db/main.sqlite3", dir: @dir)
 
     db_migrate
   end
@@ -74,29 +74,29 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Version, :app_integration do
     command.call
 
     expect(output).to include_in_order(
-      "db/app.sqlite3 current schema version is 20240602191330_create_categories",
-      "db/main.sqlite3 current schema version is 20240602211330_create_comments"
+      "#{sqlite_db_name("db/app.sqlite3", dir: @dir)} current schema version is 20240602191330_create_categories",
+      "#{sqlite_db_name("db/main.sqlite3", dir: @dir)} current schema version is 20240602211330_create_comments"
     )
   end
 
   it "prints the version of the app db only when given --app" do
     command.call(app: true)
 
-    expect(output).to include "db/app.sqlite3 current schema version is 20240602191330_create_categories"
-    expect(output).not_to include "db/main.sqlite3"
+    expect(output).to include "#{sqlite_db_name("db/app.sqlite3", dir: @dir)} current schema version is 20240602191330_create_categories"
+    expect(output).not_to include sqlite_db_name("db/main.sqlite3", dir: @dir)
   end
 
   it "prints the version of a slice when given --slice" do
     command.call(slice: "main")
 
-    expect(output).to include "db/main.sqlite3 current schema version is 20240602211330_create_comments"
+    expect(output).to include "#{sqlite_db_name("db/main.sqlite3", dir: @dir)} current schema version is 20240602211330_create_comments"
     expect(output).not_to include "db/app.db"
   end
 
   it "prints an error when given a slice without migrations" do
     command.call(slice: "admin")
 
-    expect(output).to include %(Cannot find version for database db/app.sqlite3: no migrations directory at slices/admin/config/db/migrate/)
+    expect(output).to include %(Cannot find version for database #{sqlite_db_name("db/app.sqlite3", dir: @dir)}: no migrations directory at slices/admin/config/db/migrate/)
     expect(output).not_to include "current schema version"
   end
 
@@ -113,23 +113,23 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Version, :app_integration do
         end
       RUBY
 
-      ENV["DATABASE_URL__EXTRA"] = "sqlite://db/app_extra.sqlite3"
+      ENV["DATABASE_URL__EXTRA"] = sqlite_url("db/app_extra.sqlite3", dir: @dir)
     end
 
     it "prints the versions for all an app's databases when given --app" do
       command.call(app: true)
 
       expect(output).to include_in_order(
-        "db/app.sqlite3 current schema version is 20240602191330_create_categories",
-        "db/app_extra.sqlite3 current schema version is 20240921211330_create_users"
+        "#{sqlite_db_name("db/app.sqlite3", dir: @dir)} current schema version is 20240602191330_create_categories",
+        "#{sqlite_db_name("db/app_extra.sqlite3", dir: @dir)} current schema version is 20240921211330_create_users"
       )
     end
 
     it "prints the version for a single gateway database when given --app and --gateway" do
       command.call(app: true, gateway: "extra")
 
-      expect(output).to include "db/app_extra.sqlite3 current schema version is 20240921211330_create_users"
-      expect(output).not_to include "db/app.sqlite3"
+      expect(output).to include "#{sqlite_db_name("db/app_extra.sqlite3", dir: @dir)} current schema version is 20240921211330_create_users"
+      expect(output).not_to include sqlite_db_name("db/app.sqlite3", dir: @dir)
     end
   end
 
@@ -146,23 +146,23 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Version, :app_integration do
         end
       RUBY
 
-      ENV["MAIN__DATABASE_URL__EXTRA"] = "sqlite://db/main_extra.sqlite3"
+      ENV["MAIN__DATABASE_URL__EXTRA"] = sqlite_url("db/main_extra.sqlite3", dir: @dir)
     end
 
     it "prints the versions for all an app's databases when given --app" do
       command.call(slice: "main")
 
       expect(output).to include_in_order(
-        "db/main.sqlite3 current schema version is 20240602211330_create_comments",
-        "db/main_extra.sqlite3 current schema version is 20240921211330_create_users"
+        "#{sqlite_db_name("db/main.sqlite3", dir: @dir)} current schema version is 20240602211330_create_comments",
+        "#{sqlite_db_name("db/main_extra.sqlite3", dir: @dir)} current schema version is 20240921211330_create_users"
       )
     end
 
     it "prints the version for a single gateway database when given --app and --gateway" do
       command.call(slice: "main", gateway: "extra")
 
-      expect(output).to include "db/main_extra.sqlite3 current schema version is 20240921211330_create_users"
-      expect(output).not_to include "db/main.sqlite3"
+      expect(output).to include "#{sqlite_db_name("db/main_extra.sqlite3", dir: @dir)} current schema version is 20240921211330_create_users"
+      expect(output).not_to include sqlite_db_name("db/main.sqlite3", dir: @dir)
     end
   end
 end

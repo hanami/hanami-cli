@@ -46,6 +46,9 @@ module Hanami
 
               def self.database_class(database_url)
                 database_scheme = URI(database_url).scheme
+                if database_scheme == "jdbc"
+                  database_scheme = URI(database_url.sub("jdbc:", "")).scheme
+                end
                 DATABASE_CLASS_RESOLVER[database_scheme].call
               end
 
