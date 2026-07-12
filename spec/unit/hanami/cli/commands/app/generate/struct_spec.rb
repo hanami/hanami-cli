@@ -89,6 +89,25 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Struct, :app do
         end
       end
     end
+
+    context "when the struct namespace includes the app name" do
+      it "namespaces the struct" do
+        subject.call(name: "test.book")
+
+        expect(fs.read("app/structs/test/book.rb")).to eq(<<~EXPECTED)
+          # frozen_string_literal: true
+
+          module Test
+            module Structs
+              module Test
+                class Book < ::Test::DB::Struct
+                end
+              end
+            end
+          end
+        EXPECTED
+      end
+    end
   end
 
   context "generating for a slice" do
@@ -146,6 +165,26 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Struct, :app do
           expect(exception.status).to eq 1
           expect(error_output).to eq Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
         end
+      end
+    end
+
+    context "when the struct namespace includes the slice name" do
+      it "namespaces the struct" do
+        fs.mkdir("slices/main")
+        subject.call(name: "main.book", slice: "main")
+
+        expect(fs.read("slices/main/structs/main/book.rb")).to eq(<<~EXPECTED)
+          # frozen_string_literal: true
+
+          module Main
+            module Structs
+              module Main
+                class Book < ::Main::DB::Struct
+                end
+              end
+            end
+          end
+        EXPECTED
       end
     end
   end

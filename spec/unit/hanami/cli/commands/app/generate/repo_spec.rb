@@ -111,6 +111,25 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Repo, :app do
         end
       end
     end
+
+    context "when the repo namespace includes the app name" do
+      it "namespaces the repo" do
+        subject.call(name: "test.drafts_repo")
+
+        expect(fs.read("app/repos/test/drafts_repo.rb")).to eq(<<~EXPECTED)
+          # frozen_string_literal: true
+
+          module Test
+            module Repos
+              module Test
+                class DraftsRepo < ::Test::DB::Repo
+                end
+              end
+            end
+          end
+        EXPECTED
+      end
+    end
   end
 
   context "generating for a slice" do
@@ -168,6 +187,26 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Repo, :app do
           expect(exception.status).to eq 1
           expect(error_output).to eq Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
         end
+      end
+    end
+
+    context "when the repo namespace includes the slice name" do
+      it "namespaces the repo" do
+        fs.mkdir("slices/main")
+        subject.call(name: "main.books", slice: "main")
+
+        expect(fs.read("slices/main/repos/main/book_repo.rb")).to eq(<<~EXPECTED)
+          # frozen_string_literal: true
+
+          module Main
+            module Repos
+              module Main
+                class BookRepo < ::Main::DB::Repo
+                end
+              end
+            end
+          end
+        EXPECTED
       end
     end
   end

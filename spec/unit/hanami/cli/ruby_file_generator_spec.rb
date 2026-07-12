@@ -205,6 +205,58 @@ RSpec.describe Hanami::CLI::RubyFileGenerator do
         )
       end
     end
+
+    context "when the namespace includes the parent class name" do
+      context "when the parent class isn't namespaced" do
+        it "namespaces the parent class" do
+          expect(
+            Hanami::CLI::RubyFileGenerator.class(
+              "Index",
+              parent_class_name: "Books::Action",
+              modules: %w[Books Views Books]
+            )
+          ).to(
+            eq(
+              <<~OUTPUT
+                module Books
+                  module Views
+                    module Books
+                      class Index < ::Books::Action
+                      end
+                    end
+                  end
+                end
+              OUTPUT
+            )
+          )
+        end
+      end
+
+      context "when the parent class is already namespaced" do
+        it "uses the parent class as-is" do
+          expect(
+            Hanami::CLI::RubyFileGenerator.class(
+              "Index",
+              parent_class_name: "::Books::Action",
+              modules: %w[Books Views Books]
+            )
+          ).to(
+            eq(
+              <<~OUTPUT
+                module Books
+                  module Views
+                    module Books
+                      class Index < ::Books::Action
+                      end
+                    end
+                  end
+                end
+              OUTPUT
+            )
+          )
+        end
+      end
+    end
   end
 
   describe ".module" do

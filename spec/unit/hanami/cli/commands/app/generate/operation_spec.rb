@@ -103,6 +103,27 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Operation, :app do
         end
       end
     end
+
+    context "when the operation namespace includes the app name" do
+      it "namespaces the operation" do
+        subject.call(name: "admin/test/add")
+
+        expect(fs.read("app/admin/test/add.rb")).to eq(<<~EXPECTED)
+          # frozen_string_literal: true
+
+          module Test
+            module Admin
+              module Test
+                class Add < ::Test::Operation
+                  def call
+                  end
+                end
+              end
+            end
+          end
+        EXPECTED
+      end
+    end
   end
 
   context "generating for a slice" do
@@ -167,6 +188,28 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Operation, :app do
           expect(exception.status).to eq 1
           expect(error_output).to eq Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
         end
+      end
+    end
+
+    context "when the operation namespace includes the slice name" do
+      it "namespaces the operation" do
+        fs.mkdir("slices/main")
+        subject.call(name: "admin.main.add", slice: "main")
+
+        expect(fs.read("slices/main/admin/main/add.rb")).to eq(<<~EXPECTED)
+          # frozen_string_literal: true
+
+          module Main
+            module Admin
+              module Main
+                class Add < ::Main::Operation
+                  def call
+                  end
+                end
+              end
+            end
+          end
+        EXPECTED
       end
     end
   end
