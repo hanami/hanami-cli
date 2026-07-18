@@ -108,10 +108,26 @@ module Hanami
 
       def class_definition
         if parent_class_name
-          "class #{class_name} < #{parent_class_name}"
+          "class #{class_name} < #{absolute_parent_class_name}"
         else
           "class #{class_name}"
         end
+      end
+
+      # Prefixes the parent class with "::" when its leading namespace collides with a nested
+      # module, ensuring the reference resolves to the top-level constant rather than a same-named
+      # module in the surrounding namespace.
+      #
+      # For example, a parent class of "Books::Action" becomes "::Books::Action" when the generated
+      # class sits inside a second "Books" module.
+      def absolute_parent_class_name
+        return parent_class_name if parent_class_name.start_with?("::")
+
+        parent_root_constant = parent_class_name.split("::", 2).first
+        namespace_parts = modules.drop(1)
+        prefix = "::" if namespace_parts.include?(parent_root_constant)
+
+        "#{prefix}#{parent_class_name}"
       end
 
       def indent(line)
