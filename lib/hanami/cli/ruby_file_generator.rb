@@ -114,6 +114,12 @@ module Hanami
         end
       end
 
+      # Prefixes the parent class with "::" when its leading namespace collides with a nested
+      # module, ensuring the reference resolves to the top-level constant rather than a same-named
+      # module in the surrounding namespace.
+      #
+      # For example, a parent class of "Books::Action" becomes "::Books::Action" when the generated
+      # class sits inside a second "Books" module.
       def absolute_parent_class_name
         return parent_class_name if parent_class_name.start_with?("::")
 
