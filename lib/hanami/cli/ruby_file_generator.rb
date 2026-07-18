@@ -108,13 +108,13 @@ module Hanami
 
       def class_definition
         if parent_class_name
-          "class #{class_name} < #{namespaced_parent_class_name(parent_class_name)}"
+          "class #{class_name} < #{namespaced_parent_class_name}"
         else
           "class #{class_name}"
         end
       end
 
-      def namespaced_parent_class_name(parent_class_name)
+      def namespaced_parent_class_name
         return parent_class_name if parent_class_name.start_with?("::")
 
         bare_class_name = parent_class_name.split("::", 2).first
