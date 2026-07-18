@@ -108,18 +108,18 @@ module Hanami
 
       def class_definition
         if parent_class_name
-          "class #{class_name} < #{namespaced_parent_class_name}"
+          "class #{class_name} < #{absolute_parent_class_name}"
         else
           "class #{class_name}"
         end
       end
 
-      def namespaced_parent_class_name
+      def absolute_parent_class_name
         return parent_class_name if parent_class_name.start_with?("::")
 
-        bare_class_name = parent_class_name.split("::", 2).first
+        parent_root_constant = parent_class_name.split("::", 2).first
         namespace_parts = modules.drop(1)
-        prefix = "::" if namespace_parts.include?(bare_class_name)
+        prefix = "::" if namespace_parts.include?(parent_root_constant)
 
         "#{prefix}#{parent_class_name}"
       end
