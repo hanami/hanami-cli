@@ -219,27 +219,6 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::View, :app do
         end
       end
     end
-
-    context "when the view namespace includes the app name" do
-      it "namespaces the view" do
-        within_application_directory do
-          subject.call(name: "test.index")
-
-          expect(fs.read("app/views/test/index.rb")).to eq(<<~EXPECTED)
-            # frozen_string_literal: true
-
-            module Test
-              module Views
-                module Test
-                  class Index < ::Test::View
-                  end
-                end
-              end
-            end
-          EXPECTED
-        end
-      end
-    end
   end
 
   context "generating for a slice" do
@@ -338,28 +317,6 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::View, :app do
             expect(exception.status).to eq 1
             expect(error_output).to eq Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
           end
-        end
-      end
-    end
-
-    context "when the view namespace includes the slice name" do
-      it "namespaces the view" do
-        within_application_directory do
-          fs.mkdir("slices/main")
-          subject.call(name: "main.index", slice: "main")
-
-          expect(fs.read("slices/main/views/main/index.rb")).to eq(<<~EXPECTED)
-            # frozen_string_literal: true
-
-            module Main
-              module Views
-                module Main
-                  class Index < ::Main::View
-                  end
-                end
-              end
-            end
-          EXPECTED
         end
       end
     end

@@ -78,30 +78,6 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Part, :app do
           end
         end
       end
-
-      context "when the part namespace includes the app name" do
-        it "namespaces the part" do
-          within_application_directory do
-            subject.call(name: "#{app}::#{app}")
-
-            expect(fs.read("app/views/parts/test/test.rb")).to eq(<<~EXPECTED)
-              # auto_register: false
-              # frozen_string_literal: true
-
-              module Test
-                module Views
-                  module Parts
-                    module Test
-                      class Test < ::Test::Views::Part
-                      end
-                    end
-                  end
-                end
-              end
-            EXPECTED
-          end
-        end
-      end
     end
 
     context "with base part" do
@@ -277,31 +253,6 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Part, :app do
       it "raises error" do
         within_application_directory do
           expect { subject.call(name: "user", slice: "foo") }.to raise_error(Hanami::CLI::MissingSliceError)
-        end
-      end
-    end
-
-    context "when the part namespace includes the slice name" do
-      it "namespaces the part" do
-        within_application_directory do
-          fs.mkdir("slices/main")
-          subject.call(name: "main::test", slice: "main")
-
-          expect(fs.read("slices/main/views/parts/main/test.rb")).to eq(<<~EXPECTED)
-            # auto_register: false
-            # frozen_string_literal: true
-
-            module Main
-              module Views
-                module Parts
-                  module Main
-                    class Test < ::Main::Views::Part
-                    end
-                  end
-                end
-              end
-            end
-          EXPECTED
         end
       end
     end

@@ -133,26 +133,6 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Relation, "#call", :app_int
         end
       end
     end
-
-    context "when the relation namespace includes the app name" do
-      it "namespaces the relation" do
-        subject.call(name: "test_app.books")
-
-        expect(Hanami.app.root.join("app/relations/test_app/books.rb").read).to eq(<<~RUBY)
-          # frozen_string_literal: true
-
-          module TestApp
-            module Relations
-              module TestApp
-                class Books < ::TestApp::DB::Relation
-                  schema :books, infer: true
-                end
-              end
-            end
-          end
-        RUBY
-      end
-    end
   end
 
   context "generating for a slice" do
@@ -232,26 +212,6 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Relation, "#call", :app_int
           expect(exception.status).to eq 1
           expect(error_output).to eq Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
         end
-      end
-    end
-
-    context "when the relation namespace includes the slice name" do
-      it "namespaces the relation" do
-        subject.call(name: "main.books", slice: "main")
-
-        expect(Hanami.app.root.join("slices/main/relations/main/books.rb").read).to eq(<<~RUBY)
-          # frozen_string_literal: true
-
-          module Main
-            module Relations
-              module Main
-                class Books < ::Main::DB::Relation
-                  schema :books, infer: true
-                end
-              end
-            end
-          end
-        RUBY
       end
     end
   end

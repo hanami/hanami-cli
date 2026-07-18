@@ -379,32 +379,6 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
     include_context "with existing files" do
       let(:generate_action) { subject.call(name: action_name) }
     end
-
-    context "when the action namespace includes the app name" do
-      it "namespaces the action" do
-        within_application_directory do
-          subject.call(name: "test/foo.index", skip_view: true)
-
-          expect(fs.read("app/actions/test/foo/index.rb")).to eq(<<~EXPECTED)
-            # frozen_string_literal: true
-
-            module Test
-              module Actions
-                module Test
-                  module Foo
-                    class Index < ::Test::Action
-                      def handle(request, response)
-                        response.body = self.class.name
-                      end
-                    end
-                  end
-                end
-              end
-            end
-          EXPECTED
-        end
-      end
-    end
   end
 
   context "generate for app, with hanami view bundled" do
@@ -1113,6 +1087,9 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
       let(:generate_action) { subject.call(name: action_name) }
     end
 
+    # This namespacing behavior is shared across all generators and lives in
+    # `Hanami::CLI::RubyFileGenerator`. This is just an integration check; see
+    # spec/unit/hanami/cli/ruby_file_generator_spec.rb for full coverage.
     context "when the action namespace includes the app name" do
       it "namespaces the action and the view" do
         within_application_directory do
@@ -1391,32 +1368,6 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
           expect(output).to_not include("Created spec/slices/#{slice}/actions/no/test_spec.rb")
         end
       end
-
-      context "when the action namespace includes the slice name" do
-        it "namespaces the action" do
-          within_application_directory do
-            prepare_slice!
-
-            subject.call(name: "main.index", slice: "main")
-
-            expect(fs.read("slices/main/actions/main/index.rb")).to eq(<<~EXPECTED)
-              # frozen_string_literal: true
-
-              module Main
-                module Actions
-                  module Main
-                    class Index < ::Main::Action
-                      def handle(request, response)
-                        response.body = self.class.name
-                      end
-                    end
-                  end
-                end
-              end
-            EXPECTED
-          end
-        end
-      end
     end
 
     context "with hanami view bundled" do
@@ -1621,6 +1572,9 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
         end
       end
 
+      # This namespacing behavior is shared across all generators and lives in
+      # `Hanami::CLI::RubyFileGenerator`. This is just an integration check; see
+      # spec/unit/hanami/cli/ruby_file_generator_spec.rb for full coverage.
       context "when the action namespace includes the slice name" do
         it "namespaces the action and the view" do
           within_application_directory do
