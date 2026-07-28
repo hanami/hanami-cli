@@ -24,7 +24,7 @@ module Hanami
                   measure("#{database.name} structure dumped to #{relative_structure_path}") do
                     catch :dump_failed do
                       result = database.structure_sql_dump
-                      exit_codes << result.exit_code if result.respond_to?(:exit_code)
+                      exit_codes << result.exit_code
 
                       unless result.successful?
                         out.puts result.err

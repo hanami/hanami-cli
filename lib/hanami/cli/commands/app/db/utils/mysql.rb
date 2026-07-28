@@ -12,7 +12,7 @@ module Hanami
             class Mysql < Database
               # @api private
               def exec_create_command
-                return true if exists?
+                return success_result if exists?
 
                 exec_cli("mysql", %(-e "CREATE DATABASE #{escaped_name}"))
               end
@@ -20,7 +20,7 @@ module Hanami
               # @api private
               # @since 2.2.0
               def exec_drop_command
-                return true unless exists?
+                return success_result unless exists?
 
                 exec_cli("mysql", %(-e "DROP DATABASE #{escaped_name}"))
               end
@@ -55,6 +55,10 @@ module Hanami
               # rubocop:enable Layout/LineLength
 
               private
+
+              def success_result
+                @success_result ||= SystemCall::Result.new(exit_code: 0, out: "", err: "")
+              end
 
               def escaped_name
                 Shellwords.escape(name)
