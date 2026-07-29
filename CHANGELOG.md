@@ -11,11 +11,15 @@ and this project adheres to [Break Versioning](https://www.taoensso.com/break-ve
 
 ### Changed
 
+- Print clearer errors when Postgres CLI commands fail. (@mddelk in #437)
+
 ### Deprecated
 
 ### Removed
 
 ### Fixed
+
+- Avoid loading user config when running Postgres CLI commands, to ensure command output is in the expected format. (@mddelk in #437)
 
 ### Security
 
