@@ -205,6 +205,110 @@ RSpec.describe Hanami::CLI::RubyFileGenerator do
         )
       end
     end
+
+    # This namespacing behavior is shared across all generators, so we cover it primarily here. See
+    # spec/unit/hanami/cli/commands/app/generate/action_spec.rb for the integration tests.
+    context "when the namespace includes the parent class name" do
+      context "when the parent class isn't namespaced" do
+        it "namespaces the parent class" do
+          expect(
+            Hanami::CLI::RubyFileGenerator.class(
+              "Index",
+              parent_class_name: "Books::Action",
+              modules: %w[Books Views Books]
+            )
+          ).to(
+            eq(
+              <<~OUTPUT
+                module Books
+                  module Views
+                    module Books
+                      class Index < ::Books::Action
+                      end
+                    end
+                  end
+                end
+              OUTPUT
+            )
+          )
+        end
+      end
+
+      context "when the parent class is already namespaced" do
+        it "uses the parent class as-is" do
+          expect(
+            Hanami::CLI::RubyFileGenerator.class(
+              "Index",
+              parent_class_name: "::Books::Action",
+              modules: %w[Books Views Books]
+            )
+          ).to(
+            eq(
+              <<~OUTPUT
+                module Books
+                  module Views
+                    module Books
+                      class Index < ::Books::Action
+                      end
+                    end
+                  end
+                end
+              OUTPUT
+            )
+          )
+        end
+      end
+    end
+
+    context "when no namespace matches the parent class" do
+      it "uses the parent class as-is" do
+        expect(
+          Hanami::CLI::RubyFileGenerator.class(
+            "Index",
+            parent_class_name: "Books::Action",
+            modules: %w[Books Views Authors]
+          )
+        ).to(
+          eq(
+            <<~OUTPUT
+              module Books
+                module Views
+                  module Authors
+                    class Index < Books::Action
+                    end
+                  end
+                end
+              end
+            OUTPUT
+          )
+        )
+      end
+    end
+
+    context "when only the outermost module matches the parent class" do
+      it "uses the parent class as-is, since it resolves to the top-level constant" do
+        expect(
+          Hanami::CLI::RubyFileGenerator.class(
+            "Index",
+            parent_class_name: "Books::Action",
+            modules: %w[Books Views Drafts]
+          )
+        ).to(
+          eq(
+            <<~OUTPUT
+              module Books
+                module Views
+                  module Drafts
+                    class Index < Books::Action
+                    end
+                  end
+                end
+              end
+            OUTPUT
+          )
+        )
+      end
+    end
   end
 
   describe ".module" do
