@@ -35,7 +35,7 @@ module Hanami
                   nil
                 end
 
-                return exit exit_code if exit_code.to_i > 1
+                throw(:exit, exit_code) if exit_code.to_i > 1
               end
 
               # Once all databases are created, the migrator will properly load for each slice, and
@@ -54,7 +54,7 @@ module Hanami
                   nil
                 end
 
-                return exit exit_code if exit_code.to_i > 1
+                throw(:exit, exit_code) if exit_code.to_i > 1
               end
 
               # Finally, load the seeds for the slice overall, which is a once-per-slice operation.

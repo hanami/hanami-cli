@@ -205,15 +205,13 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Dump, :app_integration
         .with(a_string_including("db/app.sqlite3"))
         .and_return Hanami::CLI::SystemCall::Result.new(exit_code: 2, out: "", err: "dump-err")
 
-      command.call
+      expect_exit_code(2) { command.call }
 
       expect(Main::Slice.root.join("config", "db", "structure.sql").exist?).to be true
       expect(Hanami.app.root.join("config", "db", "structure.sql").exist?).to be false
 
       expect(output).to include %("db/app.sqlite3 structure dumped to config/db/structure.sql" FAILED)
       expect(output).to include "db/main.sqlite3 structure dumped to slices/main/config/db/structure.sql"
-
-      expect(command).to have_received(:exit).with 2
     end
   end
 
@@ -289,15 +287,13 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Dump, :app_integration
         .with(a_string_including("app"), anything)
         .and_return Hanami::CLI::SystemCall::Result.new(exit_code: 2, out: "", err: "dump-err")
 
-      command.call
+      expect_exit_code(2) { command.call }
 
       expect(Main::Slice.root.join("config", "db", "structure.sql").exist?).to be true
       expect(Hanami.app.root.join("config", "db", "structure.sql").exist?).to be false
 
       expect(output).to include %("#{POSTGRES_BASE_DB_NAME}_app structure dumped to config/db/structure.sql" FAILED)
       expect(output).to include "#{POSTGRES_BASE_DB_NAME}_main structure dumped to slices/main/config/db/structure.sql"
-
-      expect(command).to have_received(:exit).with 2
     end
   end
 
@@ -330,13 +326,11 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Dump, :app_integration
         .with(a_string_including("mysqldump"), anything)
         .and_return Hanami::CLI::SystemCall::Result.new(exit_code: 2, out: "", err: "dump-err")
 
-      command.call
+      expect_exit_code(2) { command.call }
 
       expect(Hanami.app.root.join("config", "db", "structure.sql").exist?).to be false
 
       expect(output).to include %("#{MYSQL_BASE_DB_NAME}_app structure dumped to config/db/structure.sql" FAILED)
-
-      expect(command).to have_received(:exit).with 2
     end
   end
 end

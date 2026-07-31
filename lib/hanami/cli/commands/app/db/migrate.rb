@@ -17,7 +17,7 @@ module Hanami
               default: true,
               desc: "Dump the database structure after migrating"
 
-            def call(target: nil, app: false, slice: nil, gateway: nil, dump: true, command_exit: method(:exit), **)
+            def call(target: nil, app: false, slice: nil, gateway: nil, dump: true, **)
               databases(app: app, slice: slice, gateway: gateway).each do |database|
                 if migrations_dir_missing?(database)
                   warn_on_missing_migrations_dir(database)
@@ -32,8 +32,7 @@ module Hanami
               if dump && !re_running_in_test?
                 run_command(
                   Structure::Dump,
-                  app: app, slice: slice, gateway: gateway,
-                  command_exit: command_exit
+                  app: app, slice: slice, gateway: gateway
                 )
               end
 

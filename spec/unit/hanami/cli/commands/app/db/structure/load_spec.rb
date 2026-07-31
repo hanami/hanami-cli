@@ -237,15 +237,13 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Load, :app_integration
         .with(a_string_including("#{POSTGRES_BASE_DB_NAME}_app"), anything)
         .and_return Hanami::CLI::SystemCall::Result.new(exit_code: 2, out: "", err: "app-load-err")
 
-      command.call
+      expect_exit_code(2) { command.call }
 
       expect(Hanami.app["db.gateway"].connection.tables.include?(:posts)).to be false
       expect(Main::Slice["db.gateway"].connection.tables.include?(:comments)).to be true
 
       expect(output).to include %("#{POSTGRES_BASE_DB_NAME}_app structure loaded from config/db/structure.sql" FAILED)
       expect(output).to include "#{POSTGRES_BASE_DB_NAME}_main structure loaded from slices/main/config/db/structure.sql"
-
-      expect(command).to have_received(:exit).with 2
     end
   end
 
@@ -273,13 +271,11 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Load, :app_integration
         .with(a_string_including("#{MYSQL_BASE_DB_NAME}_app"), anything)
         .and_return Hanami::CLI::SystemCall::Result.new(exit_code: 2, out: "", err: "app-load-err")
 
-      command.call
+      expect_exit_code(2) { command.call }
 
       expect(Hanami.app["db.gateway"].connection.tables.include?(:posts)).to be false
 
       expect(output).to include %("#{MYSQL_BASE_DB_NAME}_app structure loaded from config/db/structure.sql" FAILED)
-
-      expect(command).to have_received(:exit).with 2
     end
   end
 

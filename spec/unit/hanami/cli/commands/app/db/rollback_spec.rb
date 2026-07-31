@@ -16,28 +16,22 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
 
   shared_examples "multiple gateways error handling" do |db_type|
     it "fails with clear error message when multiple gateways exist without specification" do
-      exit_mock = instance_double("Method", call: nil)
-      allow(exit_mock).to receive(:call).with(1).and_raise(SystemExit)
+      expect_exit_code(1) { command.call }
 
-      expect { command.call(command_exit: exit_mock) }.to raise_error(SystemExit)
       expect(output).to include "Multiple gateways found in app. Please specify --gateway option."
     end
   end
 
   shared_examples "invalid argument handling" do
     it "fails when gateway is specified without app or slice" do
-      exit_mock = instance_double("Method", call: nil)
-      allow(exit_mock).to receive(:call).with(1).and_raise(SystemExit)
+      expect_exit_code(1) { command.call(gateway: "default") }
 
-      expect { command.call(gateway: "default", command_exit: exit_mock) }.to raise_error(SystemExit)
       expect(output).to include "When specifying --gateway, an --app or --slice must also be given"
     end
 
     it "fails when gateway does not exist" do
-      exit_mock = instance_double("Method", call: nil)
-      allow(exit_mock).to receive(:call).with(1).and_raise(SystemExit)
+      expect_exit_code(1) { command.call(app: true, gateway: "nonexistent") }
 
-      expect { command.call(app: true, gateway: "nonexistent", command_exit: exit_mock) }.to raise_error(SystemExit)
       expect(output).to include %(No gateway "nonexistent" found in app)
     end
   end
@@ -61,10 +55,6 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
 
   before do
     allow(Hanami::CLI::Commands::App::DB::Structure::Dump).to receive(:new) { dump_command }
-  end
-
-  before do
-    allow(command).to receive(:exit)
   end
 
   before do
@@ -154,20 +144,16 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
       context "with invalid args combinations" do
         context "when gateway is specified without app or slice" do
           it "does not allow ambiguity, asks for details" do
-            exit_mock = instance_double("Method", call: nil)
-            allow(exit_mock).to receive(:call).with(1).and_raise(SystemExit)
+            expect_exit_code(1) { command.call(gateway: "default") }
 
-            expect { command.call(gateway: "default", command_exit: exit_mock) }.to raise_error(SystemExit)
             expect(output).to include "When specifying --gateway, an --app or --slice must also be given"
           end
         end
 
         context "when gateway that does not exist in the context is specified" do
           it "informs about invalid gateway" do
-            exit_mock = instance_double("Method", call: nil)
-            allow(exit_mock).to receive(:call).with(1).and_raise(SystemExit)
+            expect_exit_code(1) { command.call(app: true, gateway: "nonexistent") }
 
-            expect { command.call(app: true, gateway: "nonexistent", command_exit: exit_mock) }.to raise_error(SystemExit)
             expect(output).to include %(No gateway "nonexistent" found in app)
           end
         end
@@ -298,10 +284,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
 
       context "with no arguments" do
         it "asks for more detailed prompt" do
-          exit_mock = instance_double("Method", call: nil)
-          allow(exit_mock).to receive(:call).with(1).and_raise(SystemExit)
+          expect_exit_code(1) { command.call }
 
-          expect { command.call(command_exit: exit_mock) }.to raise_error(SystemExit)
           expect(output).to include "Multiple gateways found in app. Please specify --gateway option."
         end
       end

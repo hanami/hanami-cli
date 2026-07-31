@@ -135,7 +135,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
         .with(a_string_including("db/app.sqlite3"))
         .and_raise Errno::EACCES
 
-      command.call
+      expect_exit_code(1) { command.call }
 
       expect(File.exist?(@dir.join("db", "app.sqlite3"))).to be true
       expect(File.exist?(@dir.join("db", "main.sqlite3"))).to be false
@@ -144,8 +144,6 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
       expect(output).to include "Permission denied" # from Errno::EACCESS
 
       expect(output).to include "database db/main.sqlite3 dropped"
-
-      expect(command).to have_received(:exit).with(1).once
     end
 
     context "app and slice with gateways" do
@@ -351,7 +349,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
         .with(a_string_matching(/dropdb.+_app/), anything)
         .and_return Hanami::CLI::SystemCall::Result.new(exit_code: 2, out: "", err: "app-db-err")
 
-      command.call
+      expect_exit_code(2) { command.call }
 
       expect { Hanami.app["db.gateway"].connection.test_connection }.not_to raise_error
 
@@ -359,8 +357,6 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
       expect(output).to include "app-db-err"
 
       expect(output).to include "database #{POSTGRES_BASE_DB_NAME}_main dropped"
-
-      expect(command).to have_received(:exit).with(2).once
     end
 
     it "raises exception when DB existence check fails" do
@@ -420,14 +416,12 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
         .with(a_string_matching(/-e "DROP DATABASE/), anything)
         .and_return Hanami::CLI::SystemCall::Result.new(exit_code: 2, out: "", err: "app-db-err")
 
-      command.call
+      expect_exit_code(2) { command.call }
 
       expect { Hanami.app["db.gateway"].connection.test_connection }.not_to raise_error
 
       expect(output).to include "failed to drop database #{POSTGRES_BASE_DB_NAME}_app"
       expect(output).to include "app-db-err"
-
-      expect(command).to have_received(:exit).with(2).once
     end
 
     it "prints errors when check for DB existence fails" do
