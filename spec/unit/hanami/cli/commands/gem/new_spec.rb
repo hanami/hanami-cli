@@ -333,7 +333,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           esbuildOptionsFn: (args, esbuildOptions) => {
             // Customize your `esbuildOptions` here.
             //
-            // Use the `args.watch` boolean as a condition to apply diffierent options
+            // Use the `args.watch` boolean as a condition to apply different options
             // when running `hanami assets watch` vs `hanami assets compile`.
 
             return esbuildOptions;
@@ -1024,7 +1024,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
             esbuildOptionsFn: (args, esbuildOptions) => {
               // Customize your `esbuildOptions` here.
               //
-              // Use the `args.watch` boolean as a condition to apply diffierent options
+              // Use the `args.watch` boolean as a condition to apply different options
               // when running `hanami assets watch` vs `hanami assets compile`.
 
               return esbuildOptions;
