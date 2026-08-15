@@ -118,7 +118,7 @@ module Hanami
               def run_migrations(**options)
                 require "rom/sql"
                 ROM::SQL.with_gateway(gateway) do
-                  migrator.run(options)
+                  migrator.run(options.merge(migrator_options))
                 end
               end
 
@@ -127,7 +127,7 @@ module Hanami
                   slice.prepare :db
 
                   require "rom/sql"
-                  ROM::SQL::Migration::Migrator.new(connection, path: migrations_path)
+                  ROM::SQL::Migration::Migrator.new(connection, path: migrations_path, **migrator_options)
                 end
               end
 
@@ -140,7 +140,7 @@ module Hanami
 
                   require "rom/sql"
                   ROM::SQL.with_gateway(gateway) do
-                    Sequel::TimestampMigrator.new(migrator.connection, migrations_path, {})
+                    Sequel::TimestampMigrator.new(migrator.connection, migrations_path, migrator_options)
                   end
                 end
               end
@@ -196,6 +196,18 @@ module Hanami
 
               def post_process_dump(sql)
                 sql
+              end
+
+              def migrator_options
+                {table: custom_migrations_table}.compact
+              end
+
+              def custom_migrations_table
+                slice.config.db.migrations_table
+              rescue NoMethodError
+                # Backwards-compatibility, so that we don't cause an error in
+                # versions of the hanami gem that don't yet have the migrations_table setting
+                nil
               end
             end
           end

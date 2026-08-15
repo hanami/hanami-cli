@@ -600,4 +600,59 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
       expect(test_env_executor).not_to have_received(:call)
     end
   end
+  describe "migrations table" do
+    def before_prepare
+      write "config/db/migrate/20240602201330_create_posts.rb", <<~RUBY
+        ROM::SQL.migration do
+          change do
+            create_table :posts do
+              primary_key :id
+              column :title, :text, null: false
+            end
+          end
+        end
+      RUBY
+
+      write "slices/main/config/db/migrate/20240602201330_create_users.rb", <<~RUBY
+        ROM::SQL.migration do
+          change do
+            create_table :comments do
+              primary_key :id
+              column :body, :text, null: false
+            end
+          end
+        end
+      RUBY
+    end
+    before do
+      ENV["DATABASE_URL"] = "sqlite://db/app.sqlite3"
+      ENV["MAIN__DATABASE_URL"] = "sqlite://db/main.sqlite3"
+      db_create
+    end
+
+    it "defaults to schema_migrations" do
+      command.call
+      expect(Hanami.app["db.gateway"].connection[:schema_migrations].to_a).to eq [{filename: "20240602201330_create_posts.rb"}]
+      expect(Main::Slice["db.gateway"].connection[:schema_migrations].to_a).to eq [{filename: "20240602201330_create_users.rb"}]
+    end
+
+    context "when a different table is configured" do
+      before do
+        MockDbConfig = Struct.new(:migrations_table, :import_from_parent, :log_level)
+        {Hanami.app => :amazing_table, Main::Slice => :lovely_table}.each do |slice, table_name|
+          mockable_config = slice.config.dup
+          allow(mockable_config).to receive(:db).and_return(MockDbConfig.new(table_name, false))
+          allow(slice).to receive(:config).and_return(mockable_config)
+        end
+      end
+      it "uses the configured table" do
+        command.call
+
+        expect(Hanami.app["db.gateway"].connection[:amazing_table].to_a).to eq [{filename: "20240602201330_create_posts.rb"}]
+        expect(Main::Slice["db.gateway"].connection[:lovely_table].to_a).to eq [{filename: "20240602201330_create_users.rb"}]
+        expect(Hanami.app["db.gateway"].connection.tables).not_to include :schema_migrations
+        expect(Main::Slice["db.gateway"].connection.tables).not_to include :schema_migrations
+      end
+    end
+  end
 end
