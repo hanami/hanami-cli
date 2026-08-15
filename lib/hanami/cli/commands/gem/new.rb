@@ -19,6 +19,7 @@ module Hanami
           SKIP_DB_DEFAULT = false
           SKIP_VIEW_DEFAULT = false
           SKIP_MAILER_DEFAULT = false
+          SKIP_GIT_DEFAULT = false
 
           DATABASE_SQLITE = "sqlite"
           DATABASE_POSTGRES = "postgres"
@@ -63,6 +64,10 @@ module Hanami
             default: SKIP_MAILER_DEFAULT,
             desc: "Skip including hanami-mailer"
 
+          option :skip_git, type: :flag, required: false,
+            default: SKIP_GIT_DEFAULT,
+            desc: "Skip git repository initialization (and `.gitignore' generation)"
+
           option :database, type: :string, required: false,
             default: DATABASE_SQLITE,
             desc: "Database adapter (supported: sqlite, mysql, postgres)"
@@ -90,6 +95,7 @@ module Hanami
             "bookshelf --skip-db                          # Generate a new Hanami app without hanami-db",
             "bookshelf --skip-view                        # Generate a new Hanami app without hanami-view",
             "bookshelf --skip-mailer                      # Generate a new Hanami app without hanami-mailer",
+            "bookshelf --skip-git                         # Generate a new Hanami app without git repository initialization",
             "bookshelf --database={sqlite|postgres|mysql} # Generate a new Hanami app with a specified database (default: sqlite)",
             "bookshelf --template-engine={erb|haml|slim}  # Generate a new Hanami app which will use HAML for templates by default (default: erb)",
             "bookshelf --test={rspec|minitest}            # Generate a new Hanami app with specified test framework (default: rspec)",
@@ -121,6 +127,7 @@ module Hanami
             skip_db: SKIP_DB_DEFAULT,
             skip_view: SKIP_VIEW_DEFAULT,
             skip_mailer: SKIP_MAILER_DEFAULT,
+            skip_git: SKIP_GIT_DEFAULT,
             database: nil,
             name: nil,
             template_engine: TEMPLATE_ENGINE_DEFAULT,
@@ -145,6 +152,7 @@ module Hanami
                 skip_db:,
                 skip_view:,
                 skip_mailer:,
+                skip_git:,
                 database: normalized_database,
                 template_engine:,
                 test_framework: test
@@ -172,8 +180,10 @@ module Hanami
                   out.puts "Running bundle binstubs hanami-cli rake..."
                   install_binstubs!
 
-                  out.puts "Initializing git repository..."
-                  init_git_repository
+                  unless skip_git
+                    out.puts "Initializing git repository..."
+                    init_git_repository
+                  end
                 end
               end
             end

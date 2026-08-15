@@ -9,6 +9,9 @@ and this project adheres to [Break Versioning](https://www.taoensso.com/break-ve
 
 ### Added
 
+- Add `hanami new --skip-git` to generate an app without initializing a git repository or generating a `.gitignore`.
+  (@aaronmallen #441)
+
 ### Changed
 
 - Print clearer errors when Postgres CLI commands fail. (@mddelk in #437)
