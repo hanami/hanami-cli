@@ -11,13 +11,16 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
   let(:inflector) { Dry::Inflector.new }
   let(:system_call) { instance_double(Hanami::CLI::SystemCall, call: successful_system_call_result) }
   let(:app) { "bookshelf" }
-  let(:kwargs) { {head: hanami_head, skip_assets:, skip_db:, skip_view:, skip_mailer:, database:} }
+  let(:kwargs) do
+    {head: hanami_head, skip_assets:, skip_db:, skip_view:, skip_mailer:, skip_git:, database:}
+  end
 
   let(:hanami_head) { false }
   let(:skip_assets) { false }
   let(:skip_db) { false }
   let(:skip_view) { false }
   let(:skip_mailer) { false }
+  let(:skip_git) { false }
   let(:database) { nil }
 
   let(:output) { out.rewind && out.read.chomp }
@@ -1929,5 +1932,36 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
 
     expect(fs.directory?(app)).to be(true)
     expect(output).to include("Initializing git repository...")
+  end
+
+  context "without git" do
+    let(:skip_git) { true }
+
+    it "generates a new app without initializing a git repository" do
+      expect(bundler).to receive(:install!)
+        .and_return(true)
+
+      expect(bundler).to receive(:exec)
+        .with("hanami install")
+        .and_return(successful_system_call_result)
+
+      expect(bundler).to receive(:exec)
+        .with("check")
+        .at_least(1)
+        .and_return(successful_system_call_result)
+
+      expect(system_call).to receive(:call).with("npm", ["install"])
+
+      expect(system_call).to_not receive(:call).with("git", ["init"])
+
+      subject.call(app: app, **kwargs)
+
+      expect(fs.directory?(app)).to be(true)
+      expect(output).to_not include("Initializing git repository...")
+
+      fs.chdir(app) do
+        expect(fs.exist?(".gitignore")).to be(false)
+      end
+    end
   end
 end

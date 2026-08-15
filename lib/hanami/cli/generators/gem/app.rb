@@ -34,7 +34,7 @@ module Hanami
           attr_reader :inflector
 
           def generate_app(app, context) # rubocop:disable Metrics/AbcSize
-            fs.create(".gitignore", t("gitignore.erb", context))
+            fs.create(".gitignore", t("gitignore.erb", context)) if context.generate_git?
             fs.create(".env", t("env.erb", context))
 
             fs.create("README.md", t("readme.erb", context))

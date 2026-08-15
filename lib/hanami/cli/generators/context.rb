@@ -92,6 +92,10 @@ module Hanami
           !options.fetch(:skip_mailer, false)
         end
 
+        def generate_git?
+          !options.fetch(:skip_git, false)
+        end
+
         def generate_sqlite?
           generate_db? && database_option == Commands::Gem::New::DATABASE_SQLITE
         end
