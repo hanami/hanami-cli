@@ -12,6 +12,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Slice, :app do
     allow(Hanami).to receive(:bundled?).with("dry-operation").and_return(true)
     allow(Hanami).to receive(:bundled?).with("hanami-db").and_return(true)
     allow(Hanami).to receive(:bundled?).with("hanami-mailer").and_return(true)
+    allow(Hanami).to receive(:bundled?).with("hanami-view").and_return(true)
   end
 
   let(:out) { StringIO.new }
@@ -319,6 +320,22 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Slice, :app do
 
         # slices/admin/app/assets/css/app.css
         expect(fs.exist?("slices/admin/assets/css/app.css")).to be(false)
+      end
+    end
+  end
+
+  context "without hanami-view bundled" do
+    before do
+      allow(Hanami).to receive(:bundled?).with("hanami-view").and_return(false)
+    end
+
+    it "generates a slice without view files" do
+      within_application_directory do
+        subject.call(name: slice)
+
+        expect(fs.exist?("slices/#{slice}/view.rb")).to be(false)
+        expect(fs.exist?("slices/#{slice}/views")).to be(false)
+        expect(fs.exist?("slices/#{slice}/templates")).to be(false)
       end
     end
   end
