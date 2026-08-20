@@ -14,8 +14,13 @@ module Hanami
           super()
 
           app.slices.each do |slice|
-            define_method(slice.slice_name.to_sym) do
-              slice
+            slice_name = slice.slice_name.to_sym
+
+            # Looked up on each call rather than closed over, because reloading the app replaces
+            # its slice classes. Closing over the slice would leave the console handing out a
+            # class whose container had already been discarded.
+            define_method(slice_name) do
+              app.slices[slice_name]
             end
           end
         end
