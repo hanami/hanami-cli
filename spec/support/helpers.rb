@@ -15,10 +15,6 @@ module RSpec
       def sqlite_url(url, dir: nil)
         url = sqlite_db_name(url, dir:)
         if jruby?
-          # We need to ensure that the parent directory for the database exists, because JDBC driver
-          # won't create it
-          base_dir = File.dirname(url)
-          FileUtils.mkdir_p(base_dir)
           "jdbc:sqlite:#{url}"
         else
           "sqlite://#{url}"
