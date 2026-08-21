@@ -110,7 +110,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
         command.call
 
         expect(columns.()).to eq [:id, :title, :body]
-        expect(output).to include "database #{sqlite_db_name("db/app.sqlite3", dir: @dir)} rolled back to 20250603211330_add_body_to_posts in"
+        expect(output).to include "database db/app.sqlite3 rolled back to 20250603211330_add_body_to_posts in"
         expect(dump_command).to have_received(:call).with(hash_including(app: true)).once
       end
     end
@@ -162,7 +162,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
         it "defaults to app database when only one database context exists" do
           command.call
 
-          expect(output).to include("database #{sqlite_db_name("db/app.sqlite3", dir: @dir)} rolled back")
+          expect(output).to include("database db/app.sqlite3 rolled back")
         end
       end
 
@@ -174,7 +174,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
           command.call(steps: "2", slice: "main")
 
           expect(Main::Slice["db.gateway"].connection.tables).not_to include :invoices
-          expect(output).to include "database #{sqlite_db_name("db/main.sqlite3", dir: @dir)} rolled back"
+          expect(output).to include "database db/main.sqlite3 rolled back"
           expect(dump_command).to have_received(:call).with(hash_including(app: false, slice: "main"))
         end
 
@@ -185,8 +185,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
           command.call(app: true)
 
           expect(columns.()).to eq [:id, :title, :body]
-          expect(output).to include "database #{sqlite_db_name("db/app.sqlite3", dir: @dir)} rolled back"
-          expect(output).to_not include "database #{sqlite_db_name("db/main.sqlite3", dir: @dir)} rolled back"
+          expect(output).to include "database db/app.sqlite3 rolled back"
+          expect(output).to_not include "database db/main.sqlite3 rolled back"
           expect(dump_command).to have_received(:call).with(hash_including(app: true, slice: nil))
         end
 
@@ -197,8 +197,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
           command.call(steps: "3", app: true)
 
           expect(Hanami.app["db.gateway"].connection.tables).not_to include :posts
-          expect(output).to include "database #{sqlite_db_name("db/app.sqlite3", dir: @dir)} rolled back"
-          expect(output).to_not include "database #{sqlite_db_name("db/main.sqlite3", dir: @dir)} rolled back"
+          expect(output).to include "database db/app.sqlite3 rolled back"
+          expect(output).to_not include "database db/main.sqlite3 rolled back"
           expect(dump_command).to have_received(:call).with(hash_including(app: true, slice: nil))
         end
 
@@ -209,7 +209,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
           command.call(slice: "main")
 
           expect(columns.()).to eq [:id, :amount]
-          expect(output).to include "database #{sqlite_db_name("db/main.sqlite3", dir: @dir)} rolled back"
+          expect(output).to include "database db/main.sqlite3 rolled back"
           expect(dump_command).to have_received(:call).with(hash_including(app: false, slice: "main"))
         end
 
@@ -235,7 +235,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
 
           command.call(target: "20250602201330")
 
-          expect(output).to include "database #{sqlite_db_name("db/app.sqlite3", dir: @dir)} rolled back to 20250602201330_create_posts"
+          expect(output).to include "database db/app.sqlite3 rolled back to 20250602201330_create_posts"
         end
 
         it "rollback everything on selected database when steps flag is bigger than the number of migrations" do
@@ -243,7 +243,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
 
           command.call
 
-          expect(output).to include "database #{sqlite_db_name("db/main.sqlite3", dir: @dir)} rolled back"
+          expect(output).to include "database db/main.sqlite3 rolled back"
           expect(dump_command).to have_received(:call).exactly(2).times
         end
 
@@ -301,9 +301,9 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
         expect(dump_command).to have_received(:call).with(hash_including(app: true, slice: nil, gateway: "extra"))
         expect(dump_command).to have_received(:call).once
 
-        expect(output).to include "database #{sqlite_db_name("db/app_extra.sqlite3", dir: @dir)} rolled back"
-        expect(output).not_to include sqlite_db_name("db/app.sqlite3", dir: @dir)
-        expect(output).not_to include sqlite_db_name("db/app_super.sqlite3", dir: @dir)
+        expect(output).to include "database db/app_extra.sqlite3 rolled back"
+        expect(output).not_to include "db/app.sqlite3"
+        expect(output).not_to include "db/app_super.sqlite3"
       end
     end
 

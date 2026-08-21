@@ -98,8 +98,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Dump, :app_integration
       SQL
 
       expect(output).to include_in_order(
-        "#{sqlite_db_name("db/app.sqlite3", dir: @dir)} structure dumped to config/db/structure.sql",
-        "#{sqlite_db_name("db/main.sqlite3", dir: @dir)} structure dumped to slices/main/config/db/structure.sql"
+        "db/app.sqlite3 structure dumped to config/db/structure.sql",
+        "db/main.sqlite3 structure dumped to slices/main/config/db/structure.sql"
       )
     end
 
@@ -109,8 +109,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Dump, :app_integration
       expect(Hanami.app.root.join("config", "db", "structure.sql").exist?).to be true
       expect(Main::Slice.root.join("config", "db", "structure.sql").exist?).to be false
 
-      expect(output).to include "#{sqlite_db_name("db/app.sqlite3", dir: @dir)} structure dumped to config/db/structure.sql"
-      expect(output).not_to include sqlite_db_name("db/main.sqlite3", dir: @dir)
+      expect(output).to include "db/app.sqlite3 structure dumped to config/db/structure.sql"
+      expect(output).not_to include "db/main.sqlite3"
     end
 
     it "dumps the structure for a slice db when given --slice" do
@@ -119,8 +119,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Dump, :app_integration
       expect(Main::Slice.root.join("config", "db", "structure.sql").exist?).to be true
       expect(Hanami.app.root.join("config", "db", "structure.sql").exist?).to be false
 
-      expect(output).to include "#{sqlite_db_name("db/main.sqlite3", dir: @dir)} structure dumped to slices/main/config/db/structure.sql"
-      expect(output).not_to include sqlite_db_name("db/app.sqlite3", dir: @dir)
+      expect(output).to include "db/main.sqlite3 structure dumped to slices/main/config/db/structure.sql"
+      expect(output).not_to include "db/app.sqlite3"
     end
 
     context "app with gateways" do
@@ -145,8 +145,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Dump, :app_integration
         expect(Hanami.app.root.join("config", "db", "structure.sql").exist?).to be true
         expect(Hanami.app.root.join("config", "db", "extra_structure.sql").exist?).to be true
 
-        expect(output).to include "#{sqlite_db_name("db/app.sqlite3", dir: @dir)} structure dumped to config/db/structure.sql"
-        expect(output).to include "#{sqlite_db_name("db/app_extra.sqlite3", dir: @dir)} structure dumped to config/db/extra_structure.sql"
+        expect(output).to include "db/app.sqlite3 structure dumped to config/db/structure.sql"
+        expect(output).to include "db/app_extra.sqlite3 structure dumped to config/db/extra_structure.sql"
       end
 
       it "dumps the structure for for a slice's gateway when given --app and --gateway" do
@@ -155,8 +155,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Dump, :app_integration
         expect(Hanami.app.root.join("config", "db", "extra_structure.sql").exist?).to be true
         expect(Hanami.app.root.join("config", "db", "structure.sql").exist?).to be false
 
-        expect(output).to include "#{sqlite_db_name("db/app_extra.sqlite3", dir: @dir)} structure dumped to config/db/extra_structure.sql"
-        expect(output).not_to include sqlite_db_name("db/app.sqlite3", dir: @dir)
+        expect(output).to include "db/app_extra.sqlite3 structure dumped to config/db/extra_structure.sql"
+        expect(output).not_to include "db/app.sqlite3"
       end
     end
 
@@ -182,8 +182,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Dump, :app_integration
         expect(Main::Slice.root.join("config", "db", "structure.sql").exist?).to be true
         expect(Main::Slice.root.join("config", "db", "extra_structure.sql").exist?).to be true
 
-        expect(output).to include "#{sqlite_db_name("db/main.sqlite3", dir: @dir)} structure dumped to slices/main/config/db/structure.sql"
-        expect(output).to include "#{sqlite_db_name("db/main_extra.sqlite3", dir: @dir)} structure dumped to slices/main/config/db/extra_structure.sql"
+        expect(output).to include "db/main.sqlite3 structure dumped to slices/main/config/db/structure.sql"
+        expect(output).to include "db/main_extra.sqlite3 structure dumped to slices/main/config/db/extra_structure.sql"
       end
 
       it "dumps the structure for for a slice's gateway when given --slice and --gateway" do
@@ -192,8 +192,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Dump, :app_integration
         expect(Main::Slice.root.join("config", "db", "extra_structure.sql").exist?).to be true
         expect(Main::Slice.root.join("config", "db", "structure.sql").exist?).to be false
 
-        expect(output).to include "#{sqlite_db_name("db/main_extra.sqlite3", dir: @dir)} structure dumped to slices/main/config/db/extra_structure.sql"
-        expect(output).not_to include sqlite_db_name("db/main.sqlite3", dir: @dir)
+        expect(output).to include "db/main_extra.sqlite3 structure dumped to slices/main/config/db/extra_structure.sql"
+        expect(output).not_to include "db/main.sqlite3"
       end
     end
 
@@ -202,7 +202,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Dump, :app_integration
       allow(system_call).to receive(:call).and_call_original
       allow(system_call)
         .to receive(:call)
-        .with(a_string_including(sqlite_db_name("db/app.sqlite3", dir: @dir)))
+        .with(a_string_including("db/app.sqlite3"))
         .and_return Hanami::CLI::SystemCall::Result.new(exit_code: 2, out: "", err: "dump-err")
 
       expect_exit_code(2) { command.call }
@@ -210,8 +210,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Dump, :app_integration
       expect(Main::Slice.root.join("config", "db", "structure.sql").exist?).to be true
       expect(Hanami.app.root.join("config", "db", "structure.sql").exist?).to be false
 
-      expect(output).to include %("#{sqlite_db_name("db/app.sqlite3", dir: @dir)} structure dumped to config/db/structure.sql" FAILED)
-      expect(output).to include "#{sqlite_db_name("db/main.sqlite3", dir: @dir)} structure dumped to slices/main/config/db/structure.sql"
+      expect(output).to include %("db/app.sqlite3 structure dumped to config/db/structure.sql" FAILED)
+      expect(output).to include "db/main.sqlite3 structure dumped to slices/main/config/db/structure.sql"
     end
   end
 

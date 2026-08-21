@@ -61,7 +61,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Create, :app_integration do
 
         expect { Hanami.app["db.gateway"] }.not_to raise_error
 
-        expect(output).to include "database #{sqlite_db_name("db/app.sqlite3", dir: @dir)} created"
+        expect(output).to include "database db/app.sqlite3 created"
       end
 
       it "does not create the database if it already exists" do
@@ -70,7 +70,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Create, :app_integration do
 
         command.call
 
-        expect(output).to include "database #{sqlite_db_name("db/app.sqlite3", dir: @dir)} created"
+        expect(output).to include "database db/app.sqlite3 created"
       end
     end
 
@@ -148,8 +148,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Create, :app_integration do
         expect { Hanami.app["db.gateway"] }.not_to raise_error
         expect { Main::Slice["db.gateway"] }.not_to raise_error
 
-        expect(output).to include "database #{sqlite_db_name("db/app.sqlite3", dir: @dir)} created"
-        expect(output).to include "database #{sqlite_db_name("db/main.sqlite3", dir: @dir)} created"
+        expect(output).to include "database db/app.sqlite3 created"
+        expect(output).to include "database db/main.sqlite3 created"
       end
 
       it "creates the app database when given --app" do
@@ -160,8 +160,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Create, :app_integration do
 
         expect { Hanami.app["db.gateway"] }.not_to raise_error
 
-        expect(output).to include "database #{sqlite_db_name("db/app.sqlite3", dir: @dir)} created"
-        expect(output).not_to include sqlite_db_name("db/main.sqlite3", dir: @dir)
+        expect(output).to include "database db/app.sqlite3 created"
+        expect(output).not_to include "db/main.sqlite3"
       end
 
       it "creates a slice database when given --slice" do
@@ -172,8 +172,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Create, :app_integration do
 
         expect { Main::Slice["db.gateway"] }.not_to raise_error
 
-        expect(output).to include "database #{sqlite_db_name("db/main.sqlite3", dir: @dir)} created"
-        expect(output).not_to include sqlite_db_name("db/app.sqlite3", dir: @dir)
+        expect(output).to include "database db/main.sqlite3 created"
+        expect(output).not_to include "db/app.sqlite3"
       end
 
       it "prints errors for any create commands that fail and exits with non-zero status" do
@@ -190,10 +190,10 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Create, :app_integration do
         expect(Hanami.app.root.join("db", "app.sqlite3").exist?).to be false
         expect(Hanami.app.root.join("db", "main.sqlite3").exist?).to be true
 
-        expect(output).to include "failed to create database #{sqlite_db_name("db/app.sqlite3", dir: @dir)}"
+        expect(output).to include "failed to create database db/app.sqlite3"
         expect(output).to include "app-db-err"
 
-        expect(output).to include "database #{sqlite_db_name("db/main.sqlite3", dir: @dir)} created"
+        expect(output).to include "database db/main.sqlite3 created"
       end
 
       context "app with gateways" do
@@ -208,8 +208,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Create, :app_integration do
             .and change { Hanami.app.root.join("db", "app_extra.sqlite3").exist? }.to(true)
 
           expect(output).to include_in_order(
-            "database #{sqlite_db_name("db/app.sqlite3", dir: @dir)} created",
-            "database #{sqlite_db_name("db/app_extra.sqlite3", dir: @dir)} created"
+            "database db/app.sqlite3 created",
+            "database db/app_extra.sqlite3 created"
           )
         end
 
@@ -218,7 +218,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Create, :app_integration do
             .to change { Hanami.app.root.join("db", "app_extra.sqlite3").exist? }.to(true)
             .and not_change { Hanami.app.root.join("db", "app.sqlite3").exist? }.from(false)
 
-          expect(output).to include "database #{sqlite_db_name("db/app_extra.sqlite3", dir: @dir)} created"
+          expect(output).to include "database db/app_extra.sqlite3 created"
           expect(output).not_to include "database/app.sqlite3"
         end
       end
@@ -235,8 +235,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Create, :app_integration do
             .and change { Hanami.app.root.join("db", "main_extra.sqlite3").exist? }.to(true)
 
           expect(output).to include_in_order(
-            "database #{sqlite_db_name("db/main.sqlite3", dir: @dir)} created",
-            "database #{sqlite_db_name("db/main_extra.sqlite3", dir: @dir)} created"
+            "database db/main.sqlite3 created",
+            "database db/main_extra.sqlite3 created"
           )
         end
 
@@ -245,7 +245,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Create, :app_integration do
             .to change { Hanami.app.root.join("db", "main_extra.sqlite3").exist? }.to(true)
             .and not_change { Hanami.app.root.join("db", "main.sqlite3").exist? }.from(false)
 
-          expect(output).to include "database #{sqlite_db_name("db/main_extra.sqlite3", dir: @dir)} created"
+          expect(output).to include "database db/main_extra.sqlite3 created"
           expect(output).not_to include "database/main.sqlite3"
         end
       end

@@ -72,8 +72,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
         .and change { File.exist?(@dir.join("db", "main.sqlite3")) }
         .to false
 
-      expect(output).to include "database #{sqlite_db_name("db/app.sqlite3", dir: @dir)} dropped"
-      expect(output).to include "database #{sqlite_db_name("db/main.sqlite3", dir: @dir)} dropped"
+      expect(output).to include "database db/app.sqlite3 dropped"
+      expect(output).to include "database db/main.sqlite3 dropped"
 
       expect(command).not_to have_received(:exit)
     end
@@ -90,8 +90,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
 
       expect(File.exist?(@dir.join("db", "main.sqlite3"))).to be true
 
-      expect(output).to include "database #{sqlite_db_name("db/app.sqlite3", dir: @dir)} dropped"
-      expect(output).not_to include sqlite_db_name("db/main.sqlite3", dir: @dir)
+      expect(output).to include "database db/app.sqlite3 dropped"
+      expect(output).not_to include "db/main.sqlite3"
 
       expect(command).not_to have_received(:exit)
     end
@@ -108,8 +108,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
 
       expect(File.exist?(@dir.join("db", "app.sqlite3"))).to be true
 
-      expect(output).to include "database #{sqlite_db_name("db/main.sqlite3", dir: @dir)} dropped"
-      expect(output).not_to include sqlite_db_name("db/app.sqlite3", dir: @dir)
+      expect(output).to include "database db/main.sqlite3 dropped"
+      expect(output).not_to include "db/app.sqlite3"
 
       expect(command).not_to have_received(:exit)
     end
@@ -120,8 +120,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
       expect(File.exist?(@dir.join("db", "app.sqlite3"))).to be false
       expect(File.exist?(@dir.join("db", "main.sqlite3"))).to be false
 
-      expect(output).to include "database #{sqlite_db_name("db/app.sqlite3", dir: @dir)} dropped"
-      expect(output).to include "database #{sqlite_db_name("db/main.sqlite3", dir: @dir)} dropped"
+      expect(output).to include "database db/app.sqlite3 dropped"
+      expect(output).to include "database db/main.sqlite3 dropped"
 
       expect(command).not_to have_received(:exit)
     end
@@ -132,7 +132,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
 
       allow(File).to receive(:unlink).and_call_original
       allow(File).to receive(:unlink)
-        .with(a_string_including(sqlite_db_name("db/app.sqlite3", dir: @dir)))
+        .with(a_string_including("db/app.sqlite3"))
         .and_raise Errno::EACCES
 
       expect_exit_code(1) { command.call }
@@ -140,10 +140,10 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
       expect(File.exist?(@dir.join("db", "app.sqlite3"))).to be true
       expect(File.exist?(@dir.join("db", "main.sqlite3"))).to be false
 
-      expect(output).to include "failed to drop database #{sqlite_db_name("db/app.sqlite3", dir: @dir)}"
+      expect(output).to include "failed to drop database db/app.sqlite3"
       expect(output).to include "Permission denied" # from Errno::EACCESS
 
-      expect(output).to include "database #{sqlite_db_name("db/main.sqlite3", dir: @dir)} dropped"
+      expect(output).to include "database db/main.sqlite3 dropped"
     end
 
     context "app and slice with gateways" do
@@ -168,10 +168,10 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
           .and change { File.exist?(@dir.join("db", "main_extra.sqlite3")) }.to(false)
 
         expect(output.strip).to eq(<<~TEXT.strip)
-          => database #{sqlite_db_name("db/app.sqlite3", dir: @dir)} dropped
-          => database #{sqlite_db_name("db/app_extra.sqlite3", dir: @dir)} dropped
-          => database #{sqlite_db_name("db/main.sqlite3", dir: @dir)} dropped
-          => database #{sqlite_db_name("db/main_extra.sqlite3", dir: @dir)} dropped
+          => database db/app.sqlite3 dropped
+          => database db/app_extra.sqlite3 dropped
+          => database db/main.sqlite3 dropped
+          => database db/main_extra.sqlite3 dropped
         TEXT
 
         expect(command).not_to have_received(:exit)
@@ -195,8 +195,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
           .and change { File.exist?(@dir.join("db", "app_extra.sqlite3")) }.to false
 
         expect(output).to include_in_order(
-          "database #{sqlite_db_name("db/app.sqlite3", dir: @dir)} dropped",
-          "database #{sqlite_db_name("db/app_extra.sqlite3", dir: @dir)} dropped"
+          "database db/app.sqlite3 dropped",
+          "database db/app_extra.sqlite3 dropped"
         )
 
         expect(command).not_to have_received(:exit)
@@ -207,7 +207,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
           .to change { File.exist?(@dir.join("db", "app_extra.sqlite3")) }.to(false)
           .and not_change { File.exist?(@dir.join("db", "app.sqlite3")) }.from(true)
 
-        expect(output).to include "database #{sqlite_db_name("db/app_extra.sqlite3", dir: @dir)} dropped"
+        expect(output).to include "database db/app_extra.sqlite3 dropped"
         expect(output).not_to include "database/app.sqlite3"
       end
     end
@@ -229,8 +229,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
           .and change { File.exist?(@dir.join("db", "main_extra.sqlite3")) }.to false
 
         expect(output).to include_in_order(
-          "database #{sqlite_db_name("db/main.sqlite3", dir: @dir)} dropped",
-          "database #{sqlite_db_name("db/main_extra.sqlite3", dir: @dir)} dropped"
+          "database db/main.sqlite3 dropped",
+          "database db/main_extra.sqlite3 dropped"
         )
 
         expect(command).not_to have_received(:exit)
@@ -241,7 +241,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
           .to change { File.exist?(@dir.join("db", "main_extra.sqlite3")) }.to(false)
           .and not_change { File.exist?(@dir.join("db", "main.sqlite3")) }.from(true)
 
-        expect(output).to include "database #{sqlite_db_name("db/main_extra.sqlite3", dir: @dir)} dropped"
+        expect(output).to include "database db/main_extra.sqlite3 dropped"
         expect(output).not_to include "database/main.sqlite3"
 
         expect(command).not_to have_received(:exit)

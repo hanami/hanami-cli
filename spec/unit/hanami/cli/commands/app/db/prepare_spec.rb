@@ -174,14 +174,14 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Prepare, :app_integration do
         SQL
 
         expect(output).to include_in_order(
-          "database #{sqlite_db_name("db/app.sqlite3", dir: @dir)} created",
-          "#{sqlite_db_name("db/app.sqlite3", dir: @dir)} structure loaded from config/db/structure.sql",
-          "database #{sqlite_db_name("db/main.sqlite3", dir: @dir)} created",
-          "#{sqlite_db_name("db/main.sqlite3", dir: @dir)} structure loaded from slices/main/config/db/structure.sql",
-          "database #{sqlite_db_name("db/app.sqlite3", dir: @dir)} migrated",
-          "#{sqlite_db_name("db/app.sqlite3", dir: @dir)} structure dumped to config/db/structure.sql",
-          "database #{sqlite_db_name("db/main.sqlite3", dir: @dir)} migrated",
-          "#{sqlite_db_name("db/main.sqlite3", dir: @dir)} structure dumped to slices/main/config/db/structure.sql",
+          "database db/app.sqlite3 created",
+          "db/app.sqlite3 structure loaded from config/db/structure.sql",
+          "database db/main.sqlite3 created",
+          "db/main.sqlite3 structure loaded from slices/main/config/db/structure.sql",
+          "database db/app.sqlite3 migrated",
+          "db/app.sqlite3 structure dumped to config/db/structure.sql",
+          "database db/main.sqlite3 migrated",
+          "db/main.sqlite3 structure dumped to slices/main/config/db/structure.sql",
           "seed data loaded from config/db/seeds.rb",
           "seed data loaded from slices/main/config/db/seeds.rb"
         )

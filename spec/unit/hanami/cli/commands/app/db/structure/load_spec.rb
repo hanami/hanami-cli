@@ -102,8 +102,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Load, :app_integration
         .to true
 
       expect(output).to include_in_order(
-        "#{sqlite_db_name("db/app.sqlite3", dir: @dir)} structure loaded from config/db/structure.sql",
-        "#{sqlite_db_name("db/main.sqlite3", dir: @dir)} structure loaded from slices/main/config/db/structure.sql"
+        "db/app.sqlite3 structure loaded from config/db/structure.sql",
+        "db/main.sqlite3 structure loaded from slices/main/config/db/structure.sql"
       )
     end
 
@@ -130,8 +130,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Load, :app_integration
           .to true
 
         expect(output).to include_in_order(
-          "#{sqlite_db_name("db/app.sqlite3", dir: @dir)} structure loaded from config/db/structure.sql in",
-          "#{sqlite_db_name("db/app_extra.sqlite3", dir: @dir)} structure loaded from config/db/extra_structure.sql in"
+          "db/app.sqlite3 structure loaded from config/db/structure.sql in",
+          "db/app_extra.sqlite3 structure loaded from config/db/extra_structure.sql in"
         )
       end
 
@@ -142,8 +142,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Load, :app_integration
           .and not_change { Hanami.app["db.gateways.default"].connection.tables.include?(:posts) }
           .from false
 
-        expect(output).to include "#{sqlite_db_name("db/app_extra.sqlite3", dir: @dir)} structure loaded from config/db/extra_structure.sql in"
-        expect(output).not_to include sqlite_db_name("db/app.sqlite3", dir: @dir)
+        expect(output).to include "db/app_extra.sqlite3 structure loaded from config/db/extra_structure.sql in"
+        expect(output).not_to include "db/app.sqlite3"
       end
     end
 
@@ -170,8 +170,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Load, :app_integration
           .to true
 
         expect(output).to include_in_order(
-          "#{sqlite_db_name("db/main.sqlite3", dir: @dir)} structure loaded from slices/main/config/db/structure.sql in",
-          "#{sqlite_db_name("db/main_extra.sqlite3", dir: @dir)} structure loaded from slices/main/config/db/extra_structure.sql in"
+          "db/main.sqlite3 structure loaded from slices/main/config/db/structure.sql in",
+          "db/main_extra.sqlite3 structure loaded from slices/main/config/db/extra_structure.sql in"
         )
       end
 
@@ -182,8 +182,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Load, :app_integration
           .and not_change { Main::Slice["db.gateways.default"].connection.tables.include?(:comments) }
           .from false
 
-        expect(output).to include "#{sqlite_db_name("db/main_extra.sqlite3", dir: @dir)} structure loaded from slices/main/config/db/extra_structure.sql in"
-        expect(output).not_to include sqlite_db_name("db/main.sqlite3", dir: @dir)
+        expect(output).to include "db/main_extra.sqlite3 structure loaded from slices/main/config/db/extra_structure.sql in"
+        expect(output).not_to include "db/main.sqlite3"
       end
     end
   end
