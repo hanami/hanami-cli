@@ -46,16 +46,6 @@ module Hanami
               auto_register: false
             ).create(force:)
 
-            RubyClassFile.new(
-              fs: fs,
-              inflector: inflector,
-              namespace: slice,
-              key: "view",
-              base_path: directory,
-              parent_class_name: "#{Hanami.app.namespace}::View",
-              auto_register: false
-            ).create(force:)
-
             if Hanami.bundled?("hanami-mailer")
               RubyClassFile.new(
                 fs:, inflector:,
@@ -70,34 +60,7 @@ module Hanami
               fs.touch(fs.join(directory, "mailers/.keep"))
             end
 
-            RubyModuleFile.new(
-              fs: fs,
-              inflector: inflector,
-              namespace: slice,
-              key: "views.helpers",
-              base_path: directory,
-              auto_register: false,
-              body: ["# Add your view helpers here"]
-            ).create(force:)
-
-            RubyClassFile.new(
-              fs: fs,
-              inflector: inflector,
-              namespace: slice,
-              key: "views.context",
-              base_path: directory,
-              parent_class_name: "#{Hanami.app.namespace}::View::Context",
-              auto_register: false,
-              body: ["# Define your view context here. See https://hanakai.org/learn/hanami/views/context/ for details."] # rubocop:disable Layout/LineLength
-            ).create(force:)
-
-            fs.create(
-              fs.join(directory, "templates", "layouts", "app.html.erb"),
-              app_layout_template(
-                page_title: "#{inflector.humanize(app)} - #{inflector.humanize(slice)}"
-              ),
-              force:
-            )
+            generate_views(app, slice, directory, force:) if Hanami.bundled?("hanami-view")
 
             fs.create(
               fs.join(directory, "config", "i18n", "en.yml"),
@@ -171,9 +134,6 @@ module Hanami
             end
 
             fs.touch(fs.join(directory, "actions/.keep"))
-            fs.touch(fs.join(directory, "views/.keep"))
-            fs.touch(fs.join(directory, "templates/.keep"))
-            fs.touch(fs.join(directory, "templates/layouts/.keep"))
           end
 
           private
@@ -181,6 +141,51 @@ module Hanami
           attr_reader :fs
 
           attr_reader :inflector
+
+          def generate_views(app, slice, directory, force:) # rubocop:disable Metrics/AbcSize
+            RubyClassFile.new(
+              fs: fs,
+              inflector: inflector,
+              namespace: slice,
+              key: "view",
+              base_path: directory,
+              parent_class_name: "#{Hanami.app.namespace}::View",
+              auto_register: false
+            ).create(force:)
+
+            RubyModuleFile.new(
+              fs: fs,
+              inflector: inflector,
+              namespace: slice,
+              key: "views.helpers",
+              base_path: directory,
+              auto_register: false,
+              body: ["# Add your view helpers here"]
+            ).create(force:)
+
+            RubyClassFile.new(
+              fs: fs,
+              inflector: inflector,
+              namespace: slice,
+              key: "views.context",
+              base_path: directory,
+              parent_class_name: "#{Hanami.app.namespace}::View::Context",
+              auto_register: false,
+              body: ["# Define your view context here. See https://hanakai.org/learn/hanami/views/context/ for details."] # rubocop:disable Layout/LineLength
+            ).create(force:)
+
+            fs.create(
+              fs.join(directory, "templates", "layouts", "app.html.erb"),
+              app_layout_template(
+                page_title: "#{inflector.humanize(app)} - #{inflector.humanize(slice)}"
+              ),
+              force:
+            )
+
+            fs.touch(fs.join(directory, "views/.keep"))
+            fs.touch(fs.join(directory, "templates/.keep"))
+            fs.touch(fs.join(directory, "templates/layouts/.keep"))
+          end
 
           def file(path)
             File.read(File.join(__dir__, "slice", path))
