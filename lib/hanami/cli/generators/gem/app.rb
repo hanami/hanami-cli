@@ -51,6 +51,10 @@ module Hanami
 
             fs.create("config/app.rb", t("app.erb", context))
             fs.create("config/settings.rb", t("settings.erb", context))
+            fs.create("config/settings/default.yml", file("settings_default.yml"))
+            fs.create("config/settings/development.yml", file("settings_development.yml"))
+            fs.create("config/settings/test.yml", file("settings_test.yml"))
+            fs.create("config/settings/production.yml", file("settings_production.yml"))
             fs.create("config/routes.rb", t("routes.erb", context))
             fs.create("config/puma.rb", t("puma.erb", context))
             fs.create("config/i18n/en.yml", File.read(File.join(__dir__, "..", "i18n.yml")))

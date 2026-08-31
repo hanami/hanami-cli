@@ -11,6 +11,8 @@ and this project adheres to [Break Versioning](https://www.taoensso.com/break-ve
 
 - Add `hanami new --skip-git` to generate an app without initializing a git repository or generating a `.gitignore`.
   (@aaronmallen #441)
+- Generate `config/settings/default.yml` and per-environment `config/settings/development.yml`, `config/settings/test.yml`
+  and `config/settings/production.yml` for new apps. (@aaronmallen)
 
 ### Changed
 

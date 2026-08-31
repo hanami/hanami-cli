@@ -1,0 +1,6 @@
+# Settings for the production environment.
+#
+# Values here override config/settings/default.yml, and are overridden by
+# matching (upper-cased) ENV variables.
+#
+# This file is evaluated as ERB. See config/settings/default.yml for details.

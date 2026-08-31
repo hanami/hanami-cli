@@ -361,6 +361,38 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
       expect(fs.read("config/settings.rb")).to eq(settings)
       expect(output).to include("Created config/settings.rb")
 
+      # config/settings/*.yml
+      settings_default = <<~EXPECTED
+        # Settings shared by every environment.
+        #
+        # Values here are overridden by config/settings/<HANAMI_ENV>.yml, and both are
+        # overridden by matching (upper-cased) ENV variables.
+        #
+        # A setting must be declared in config/settings.rb before it can be given a
+        # value here.
+        #
+        # This file is evaluated as ERB, so values can be computed:
+        #
+        #   site_name: <%= Hanami.env?(:test) ? "test_site" : "site" %>
+        #
+        # See https://hanakai.org/learn/hanami/app/settings for details.
+      EXPECTED
+      expect(fs.read("config/settings/default.yml")).to eq(settings_default)
+      expect(output).to include("Created config/settings/default.yml")
+
+      %w[development test production].each do |env|
+        settings_env = <<~EXPECTED
+          # Settings for the #{env} environment.
+          #
+          # Values here override config/settings/default.yml, and are overridden by
+          # matching (upper-cased) ENV variables.
+          #
+          # This file is evaluated as ERB. See config/settings/default.yml for details.
+        EXPECTED
+        expect(fs.read("config/settings/#{env}.yml")).to eq(settings_env)
+        expect(output).to include("Created config/settings/#{env}.yml")
+      end
+
       # config/routes.rb
       routes = <<~EXPECTED
         # frozen_string_literal: true
@@ -1051,6 +1083,38 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         EXPECTED
         expect(fs.read("config/settings.rb")).to eq(settings)
         expect(output).to include("Created config/settings.rb")
+
+        # config/settings/*.yml
+        settings_default = <<~EXPECTED
+          # Settings shared by every environment.
+          #
+          # Values here are overridden by config/settings/<HANAMI_ENV>.yml, and both are
+          # overridden by matching (upper-cased) ENV variables.
+          #
+          # A setting must be declared in config/settings.rb before it can be given a
+          # value here.
+          #
+          # This file is evaluated as ERB, so values can be computed:
+          #
+          #   site_name: <%= Hanami.env?(:test) ? "test_site" : "site" %>
+          #
+          # See https://hanakai.org/learn/hanami/app/settings for details.
+        EXPECTED
+        expect(fs.read("config/settings/default.yml")).to eq(settings_default)
+        expect(output).to include("Created config/settings/default.yml")
+
+        %w[development test production].each do |env|
+          settings_env = <<~EXPECTED
+            # Settings for the #{env} environment.
+            #
+            # Values here override config/settings/default.yml, and are overridden by
+            # matching (upper-cased) ENV variables.
+            #
+            # This file is evaluated as ERB. See config/settings/default.yml for details.
+          EXPECTED
+          expect(fs.read("config/settings/#{env}.yml")).to eq(settings_env)
+          expect(output).to include("Created config/settings/#{env}.yml")
+        end
 
         # config/routes.rb
         routes = <<~EXPECTED
