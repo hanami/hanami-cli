@@ -51,7 +51,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Create, :app_integration do
 
     describe "sqlite" do
       before do
-        ENV["DATABASE_URL"] = "sqlite://db/app.sqlite3"
+        ENV["DATABASE_URL"] = sqlite_url("db/app.sqlite3", dir: @dir)
       end
 
       it "creates the database" do
@@ -65,7 +65,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Create, :app_integration do
       end
 
       it "does not create the database if it already exists" do
-        FileUtils.mkdir(@dir.join("db"))
+        FileUtils.mkdir_p(@dir.join("db"))
         FileUtils.touch(@dir.join("db", "app.sqlite3"))
 
         command.call
@@ -135,8 +135,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Create, :app_integration do
 
     describe "sqlite" do
       before do
-        ENV["DATABASE_URL"] = "sqlite://db/app.sqlite3"
-        ENV["MAIN__DATABASE_URL"] = "sqlite://db/main.sqlite3"
+        ENV["DATABASE_URL"] = sqlite_url("db/app.sqlite3", dir: @dir)
+        ENV["MAIN__DATABASE_URL"] = sqlite_url("db/main.sqlite3", dir: @dir)
       end
 
       it "creates each database" do
@@ -199,7 +199,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Create, :app_integration do
       context "app with gateways" do
         def before_prepare
           write "config/db/.keep", ""
-          ENV["DATABASE_URL__EXTRA"] = "sqlite://db/app_extra.sqlite3"
+          ENV["DATABASE_URL__EXTRA"] = sqlite_url("db/app_extra.sqlite3", dir: @dir)
         end
 
         it "creates the databases for all the app's gateways when given --app" do
@@ -226,7 +226,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Create, :app_integration do
       context "slice with gateways" do
         def before_prepare
           write "slices/main/config/db/.keep", ""
-          ENV["MAIN__DATABASE_URL__EXTRA"] = "sqlite://db/main_extra.sqlite3"
+          ENV["MAIN__DATABASE_URL__EXTRA"] = sqlite_url("db/main_extra.sqlite3", dir: @dir)
         end
 
         it "creates the databases for all the slices's gateways when given --slice" do
@@ -288,7 +288,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Create, :app_integration do
 
     describe "automatic test env execution" do
       before do
-        ENV["DATABASE_URL"] = "sqlite://db/app.sqlite3"
+        ENV["DATABASE_URL"] = sqlite_url("db/app.sqlite3", dir: @dir)
       end
 
       around do |example|

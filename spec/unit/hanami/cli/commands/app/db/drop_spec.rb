@@ -59,8 +59,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
 
   describe "sqlite" do
     before do
-      ENV["DATABASE_URL"] = "sqlite://db/app.sqlite3"
-      ENV["MAIN__DATABASE_URL"] = "sqlite://db/main.sqlite3"
+      ENV["DATABASE_URL"] = sqlite_url("db/app.sqlite3", dir: @dir)
+      ENV["MAIN__DATABASE_URL"] = sqlite_url("db/main.sqlite3", dir: @dir)
     end
 
     it "drops each database" do
@@ -151,8 +151,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
         write "config/db/.keep", ""
         write "slices/main/config/db/.keep", ""
 
-        ENV["DATABASE_URL__EXTRA"] = "sqlite://db/app_extra.sqlite3"
-        ENV["MAIN__DATABASE_URL__EXTRA"] = "sqlite://db/main_extra.sqlite3"
+        ENV["DATABASE_URL__EXTRA"] = sqlite_url("db/app_extra.sqlite3", dir: @dir)
+        ENV["MAIN__DATABASE_URL__EXTRA"] = sqlite_url("db/main_extra.sqlite3", dir: @dir)
       end
 
       before do
@@ -181,7 +181,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
     context "app with gateways" do
       def before_prepare
         write "config/db/.keep", ""
-        ENV["DATABASE_URL__EXTRA"] = "sqlite://db/app_extra.sqlite3"
+        ENV["DATABASE_URL__EXTRA"] = sqlite_url("db/app_extra.sqlite3", dir: @dir)
       end
 
       before do
@@ -215,7 +215,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
     context "slice with gateways" do
       def before_prepare
         write "slices/main/config/db/.keep", ""
-        ENV["MAIN__DATABASE_URL__EXTRA"] = "sqlite://db/main_extra.sqlite3"
+        ENV["MAIN__DATABASE_URL__EXTRA"] = sqlite_url("db/main_extra.sqlite3", dir: @dir)
       end
 
       before do
@@ -442,7 +442,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
 
   describe "automatic test env execution" do
     before do
-      ENV["DATABASE_URL"] = "sqlite://db/app.sqlite3"
+      ENV["DATABASE_URL"] = sqlite_url("db/app.sqlite3", dir: @dir)
     end
 
     around do |example|

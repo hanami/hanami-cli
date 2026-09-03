@@ -82,14 +82,10 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
   # there's no real reason to repeat all edge cases against all databases. This would be slow down
   # tests and add unnecessary clutter to this test file.
   describe "sqlite" do
-    before do
-      ENV["DATABASE_URL"] = "sqlite://db/app.sqlite3"
-      ENV["MAIN__DATABASE_URL"] = "sqlite://db/main.sqlite3"
-    end
-
     context "with one database" do
       it "rolls back the most recent migration found" do
         with_directory(@dir = make_tmp_directory) do
+          ENV["DATABASE_URL"] = sqlite_url("db/app.sqlite3", dir: @dir)
           write "config/app.rb", <<~RUBY
             module TestApp
               class App < Hanami::App
@@ -122,6 +118,9 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
     context "with multiple databases" do
       before do
         with_directory(@dir = make_tmp_directory) do
+          ENV["DATABASE_URL"] = sqlite_url("db/app.sqlite3", dir: @dir)
+          ENV["MAIN__DATABASE_URL"] = sqlite_url("db/main.sqlite3", dir: @dir)
+
           write "config/app.rb", <<~RUBY
             module TestApp
               class App < Hanami::App
@@ -258,11 +257,11 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
 
     context "app with multiple gateways" do
       before do
-        ENV["DATABASE_URL"] = "sqlite://db/app.sqlite3"
-        ENV["DATABASE_URL__EXTRA"] = "sqlite://db/app_extra.sqlite3"
-        ENV["DATABASE_URL__SUPER"] = "sqlite://db/app_super.sqlite3"
-
         with_directory(@dir = make_tmp_directory) do
+          ENV["DATABASE_URL"] = sqlite_url("db/app.sqlite3", dir: @dir)
+          ENV["DATABASE_URL__EXTRA"] = sqlite_url("db/app_extra.sqlite3", dir: @dir)
+          ENV["DATABASE_URL__SUPER"] = sqlite_url("db/app_super.sqlite3", dir: @dir)
+
           write "config/app.rb", <<~RUBY
             module TestApp
               class App < Hanami::App
@@ -311,16 +310,14 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
     describe "automatic test env execution" do
       let(:test_env_executor) { instance_spy(Hanami::CLI::InteractiveSystemCall) }
 
-      before do
-        ENV["DATABASE_URL"] = "sqlite://db/app.sqlite3"
-      end
-
       around do |example|
         as_hanami_cli_with_args(%w[db rollback]) { example.run }
       end
 
       it "re-executes the command in test env when run in development env" do
         with_directory(@dir = make_tmp_directory) do
+          ENV["DATABASE_URL"] = sqlite_url("db/app.sqlite3", dir: @dir)
+
           write "config/app.rb", <<~RUBY
             module TestApp
               class App < Hanami::App

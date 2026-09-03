@@ -11,6 +11,25 @@ module RSpec
         expect(actual).to eq(expected)
         actual
       end
+
+      def sqlite_url(url, dir: nil)
+        url = sqlite_db_name(url, dir:)
+        if jruby?
+          "jdbc:sqlite:#{url}"
+        else
+          "sqlite://#{url}"
+        end
+      end
+
+      def sqlite_db_name(url, dir: nil)
+        # JDBC driver does not use Dir.current for building the path, so we need to construct
+        # the correct path ourselves
+        jruby? && dir ? File.join(dir, url) : url
+      end
+
+      def jruby?
+        RUBY_ENGINE == "jruby"
+      end
     end
   end
 end

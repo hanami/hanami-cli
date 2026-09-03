@@ -105,8 +105,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Prepare, :app_integration do
 
   describe "sqlite" do
     before do
-      ENV["DATABASE_URL"] = "sqlite://db/app.sqlite3"
-      ENV["MAIN__DATABASE_URL"] = "sqlite://db/main.sqlite3"
+      ENV["DATABASE_URL"] = sqlite_url("db/app.sqlite3", dir: @dir)
+      ENV["MAIN__DATABASE_URL"] = sqlite_url("db/main.sqlite3", dir: @dir)
     end
 
     context "from scratch, with structure dump and seeds" do
@@ -437,7 +437,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Prepare, :app_integration do
 
   describe "automatic test env execution" do
     before do
-      ENV["DATABASE_URL"] = "sqlite://db/app.sqlite3"
+      ENV["DATABASE_URL"] = sqlite_url("db/app.sqlite3", dir: @dir)
     end
 
     around do |example|

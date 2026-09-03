@@ -90,8 +90,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Load, :app_integration
 
   describe "sqlite" do
     before do
-      ENV["DATABASE_URL"] = "sqlite://db/app.sqlite3"
-      ENV["MAIN__DATABASE_URL"] = "sqlite://db/main.sqlite3"
+      ENV["DATABASE_URL"] = sqlite_url("db/app.sqlite3", dir: @dir)
+      ENV["MAIN__DATABASE_URL"] = sqlite_url("db/main.sqlite3", dir: @dir)
       db_structure_dump
     end
 
@@ -109,7 +109,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Load, :app_integration
 
     context "app with gateways" do
       def before_prepare
-        ENV["DATABASE_URL__EXTRA"] = "sqlite://db/app_extra.sqlite3"
+        ENV["DATABASE_URL__EXTRA"] = sqlite_url("db/app_extra.sqlite3", dir: @dir)
 
         write "config/db/extra_migrate/20240602201330_create_users.rb", <<~RUBY
           ROM::SQL.migration do
@@ -149,7 +149,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Load, :app_integration
 
     context "slice with gateways" do
       def before_prepare
-        ENV["MAIN__DATABASE_URL__EXTRA"] = "sqlite://db/main_extra.sqlite3"
+        ENV["MAIN__DATABASE_URL__EXTRA"] = sqlite_url("db/main_extra.sqlite3", dir: @dir)
 
         write "slices/main/config/db/extra_migrate/20240602201330_create_users.rb", <<~RUBY
           ROM::SQL.migration do
@@ -281,7 +281,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Load, :app_integration
 
   describe "automatic test env execution" do
     before do
-      ENV["DATABASE_URL"] = "sqlite://db/app.sqlite3"
+      ENV["DATABASE_URL"] = sqlite_url("db/app.sqlite3", dir: @dir)
     end
 
     around do |example|

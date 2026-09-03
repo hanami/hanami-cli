@@ -67,10 +67,18 @@ module Hanami
               # @api private
               # @since 2.2.0
               def name
-                # Sequel expects sqlite:// URIs to operate the same as file:// URIs: 2 slashes for
-                # a relative path, 3 for an absolute path. In the case of 2 slashes, the first part
-                # of the path is considered by Ruby's `URI` as the `#host`.
-                @name ||= "#{database_uri.host}#{database_uri.path}"
+                @name ||=
+                  if database_uri.scheme == "jdbc"
+                    # For JDBC SQLite URIs like "jdbc:sqlite:db/app.sqlite3",
+                    # we need to extract the path part after "jdbc:sqlite:"
+                    # The standard URI.parse doesn't handle JDBC URIs well, so we remove the prefix manually
+                    database_url.sub(%r{^jdbc:sqlite:}, "")
+                  else
+                    # Sequel expects sqlite:// URIs to operate the same as file:// URIs: 2 slashes for
+                    # a relative path, 3 for an absolute path. In the case of 2 slashes, the first part
+                    # of the path is considered by Ruby's `URI` as the `#host`.
+                    "#{database_uri.host}#{database_uri.path}"
+                  end
               end
 
               private

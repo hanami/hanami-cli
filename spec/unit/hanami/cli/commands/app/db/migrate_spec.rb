@@ -85,8 +85,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
 
     describe "sqlite" do
       before do
-        ENV["DATABASE_URL"] = "sqlite://db/app.sqlite3"
-        ENV["MAIN__DATABASE_URL"] = "sqlite://db/main.sqlite3"
+        ENV["DATABASE_URL"] = sqlite_url("db/app.sqlite3", dir: @dir)
+        ENV["MAIN__DATABASE_URL"] = sqlite_url("db/main.sqlite3", dir: @dir)
         db_create
       end
 
@@ -153,7 +153,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
         def before_prepare
           super
 
-          ENV["DATABASE_URL__EXTRA"] = "sqlite://db/app_extra.sqlite3"
+          ENV["DATABASE_URL__EXTRA"] = sqlite_url("db/app_extra.sqlite3", dir: @dir)
 
           write "config/db/extra_migrate/20240602201330_create_comments.rb", <<~RUBY
             ROM::SQL.migration do
@@ -200,7 +200,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
         def before_prepare
           super
 
-          ENV["MAIN__DATABASE_URL__EXTRA"] = "sqlite://db/main_extra.sqlite3"
+          ENV["MAIN__DATABASE_URL__EXTRA"] = sqlite_url("db/main_extra.sqlite3", dir: @dir)
 
           write "slices/main/config/db/extra_migrate/20240602201330_create_comments.rb", <<~RUBY
             ROM::SQL.migration do
@@ -330,8 +330,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
     end
 
     before do
-      ENV["ADMIN__DATABASE_URL"] = "sqlite://db/shared.sqlite3"
-      ENV["MAIN__DATABASE_URL"] = "sqlite://db/shared.sqlite3"
+      ENV["ADMIN__DATABASE_URL"] = sqlite_url("db/shared.sqlite3", dir: @dir)
+      ENV["MAIN__DATABASE_URL"] = sqlite_url("db/shared.sqlite3", dir: @dir)
       db_create
     end
 
@@ -374,8 +374,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
     end
 
     before do
-      ENV["ADMIN__DATABASE_URL"] = "sqlite://db/confused.sqlite3"
-      ENV["MAIN__DATABASE_URL"] = "sqlite://db/confused.sqlite3"
+      ENV["ADMIN__DATABASE_URL"] = sqlite_url("db/confused.sqlite3", dir: @dir)
+      ENV["MAIN__DATABASE_URL"] = sqlite_url("db/confused.sqlite3", dir: @dir)
       db_create
     end
 
@@ -401,7 +401,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
     end
 
     before do
-      ENV["DATABASE_URL"] = "sqlite://db/app.sqlite3"
+      ENV["DATABASE_URL"] = sqlite_url("db/app.sqlite3", dir: @dir)
     end
 
     it "prints a warning, and does not migrate the database" do
@@ -443,10 +443,10 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
     end
 
     before do
-      ENV["ADMIN__DATABASE_URL__POSTS"] = "sqlite://db/posts.sqlite3"
-      ENV["ADMIN__DATABASE_URL__COMMENTS"] = "sqlite://db/comments.sqlite3"
-      ENV["MAIN__DATABASE_URL__POSTS"] = "sqlite://db/posts.sqlite3"
-      ENV["MAIN__DATABASE_URL__COMMENTS"] = "sqlite://db/comments.sqlite3"
+      ENV["ADMIN__DATABASE_URL__POSTS"] = sqlite_url("db/posts.sqlite3", dir: @dir)
+      ENV["ADMIN__DATABASE_URL__COMMENTS"] = sqlite_url("db/comments.sqlite3", dir: @dir)
+      ENV["MAIN__DATABASE_URL__POSTS"] = sqlite_url("db/posts.sqlite3", dir: @dir)
+      ENV["MAIN__DATABASE_URL__COMMENTS"] = sqlite_url("db/comments.sqlite3", dir: @dir)
       db_create
     end
 
@@ -503,10 +503,10 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
     end
 
     before do
-      ENV["ADMIN__DATABASE_URL__POSTS"] = "sqlite://db/posts.sqlite3"
-      ENV["ADMIN__DATABASE_URL__COMMENTS"] = "sqlite://db/comments.sqlite3"
-      ENV["MAIN__DATABASE_URL__POSTS"] = "sqlite://db/posts.sqlite3"
-      ENV["MAIN__DATABASE_URL__COMMENTS"] = "sqlite://db/comments.sqlite3"
+      ENV["ADMIN__DATABASE_URL__POSTS"] = sqlite_url("db/posts.sqlite3", dir: @dir)
+      ENV["ADMIN__DATABASE_URL__COMMENTS"] = sqlite_url("db/comments.sqlite3", dir: @dir)
+      ENV["MAIN__DATABASE_URL__POSTS"] = sqlite_url("db/posts.sqlite3", dir: @dir)
+      ENV["MAIN__DATABASE_URL__COMMENTS"] = sqlite_url("db/comments.sqlite3", dir: @dir)
       db_create
     end
 
@@ -534,7 +534,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
     end
 
     before do
-      ENV["DATABASE_URL"] = "sqlite://db/app.sqlite3"
+      ENV["DATABASE_URL"] = sqlite_url("db/app.sqlite3", dir: @dir)
     end
 
     it "prints a warning, and does not migrate the database" do
@@ -556,7 +556,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
     end
 
     before do
-      ENV["DATABASE_URL"] = "sqlite://db/app.sqlite3"
+      ENV["DATABASE_URL"] = sqlite_url("db/app.sqlite3", dir: @dir)
       db_create
     end
 
@@ -572,7 +572,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
 
   describe "automatic test env execution" do
     before do
-      ENV["DATABASE_URL"] = "sqlite://db/app.sqlite3"
+      ENV["DATABASE_URL"] = sqlite_url("db/app.sqlite3", dir: @dir)
       db_create
     end
 

@@ -64,8 +64,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Version, :app_integration do
   end
 
   before do
-    ENV["DATABASE_URL"] = "sqlite://db/app.sqlite3"
-    ENV["MAIN__DATABASE_URL"] = "sqlite://db/main.sqlite3"
+    ENV["DATABASE_URL"] = sqlite_url("db/app.sqlite3", dir: @dir)
+    ENV["MAIN__DATABASE_URL"] = sqlite_url("db/main.sqlite3", dir: @dir)
 
     db_migrate
   end
@@ -113,7 +113,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Version, :app_integration do
         end
       RUBY
 
-      ENV["DATABASE_URL__EXTRA"] = "sqlite://db/app_extra.sqlite3"
+      ENV["DATABASE_URL__EXTRA"] = sqlite_url("db/app_extra.sqlite3", dir: @dir)
     end
 
     it "prints the versions for all an app's databases when given --app" do
@@ -146,7 +146,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Version, :app_integration do
         end
       RUBY
 
-      ENV["MAIN__DATABASE_URL__EXTRA"] = "sqlite://db/main_extra.sqlite3"
+      ENV["MAIN__DATABASE_URL__EXTRA"] = sqlite_url("db/main_extra.sqlite3", dir: @dir)
     end
 
     it "prints the versions for all an app's databases when given --app" do
