@@ -96,6 +96,22 @@ module Hanami
                     slice.app.root.join(name).to_s
                   end
               end
+
+              def relativize_for_display(path)
+                # On JRuby we probably converted a relative path to an absolute path, because
+                # the JDBC driver only accepts the latter. Now it's time to convert it back.
+                # This means that JRuby users might sometimes see relative path when they actually
+                # used abosulte path in the configuration.
+                return path unless jruby?
+
+                pathname = Pathname.new(path).expand_path
+                expanded = pathname.to_s
+
+                bases = [slice.app.root.to_s, Dir.pwd.to_s]
+
+                base = bases.find { |b| expanded.start_with?("#{b}/") }
+                base ? pathname.relative_path_from(base).to_s : path
+              end
             end
           end
         end
