@@ -6,10 +6,10 @@ module Hanami
       module App
         # @api private
         class Provider
-          def initialize(fs:, inflector:, out: $stdout)
+          def initialize(fs:, inflector:, stdout: $stdout)
             @fs = fs
             @inflector = inflector
-            @out = out
+            @stdout = stdout
           end
 
           def call(key:, namespace:, base_path:, force: false, **_opts)
@@ -30,7 +30,7 @@ module Hanami
 
           private
 
-          attr_reader :fs, :inflector, :out
+          attr_reader :fs, :inflector, :stdout
 
           def file_contents(registrar, name)
             <<~RUBY

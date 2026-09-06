@@ -48,7 +48,7 @@ module Hanami
 
             if Hanami.app.router
               inspector = MiddlewareStackInspector.new(stack: Hanami.app.router.middleware_stack)
-              out.puts inspector.inspect(include_arguments: with_arguments)
+              puts inspector.inspect(include_arguments: with_arguments)
             end
           end
         end

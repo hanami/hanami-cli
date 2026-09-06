@@ -4,7 +4,7 @@ require "spec_helper"
 require "hanami/cli/commands/app/run"
 
 RSpec.describe Hanami::CLI::Commands::App::Run do
-  subject { described_class.new(out: out, err: err) }
+  subject { described_class.new(stdout: out, stderr: err) }
   let(:out) { StringIO.new }
   let(:err) { StringIO.new }
 

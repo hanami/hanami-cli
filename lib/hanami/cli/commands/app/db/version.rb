@@ -17,14 +17,14 @@ module Hanami
               databases(app: app, slice: slice, gateway: gateway).each do |database|
                 unless database.migrations_dir?
                   relative_migrations_path = database.migrations_path.relative_path_from(database.slice.app.root)
-                  out.puts "=> Cannot find version for database #{database.name}: no migrations directory at #{relative_migrations_path}/"
+                  puts "=> Cannot find version for database #{database.name}: no migrations directory at #{relative_migrations_path}/"
                   return # rubocop:disable Lint/NonLocalExitFromIterator
                 end
 
                 migration = database.applied_migrations.last
                 version = migration ? File.basename(migration, ".*") : "not available"
 
-                out.puts "=> #{database.name} current schema version is #{version}"
+                puts "=> #{database.name} current schema version is #{version}"
               end
               # rubocop:enable Layout/LineLength
             end

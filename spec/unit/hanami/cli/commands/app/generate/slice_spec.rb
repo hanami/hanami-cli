@@ -4,7 +4,7 @@ require "hanami"
 require "securerandom"
 
 RSpec.describe Hanami::CLI::Commands::App::Generate::Slice, :app do
-  subject { described_class.new(fs: fs, out: out, err: err, generator: generator) }
+  subject { described_class.new(fs: fs, stdout: out, stderr: err, generator: generator) }
 
   before do
     allow(Hanami).to receive(:bundled?)
@@ -17,7 +17,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Slice, :app do
 
   let(:out) { StringIO.new }
   let(:err) { StringIO.new }
-  let(:fs) { Hanami::CLI::Files.new(memory: true, out: out) }
+  let(:fs) { Hanami::CLI::Files.new(memory: true, stdout: out) }
   let(:inflector) { Dry::Inflector.new }
   let(:generator) { Hanami::CLI::Generators::App::Slice.new(fs: fs, inflector: inflector) }
   let(:app) { "Test" }
