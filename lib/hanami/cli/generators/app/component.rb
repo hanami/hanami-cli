@@ -12,10 +12,10 @@ module Hanami
         class Component
           # @api private
           # @since 2.2.0
-          def initialize(fs:, inflector:, out: $stdout)
+          def initialize(fs:, inflector:, stdout: $stdout)
             @fs = fs
             @inflector = inflector
-            @out = out
+            @stdout = stdout
           end
 
           # @api private
@@ -32,7 +32,7 @@ module Hanami
 
           private
 
-          attr_reader :fs, :inflector, :out
+          attr_reader :fs, :inflector, :stdout
         end
       end
     end

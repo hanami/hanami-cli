@@ -3,11 +3,11 @@
 require "hanami"
 
 RSpec.describe "file conflict handling", :app do
-  subject(:cmd) { Hanami::CLI::Commands::App::Generate::View.new(fs:, out:, err:) }
+  subject(:cmd) { Hanami::CLI::Commands::App::Generate::View.new(fs:, stdout: out, stderr: err) }
 
   let(:out) { StringIO.new }
   let(:err) { StringIO.new }
-  let(:fs) { Hanami::CLI::Files.new(memory: true, out: out) }
+  let(:fs) { Hanami::CLI::Files.new(memory: true, stdout: out) }
 
   def error_output = err.string.chomp
 

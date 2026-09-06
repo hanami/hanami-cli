@@ -2,7 +2,7 @@
 
 RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Dump, :app_integration do
   subject(:command) {
-    described_class.new(system_call: system_call, out: out)
+    described_class.new(system_call: system_call, stdout: out)
   }
 
   let(:system_call) { Hanami::CLI::SystemCall.new }
@@ -203,7 +203,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Dump, :app_integration
       allow(system_call)
         .to receive(:call)
         .with(a_string_including("db/app.sqlite3"))
-        .and_return Hanami::CLI::SystemCall::Result.new(exit_code: 2, out: "", err: "dump-err")
+        .and_return Hanami::CLI::SystemCall::Result.new(exit_code: 2, stdout: "", stderr: "dump-err")
 
       expect_exit_code(2) { command.call }
 
@@ -285,7 +285,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Dump, :app_integration
       allow(system_call)
         .to receive(:call)
         .with(a_string_including("app"), anything)
-        .and_return Hanami::CLI::SystemCall::Result.new(exit_code: 2, out: "", err: "dump-err")
+        .and_return Hanami::CLI::SystemCall::Result.new(exit_code: 2, stdout: "", stderr: "dump-err")
 
       expect_exit_code(2) { command.call }
 
@@ -324,7 +324,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Dump, :app_integration
       allow(system_call)
         .to receive(:call)
         .with(a_string_including("mysqldump"), anything)
-        .and_return Hanami::CLI::SystemCall::Result.new(exit_code: 2, out: "", err: "dump-err")
+        .and_return Hanami::CLI::SystemCall::Result.new(exit_code: 2, stdout: "", stderr: "dump-err")
 
       expect_exit_code(2) { command.call }
 

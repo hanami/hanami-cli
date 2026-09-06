@@ -2,7 +2,7 @@
 
 RSpec.describe Hanami::CLI::Commands::App::DB::Seed, :app_integration do
   subject(:command) {
-    described_class.new(system_call: system_call, out: out)
+    described_class.new(system_call: system_call, stdout: out)
   }
 
   let(:system_call) { Hanami::CLI::SystemCall.new }

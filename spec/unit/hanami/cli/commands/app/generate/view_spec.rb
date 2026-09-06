@@ -3,11 +3,11 @@
 require "hanami"
 
 RSpec.describe Hanami::CLI::Commands::App::Generate::View, :app do
-  subject { described_class.new(fs: fs, out: out, err: err) }
+  subject { described_class.new(fs: fs, stdout: out, stderr: err) }
 
   let(:out) { StringIO.new }
   let(:err) { StringIO.new }
-  let(:fs) { Hanami::CLI::Files.new(memory: true, out: out) }
+  let(:fs) { Hanami::CLI::Files.new(memory: true, stdout: out) }
   let(:inflector) { Dry::Inflector.new }
   let(:app) { Hanami.app.namespace }
   let(:dir) { inflector.underscore(app) }

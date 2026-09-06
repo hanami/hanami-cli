@@ -3,11 +3,11 @@
 require "hanami"
 
 RSpec.describe "Hanami generate part integration", :app do
-  let(:fs) { Hanami::CLI::Files.new(memory: false, out: out) }
+  let(:fs) { Hanami::CLI::Files.new(memory: false, stdout: out) }
   let(:out) { StringIO.new }
 
   subject(:command) do
-    Hanami::CLI::Commands::App::Generate::Part.new(fs: fs, out: out)
+    Hanami::CLI::Commands::App::Generate::Part.new(fs: fs, stdout: out)
   end
 
   around do |example|

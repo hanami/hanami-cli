@@ -7,7 +7,7 @@ module RSpec
 
       def successful_system_call_result
         klass = Hanami::CLI::SystemCall::Result
-        klass.new(exit_code: klass.const_get(:SUCCESSFUL_EXIT_CODE), out: StringIO.new, err: StringIO.new)
+        klass.new(exit_code: klass.const_get(:SUCCESSFUL_EXIT_CODE), stdout: StringIO.new, stderr: StringIO.new)
       end
     end
   end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Hanami::CLI::Commands::App::DB::Version, :app_integration do
-  subject(:command) { described_class.new(out: out) }
+  subject(:command) { described_class.new(stdout: out) }
 
   let(:out) { StringIO.new }
   def output = out.string

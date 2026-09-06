@@ -5,7 +5,7 @@ require "hanami"
 RSpec.describe Hanami::CLI::Commands::App::Generate::Migration, :app do
   subject { described_class.new(fs: fs) }
 
-  let(:fs) { Hanami::CLI::Files.new(memory: true, out: out) }
+  let(:fs) { Hanami::CLI::Files.new(memory: true, stdout: out) }
   let(:out) { StringIO.new }
 
   def output

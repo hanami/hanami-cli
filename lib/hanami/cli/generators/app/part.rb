@@ -12,10 +12,10 @@ module Hanami
         class Part
           # @since 2.1.0
           # @api private
-          def initialize(fs:, inflector:, out: $stdout)
+          def initialize(fs:, inflector:, stdout: $stdout)
             @fs = fs
             @inflector = inflector
-            @out = out
+            @stdout = stdout
           end
 
           # @since 2.1.0
@@ -30,7 +30,7 @@ module Hanami
 
           # @since 2.1.0
           # @api private
-          attr_reader :fs, :inflector, :out
+          attr_reader :fs, :inflector, :stdout
 
           def create_app_base_part_if_missing(key:, namespace:, base_path:)
             return if fs.exist?(fs.join(base_path, "views", "part.rb"))

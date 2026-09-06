@@ -39,8 +39,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
   subject(:command) {
     described_class.new(
       system_call: system_call,
-      out: out,
-      err: err,
+      stdout: out,
+      stderr: err,
       test_env_executor: test_env_executor
     )
   }
@@ -49,7 +49,12 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
   let(:out) { StringIO.new }
   let(:err) { StringIO.new }
   def output = out.string + err.string
-  let(:test_env_executor) { instance_spy(Hanami::CLI::InteractiveSystemCall) }
+  let(:test_env_executor) do
+    instance_spy(
+      Hanami::CLI::SystemCall,
+      call: Hanami::CLI::SystemCall::Result.new(exit_code: 0, stdout: nil, stderr: nil)
+    )
+  end
 
   let(:dump_command) { instance_spy(Hanami::CLI::Commands::App::DB::Structure::Dump) }
 
@@ -309,7 +314,12 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
     end
 
     describe "automatic test env execution" do
-      let(:test_env_executor) { instance_spy(Hanami::CLI::InteractiveSystemCall) }
+      let(:test_env_executor) do
+        instance_spy(
+          Hanami::CLI::SystemCall,
+          call: Hanami::CLI::SystemCall::Result.new(exit_code: 0, stdout: nil, stderr: nil)
+        )
+      end
 
       before do
         ENV["DATABASE_URL"] = "sqlite://db/app.sqlite3"
@@ -339,14 +349,14 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
         db_create
         db_migrate
 
-        command.call(env: "development")
+        expect_exit_code(0) { command.call(env: "development") }
 
         expect(test_env_executor).to have_received(:call).with(
           "bundle exec hanami",
           "db", "rollback",
-          {
+          hash_including(
             env: hash_including("HANAMI_ENV" => "test")
-          }
+          )
         )
       end
     end
