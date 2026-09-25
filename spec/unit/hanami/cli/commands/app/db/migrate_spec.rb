@@ -1,12 +1,17 @@
 # frozen_string_literal: true
 
 RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
-  subject(:command) { described_class.new(out: out, test_env_executor: test_env_executor) }
+  subject(:command) { described_class.new(stdout: out, test_env_executor: test_env_executor) }
 
   let(:out) { StringIO.new }
   def output = out.string
 
-  let(:test_env_executor) { instance_spy(Hanami::CLI::InteractiveSystemCall) }
+  let(:test_env_executor) do
+    instance_spy(
+      Hanami::CLI::SystemCall,
+      call: Hanami::CLI::SystemCall::Result.new(exit_code: 0, stdout: nil, stderr: nil)
+    )
+  end
 
   let(:dump_command) { instance_spy(Hanami::CLI::Commands::App::DB::Structure::Dump) }
 
@@ -581,14 +586,14 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
     end
 
     it "re-executes the command in test env when run in development env" do
-      command.call(env: "development")
+      expect_exit_code(0) { command.call(env: "development") }
 
       expect(test_env_executor).to have_received(:call).with(
         "bundle exec hanami",
         "db", "migrate",
-        {
+        hash_including(
           env: hash_including("HANAMI_ENV" => "test")
-        }
+        )
       )
     end
 

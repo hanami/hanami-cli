@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 RSpec.describe Hanami::CLI::Commands::App::Generate::Struct, :app do
-  subject { described_class.new(fs: fs, out: out, err: err) }
+  subject { described_class.new(fs: fs, stdout: out, stderr: err) }
 
   let(:out) { StringIO.new }
   let(:err) { StringIO.new }
-  let(:fs) { Hanami::CLI::Files.new(memory: true, out: out) }
+  let(:fs) { Hanami::CLI::Files.new(memory: true, stdout: out) }
   let(:app) { Hanami.app.namespace }
 
   def output = out.string.chomp

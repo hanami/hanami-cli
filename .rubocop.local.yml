@@ -1,0 +1,6 @@
+# Commands are given their streams by `Dry::CLI::Command.new` before `#initialize` runs, so a
+# command subclass has no `super` to call.
+Lint/MissingSuper:
+  Exclude:
+    - "lib/hanami/cli/command.rb"
+    - "lib/hanami/cli/commands/**/*.rb"

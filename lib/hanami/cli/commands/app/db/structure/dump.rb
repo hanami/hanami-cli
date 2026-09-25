@@ -27,7 +27,7 @@ module Hanami
                       exit_codes << result.exit_code if result.respond_to?(:exit_code)
 
                       unless result.successful?
-                        out.puts result.err
+                        puts result.stderr
                         throw :dump_failed, false
                       end
 

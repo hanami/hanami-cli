@@ -37,7 +37,7 @@ RSpec.configure do |config|
   end
 
   RSpec.shared_context "command" do
-    subject(:command) { described_class.new(out: out) }
+    subject(:command) { described_class.new(stdout: out) }
 
     let(:out) { StringIO.new }
 

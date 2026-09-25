@@ -13,7 +13,7 @@ RSpec.describe Hanami::CLI::Generators::App::RubyClassFile do
   end
 
   let(:out) { StringIO.new }
-  let(:fs) { Hanami::CLI::Files.new(memory: true, out: out) }
+  let(:fs) { Hanami::CLI::Files.new(memory: true, stdout: out) }
   let(:inflector) { Dry::Inflector.new }
   let(:extra_namespace) { nil }
 

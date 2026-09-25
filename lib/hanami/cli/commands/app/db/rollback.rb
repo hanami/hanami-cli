@@ -46,7 +46,7 @@ module Hanami
                            "==> no migrations to rollback"
                          end
 
-                out.puts output
+                puts output
                 return
               end
 
@@ -72,7 +72,7 @@ module Hanami
 
             def resolve_target_database(app:, slice:, gateway:)
               if gateway && !app && !slice
-                err.puts "When specifying --gateway, an --app or --slice must also be given"
+                stderr.puts "When specifying --gateway, an --app or --slice must also be given"
                 throw :exit, 1
               end
 
@@ -94,14 +94,14 @@ module Hanami
               if gateway
                 database = databases[gateway.to_sym]
                 unless database
-                  err.puts %(No gateway "#{gateway}" found in slice "#{slice_name}")
+                  stderr.puts %(No gateway "#{gateway}" found in slice "#{slice_name}")
                   throw :exit, 1
                 end
                 database
               elsif databases.size == 1
                 databases.values.first
               else
-                err.puts "Multiple gateways found in slice #{slice_name}. Please specify --gateway option."
+                stderr.puts "Multiple gateways found in slice #{slice_name}. Please specify --gateway option."
                 throw :exit, 1
               end
             end
@@ -112,14 +112,14 @@ module Hanami
               if gateway
                 database = databases[gateway.to_sym]
                 unless database
-                  err.puts %(No gateway "#{gateway}" found in app)
+                  stderr.puts %(No gateway "#{gateway}" found in app)
                   throw :exit, 1
                 end
                 database
               elsif databases.size == 1
                 databases.values.first
               else
-                err.puts "Multiple gateways found in app. Please specify --gateway option."
+                stderr.puts "Multiple gateways found in app. Please specify --gateway option."
                 throw :exit, 1
               end
             end
@@ -128,7 +128,7 @@ module Hanami
               all_dbs = all_databases
 
               if all_dbs.empty?
-                err.puts "No databases found"
+                stderr.puts "No databases found"
                 throw :exit, 1
               elsif all_dbs.size == 1
                 all_dbs.first
@@ -137,10 +137,10 @@ module Hanami
                 if app_databases.size == 1
                   app_databases.values.first
                 elsif app_databases.size > 1
-                  err.puts "Multiple gateways found in app. Please specify --gateway option."
+                  stderr.puts "Multiple gateways found in app. Please specify --gateway option."
                   throw :exit, 1
                 else
-                  err.puts "Multiple database contexts found. Please specify --app or --slice option."
+                  stderr.puts "Multiple database contexts found. Please specify --app or --slice option."
                   throw :exit, 1
                 end
               end
@@ -151,7 +151,7 @@ module Hanami
               slice = app.slices[slice_name_sym]
 
               unless slice
-                err.puts %(Slice "#{slice_name}" not found)
+                stderr.puts %(Slice "#{slice_name}" not found)
                 throw :exit, 1
               end
 

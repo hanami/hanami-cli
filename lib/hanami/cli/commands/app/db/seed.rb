@@ -27,7 +27,7 @@ module Hanami
                 seeds_path = database.slice.root.join(SEEDS_PATH)
 
                 unless seeds_path.file?
-                  out.puts "no seeds found at #{seeds_path.relative_path_from(database.slice.app.root)}"
+                  puts "no seeds found at #{seeds_path.relative_path_from(database.slice.app.root)}"
                   next
                 end
 

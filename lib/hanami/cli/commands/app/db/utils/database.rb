@@ -19,7 +19,7 @@ module Hanami
                 end
 
                 def sql
-                  @post_process.call(out)
+                  @post_process.call(stdout)
                 end
               end
 

@@ -5,12 +5,17 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Load, :app_integration
     described_class.new(
       system_call: system_call,
       test_env_executor: test_env_executor,
-      out: out
+      stdout: out
     )
   }
 
   let(:system_call) { Hanami::CLI::SystemCall.new }
-  let(:test_env_executor) { instance_spy(Hanami::CLI::InteractiveSystemCall) }
+  let(:test_env_executor) do
+    instance_spy(
+      Hanami::CLI::SystemCall,
+      call: Hanami::CLI::SystemCall::Result.new(exit_code: 0, stdout: nil, stderr: nil)
+    )
+  end
   let(:exit_double) { double(:exit_method) }
 
   let(:out) { StringIO.new }
@@ -235,7 +240,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Load, :app_integration
       allow(system_call)
         .to receive(:call)
         .with(a_string_including("#{POSTGRES_BASE_DB_NAME}_app"), anything)
-        .and_return Hanami::CLI::SystemCall::Result.new(exit_code: 2, out: "", err: "app-load-err")
+        .and_return Hanami::CLI::SystemCall::Result.new(exit_code: 2, stdout: "", stderr: "app-load-err")
 
       expect_exit_code(2) { command.call }
 
@@ -269,7 +274,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Load, :app_integration
       allow(system_call)
         .to receive(:call)
         .with(a_string_including("#{MYSQL_BASE_DB_NAME}_app"), anything)
-        .and_return Hanami::CLI::SystemCall::Result.new(exit_code: 2, out: "", err: "app-load-err")
+        .and_return Hanami::CLI::SystemCall::Result.new(exit_code: 2, stdout: "", stderr: "app-load-err")
 
       expect_exit_code(2) { command.call }
 
@@ -289,14 +294,14 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Load, :app_integration
     end
 
     it "re-executes the command in test env when run with development env" do
-      command.call(env: "development")
+      expect_exit_code(0) { command.call(env: "development") }
 
       expect(test_env_executor).to have_received(:call).with(
         "bundle exec hanami",
         "db", "structure", "load",
-        {
+        hash_including(
           env: hash_including("HANAMI_ENV" => "test")
-        }
+        )
       )
     end
 

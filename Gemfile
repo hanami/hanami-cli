@@ -19,6 +19,7 @@ gem "hanami-db", github: "hanami/hanami-db", branch: "main"
 gem "hanami-router", github: "hanami/hanami-router", branch: "main"
 gem "hanami-utils", github: "hanami/hanami-utils", branch: "main"
 
+gem "dry-cli", github: "dry-rb/dry-cli", branch: "reduce-command-boilerplate"
 gem "dry-system", github: "dry-rb/dry-system", branch: "main"
 
 if ENV["RACK_MATRIX_VALUE"]

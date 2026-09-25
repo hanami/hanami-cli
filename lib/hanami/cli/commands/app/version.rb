@@ -13,7 +13,7 @@ module Hanami
           # @api private
           def call(*)
             require "hanami/version"
-            out.puts "v#{Hanami::VERSION}"
+            puts "v#{Hanami::VERSION}"
           end
         end
       end

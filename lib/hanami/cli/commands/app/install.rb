@@ -33,23 +33,21 @@ module Hanami
           # @api private
           option :head, type: :flag, desc: "Install head deps", default: DEFAULT_HEAD
 
-          # @api private
-          private attr_reader :bundler
-
-          # rubocop:disable Lint/MissingSuper
-          def initialize(
-            fs:,
-            bundler: CLI::Bundler.new(fs: fs),
-            **opts
-          )
+          def initialize(bundler: nil)
             @bundler = bundler
           end
-          # rubocop:enable Lint/MissingSuper
 
           # @since 2.0.0
           # @api private
           def call(head: DEFAULT_HEAD, **)
             bundler.install!
+          end
+
+          private
+
+          # @api private
+          def bundler
+            @bundler ||= CLI::Bundler.new(fs:)
           end
         end
       end

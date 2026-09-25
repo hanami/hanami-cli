@@ -13,7 +13,7 @@ module Hanami
             class Sqlite < Database
               # @api private
               # @since 2.2.0
-              Failure = Struct.new(:err) do
+              Failure = Struct.new(:stderr) do
                 def successful?
                   false
                 end

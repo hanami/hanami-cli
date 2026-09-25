@@ -13,10 +13,10 @@ module Hanami
           TEMPLATES_FOLDER = "templates/mailers"
           DEFAULT_TEMPLATE_ENGINE = "erb"
 
-          def initialize(fs:, inflector:, out: $stdout)
+          def initialize(fs:, inflector:, stdout: $stdout)
             @fs = fs
             @inflector = inflector
-            @out = out
+            @stdout = stdout
           end
 
           def call(key:, namespace:, base_path:, template_engine: DEFAULT_TEMPLATE_ENGINE, force: false, **)
@@ -29,7 +29,7 @@ module Hanami
 
           private
 
-          attr_reader :fs, :inflector, :out
+          attr_reader :fs, :inflector, :stdout
 
           def mailer_class_file(key:, namespace:, base_path:)
             RubyClassFile.new(

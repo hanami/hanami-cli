@@ -44,13 +44,13 @@ module Hanami
               begin
                 eval(code_or_path, binding, __FILE__, __LINE__) # rubocop:disable Security/Eval
               rescue SyntaxError => exception
-                err.puts "Syntax error in code: #{exception.message}"
+                stderr.puts "Syntax error in code: #{exception.message}"
                 raise RunError, "Syntax error in code: #{exception.message}"
               rescue NameError => exception
-                err.puts "Name error in code: #{exception.message}"
+                stderr.puts "Name error in code: #{exception.message}"
                 raise RunError, "Name error in code: #{exception.message}"
               rescue StandardError => exception
-                err.puts "Error executing code: #{exception.class}: #{exception.message}"
+                stderr.puts "Error executing code: #{exception.class}: #{exception.message}"
                 raise RunError, "Error executing code: #{exception.class}: #{exception.message}"
               end
             end
@@ -84,7 +84,7 @@ module Hanami
             end
 
             unless errors.empty?
-              errors.each { |error| err.puts error }
+              errors.each { |error| stderr.puts error }
               raise RunError, errors.join("\n")
             end
           end
@@ -92,7 +92,7 @@ module Hanami
           def validate_inline_code!(code)
             # Basic validation for inline code
             if code.length > 10_000 # 10KB limit for inline code
-              err.puts "Error: Inline code too long (maximum 10,000 characters allowed)"
+              stderr.puts "Error: Inline code too long (maximum 10,000 characters allowed)"
               raise RunError, "Error: Inline code too long (maximum 10,000 characters allowed)"
             end
           end

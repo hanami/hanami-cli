@@ -53,12 +53,7 @@ module Hanami
 
             # @since 2.0.0
             # @api private
-            def initialize(
-              fs:,
-              generator: Generators::App::Slice.new(fs: fs, inflector: inflector),
-              **opts
-            )
-              super(fs: fs, **opts)
+            def initialize(generator: nil)
               @generator = generator
             end
 
@@ -85,7 +80,9 @@ module Hanami
             DEFAULT_URL_PREFIX = "/"
             private_constant :DEFAULT_URL_PREFIX
 
-            attr_reader :generator
+            def generator
+              @generator ||= Generators::App::Slice.new(fs:, inflector:)
+            end
 
             def sanitize_url_prefix(name, url)
               result = url

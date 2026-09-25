@@ -17,8 +17,8 @@ RSpec.describe Hanami::CLI::SystemCall do
     end
 
     it "captures stdout and stderr" do
-      expect(subject.call(%(echo "Hello, world")).out).to eq "Hello, world"
-      expect(subject.call(%(echo "Goodbye, moon" >&2)).err).to eq "Goodbye, moon"
+      expect(subject.call(%(echo "Hello, world")).stdout).to eq "Hello, world"
+      expect(subject.call(%(echo "Goodbye, moon" >&2)).stderr).to eq "Goodbye, moon"
     end
 
     it "captures the exit code" do
@@ -32,7 +32,7 @@ RSpec.describe Hanami::CLI::SystemCall do
         stdin.puts "3"
       end
 
-      expect(result.out).to eq <<~OUTPUT.strip
+      expect(result.stdout).to eq <<~OUTPUT.strip
         1
         2
         3
@@ -48,10 +48,10 @@ RSpec.describe Hanami::CLI::SystemCall do
         stdin.puts ENV.keys.sort
       end
 
-      expect(result.out).to include("BUNDLE_FUN_FRAMEWORK")
+      expect(result.stdout).to include("BUNDLE_FUN_FRAMEWORK")
 
       # BUNDLER_SETUP is one of a handful of env vars that Bundler sets.
-      expect(result.out).not_to include("BUNDLER_SETUP")
+      expect(result.stdout).not_to include("BUNDLER_SETUP")
     end
 
     it "passes given env to the command" do
@@ -60,11 +60,60 @@ RSpec.describe Hanami::CLI::SystemCall do
         env: {"BUNDLE_GREAT_FRAMEWORK" => "hanami"}
       )
 
-      expect(result.out).to eq("hanami")
+      expect(result.stdout).to eq("hanami")
+    end
+
+    context "streaming to sinks" do
+      let(:stdout) { StringIO.new }
+      let(:stderr) { StringIO.new }
+
+      it "writes stdout to the given sink as the command runs" do
+        subject.call(%(echo "Hello, world"), stdout:)
+
+        expect(stdout.string).to eq "Hello, world\n"
+      end
+
+      it "writes stderr to the given sink as the command runs" do
+        subject.call(%(echo "Goodbye, moon" >&2), stderr:)
+
+        expect(stderr.string).to eq "Goodbye, moon\n"
+      end
+
+      it "prepends the out prefix to each line" do
+        subject.call(%(echo "Hello, world"), stdout:, out_prefix: "[admin] ")
+        subject.call(%(echo "Goodbye, moon" >&2), stderr:, out_prefix: "[admin] ")
+
+        expect(stdout.string).to eq "[admin] Hello, world\n"
+        expect(stderr.string).to eq "[admin] Goodbye, moon\n"
+      end
+
+      it "does not also capture streamed output, so long-running commands do not accumulate it" do
+        result = subject.call(%(echo "Hello, world"), stdout:, stderr:)
+
+        expect(result.stdout).to be_nil
+        expect(result.stderr).to be_nil
+      end
+
+      it "still reports the exit code" do
+        expect(subject.call("sh -c 'exit 50'", stdout:).exit_code).to eq 50
+      end
+
+      it "captures the stream that was not given a sink" do
+        result = subject.call(%(echo "Hello, world"; echo "Goodbye, moon" >&2), stdout:)
+
+        expect(stdout.string).to eq "Hello, world\n"
+        expect(result.stderr).to eq "Goodbye, moon"
+      end
+
+      it "does not exit the process, whatever the command's status" do
+        expect(Kernel).not_to receive(:exit)
+
+        expect { subject.call("sh -c 'exit 50'", stdout:) }.not_to raise_error
+      end
     end
 
     it "concatenates the command and arguments" do
-      expect(subject.call("echo", "'hello'", "'hanami'").out).to eq "hello hanami"
+      expect(subject.call("echo", "'hello'", "'hanami'").stdout).to eq "hello hanami"
     end
   end
 end

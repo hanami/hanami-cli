@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.describe Hanami::CLI::Commands::App::Install do
-  subject { described_class.new(fs: fs, bundler: bundler, out: out) }
+  subject { described_class.new(fs: fs, bundler: bundler, stdout: out) }
 
-  let(:fs) { Hanami::CLI::Files.new(memory: true, out: out) }
+  let(:fs) { Hanami::CLI::Files.new(memory: true, stdout: out) }
   let(:bundler) { Hanami::CLI::Bundler.new(fs: fs) }
   let(:out) { StringIO.new }
 

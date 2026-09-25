@@ -13,7 +13,7 @@ module Hanami
           # @api private
           def call(*)
             version = detect_version
-            out.puts "v#{version}"
+            puts "v#{version}"
           end
 
           private

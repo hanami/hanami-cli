@@ -4,17 +4,24 @@ RSpec.describe Hanami::CLI::Commands::App::Assets::Watch, "#call", :app_integrat
   subject(:command) {
     described_class.new(
       system_call: interactive_system_call,
-      out: out
+      stdout: out,
+      stderr: err
     )
   }
 
-  let(:interactive_system_call) { instance_double(Hanami::CLI::InteractiveSystemCall) }
+  let(:interactive_system_call) { instance_double(Hanami::CLI::SystemCall) }
 
   let(:out) { StringIO.new }
+  let(:err) { StringIO.new }
   let(:output) {
     out.rewind
     out.read
   }
+
+  # The command streams the assets process' output to its own streams, so assert on those too
+  def streaming(out_prefix:)
+    {stdout: command.stdout, stderr: command.stderr, out_prefix:}
+  end
 
   before do
     with_directory(make_tmp_directory) do
@@ -57,7 +64,7 @@ RSpec.describe Hanami::CLI::Commands::App::Assets::Watch, "#call", :app_integrat
           "--path=app",
           "--dest=public/assets",
           "--watch",
-          {out_prefix: "[test_app] "}
+          streaming(out_prefix: "[test_app] ")
         )
 
         command.call
@@ -89,7 +96,7 @@ RSpec.describe Hanami::CLI::Commands::App::Assets::Watch, "#call", :app_integrat
           "--path=slices/admin",
           "--dest=public/assets/_admin",
           "--watch",
-          {out_prefix: "[admin] "}
+          streaming(out_prefix: "[admin] ")
         )
 
         command.call
@@ -110,7 +117,7 @@ RSpec.describe Hanami::CLI::Commands::App::Assets::Watch, "#call", :app_integrat
           "--path=slices/admin",
           "--dest=public/assets/_admin",
           "--watch",
-          {out_prefix: "[admin] "}
+          streaming(out_prefix: "[admin] ")
         )
 
         command.call
@@ -144,7 +151,7 @@ RSpec.describe Hanami::CLI::Commands::App::Assets::Watch, "#call", :app_integrat
         "--path=slices/admin",
         "--dest=public/assets/_admin",
         "--watch",
-        {out_prefix: "[admin] "}
+        streaming(out_prefix: "[admin] ")
       )
 
       expect(interactive_system_call).to receive(:call).with(
@@ -154,7 +161,7 @@ RSpec.describe Hanami::CLI::Commands::App::Assets::Watch, "#call", :app_integrat
         "--path=slices/main",
         "--dest=public/assets/_main",
         "--watch",
-        {out_prefix: "[main] "}
+        streaming(out_prefix: "[main] ")
       )
 
       command.call

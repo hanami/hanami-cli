@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "../../interactive_system_call"
+require_relative "../../system_call"
 
 module Hanami
   module CLI
@@ -15,13 +15,7 @@ module Hanami
 
           # @since 2.1.0
           # @api private
-          def initialize(
-            out:, err:,
-            system_call: InteractiveSystemCall.new(out: out, err: err),
-            **opts
-          )
-            super(out: out, err: err, **opts)
-
+          def initialize(system_call: SystemCall.new)
             @system_call = system_call
           end
 
@@ -29,7 +23,8 @@ module Hanami
           # @api private
           def call(**)
             bin, args = executable
-            system_call.call(bin, *args)
+            result = system_call.call(bin, *args, stdout:, stderr:)
+            throw :exit, result.exit_code || 0
           end
 
           private

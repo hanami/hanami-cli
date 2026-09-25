@@ -56,7 +56,7 @@ module Hanami
             require "hanami/prepare"
             inspector = Hanami::Router::Inspector.new(formatter: resolve_formatter(format))
             app.router(inspector: inspector)
-            out.puts inspector.call
+            puts inspector.call
           end
 
           private

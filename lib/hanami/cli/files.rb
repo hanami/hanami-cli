@@ -9,9 +9,9 @@ module Hanami
     class Files < Dry::Files
       # @since 2.0.0
       # @api private
-      def initialize(out: $stdout, **args)
+      def initialize(stdout: $stdout, **args)
         super(**args)
-        @out = out
+        @stdout = stdout
       end
 
       # @api private
@@ -69,7 +69,7 @@ module Hanami
 
       private
 
-      attr_reader :out
+      attr_reader :stdout
 
       # Removes .keep files in any directories leading up to the given path.
       #
@@ -90,15 +90,15 @@ module Hanami
       end
 
       def updated(path)
-        out.puts "Updated #{path}"
+        stdout.puts "Updated #{path}"
       end
 
       def created(path)
-        out.puts "Created #{path}"
+        stdout.puts "Created #{path}"
       end
 
       def within_folder(path)
-        out.puts "-> Within #{dir_path(path)}"
+        stdout.puts "-> Within #{dir_path(path)}"
       end
 
       def dir_path(path)

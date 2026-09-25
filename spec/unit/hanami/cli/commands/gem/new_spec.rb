@@ -2,12 +2,12 @@
 
 RSpec.describe Hanami::CLI::Commands::Gem::New do
   subject do
-    described_class.new(bundler: bundler, out: out, fs: fs, system_call: system_call)
+    described_class.new(bundler: bundler, stdout: out, fs: fs, system_call: system_call)
   end
 
   let(:bundler) { Hanami::CLI::Bundler.new(fs: fs) }
   let(:out) { StringIO.new }
-  let(:fs) { Hanami::CLI::Files.new(memory: true, out: out) }
+  let(:fs) { Hanami::CLI::Files.new(memory: true, stdout: out) }
   let(:inflector) { Dry::Inflector.new }
   let(:system_call) { instance_double(Hanami::CLI::SystemCall, call: successful_system_call_result) }
   let(:app) { "bookshelf" }

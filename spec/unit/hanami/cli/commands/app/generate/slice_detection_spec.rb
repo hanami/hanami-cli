@@ -3,7 +3,7 @@
 require "hanami"
 
 RSpec.describe "slice detection", :app_integration do
-  subject(:cmd) { Hanami::CLI::Commands::App::Generate::View.new(out: out) }
+  subject(:cmd) { Hanami::CLI::Commands::App::Generate::View.new(stdout: out) }
 
   let(:out) { StringIO.new }
   def output
