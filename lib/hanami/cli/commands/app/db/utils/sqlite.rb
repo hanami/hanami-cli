@@ -37,7 +37,9 @@ module Hanami
               # @since 2.2.0
               def exec_drop_command
                 begin
-                  File.unlink(file_path) if exists?
+                  database_files.each do |path|
+                    File.delete(path) if File.exist?(path)
+                  end
                 rescue => exception # rubocop:disable Style/RescueStandardError
                   # Mimic a system_call result
                   return Failure.new(exception.message)
@@ -87,6 +89,18 @@ module Hanami
               end
 
               private
+
+              # Includes the files SQLite keeps next to the database: the rollback journal, and the
+              # WAL and shared memory files used in WAL mode. A stale journal or WAL file left next
+              # to a recreated database can corrupt it.
+              #
+              # The database itself comes last, so a failure part-way through never leaves one of
+              # these files behind without its database.
+              #
+              # @see https://www.sqlite.org/howtocorrupt.html
+              def database_files
+                ["#{file_path}-journal", "#{file_path}-wal", "#{file_path}-shm", file_path]
+              end
 
               def file_path
                 @file_path ||=
