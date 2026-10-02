@@ -126,12 +126,46 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
       expect(command).not_to have_received(:exit)
     end
 
+    it "removes the journal, WAL and shared memory files alongside each database" do
+      command.run_command(Hanami::CLI::Commands::App::DB::Create, command_exit: exit_double)
+      out.truncate(0)
+
+      write "db/app.sqlite3-journal", ""
+      write "db/app.sqlite3-wal", ""
+      write "db/app.sqlite3-shm", ""
+
+      expect { command.call(app: true) }
+        .to change { File.exist?(@dir.join("db", "app.sqlite3")) }.to(false)
+        .and change { File.exist?(@dir.join("db", "app.sqlite3-journal")) }.to(false)
+        .and change { File.exist?(@dir.join("db", "app.sqlite3-wal")) }.to(false)
+        .and change { File.exist?(@dir.join("db", "app.sqlite3-shm")) }.to(false)
+
+      expect(output).to include "database db/app.sqlite3 dropped"
+
+      expect(command).not_to have_received(:exit)
+    end
+
+    it "removes stale journal, WAL and shared memory files when the database does not exist" do
+      write "db/app.sqlite3-journal", ""
+      write "db/app.sqlite3-wal", ""
+      write "db/app.sqlite3-shm", ""
+
+      expect { command.call(app: true) }
+        .to change { File.exist?(@dir.join("db", "app.sqlite3-journal")) }.to(false)
+        .and change { File.exist?(@dir.join("db", "app.sqlite3-wal")) }.to(false)
+        .and change { File.exist?(@dir.join("db", "app.sqlite3-shm")) }.to(false)
+
+      expect(output).to include "database db/app.sqlite3 dropped"
+
+      expect(command).not_to have_received(:exit)
+    end
+
     it "prints errors for any drops that fail and exits with non-zero status" do
       command.run_command(Hanami::CLI::Commands::App::DB::Create, command_exit: exit_double)
       out.truncate(0)
 
-      allow(File).to receive(:unlink).and_call_original
-      allow(File).to receive(:unlink)
+      allow(File).to receive(:delete).and_call_original
+      allow(File).to receive(:delete)
         .with(a_string_including("db/app.sqlite3"))
         .and_raise Errno::EACCES
 
@@ -144,6 +178,27 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
       expect(output).to include "Permission denied" # from Errno::EACCESS
 
       expect(output).to include "database db/main.sqlite3 dropped"
+    end
+
+    it "keeps the database when its WAL file cannot be removed" do
+      command.run_command(Hanami::CLI::Commands::App::DB::Create, command_exit: exit_double)
+      out.truncate(0)
+
+      write "db/app.sqlite3-wal", ""
+      write "db/app.sqlite3-shm", ""
+
+      allow(File).to receive(:delete).and_call_original
+      allow(File).to receive(:delete)
+        .with(a_string_ending_with("db/app.sqlite3-wal"))
+        .and_raise Errno::EACCES
+
+      expect_exit_code(1) { command.call(app: true) }
+
+      expect(File.exist?(@dir.join("db", "app.sqlite3"))).to be true
+      expect(File.exist?(@dir.join("db", "app.sqlite3-wal"))).to be true
+
+      expect(output).to include "failed to drop database db/app.sqlite3"
+      expect(output).to include "Permission denied" # from Errno::EACCESS
     end
 
     context "app and slice with gateways" do

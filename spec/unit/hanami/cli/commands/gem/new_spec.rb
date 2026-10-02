@@ -121,7 +121,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         !public/404.html
         !public/500.html
         node_modules/
-        db/*.sqlite
+        db/*.sqlite*
       EXPECTED
       expect(fs.read(".gitignore")).to eq(gitignore)
       expect(output).to include("Created .gitignore")
@@ -812,7 +812,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           !public/404.html
           !public/500.html
           node_modules/
-          db/*.sqlite
+          db/*.sqlite*
         EXPECTED
         expect(fs.read(".gitignore")).to eq(gitignore)
         expect(output).to include("Created .gitignore")
@@ -1669,7 +1669,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           expect(fs.read("Gemfile")).to include("hanami-db")
           expect(fs.read("Gemfile")).to include("sqlite3")
           expect(fs.read(".env")).to include("DATABASE_URL=sqlite://db/#{app}.sqlite")
-          expect(fs.read(".gitignore")).to include("db/*.sqlite")
+          expect(fs.read(".gitignore")).to include("db/*.sqlite*")
           expect(fs.exist?("db/.keep")).to be(true)
         end
       end
@@ -1681,7 +1681,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           expect(fs.read("Gemfile")).to include("hanami-db")
           expect(fs.read("Gemfile")).to include("sqlite3")
           expect(fs.read(".env")).to include("DATABASE_URL=sqlite://db/#{app}.sqlite")
-          expect(fs.read(".gitignore")).to include("db/*.sqlite")
+          expect(fs.read(".gitignore")).to include("db/*.sqlite*")
           expect(fs.exist?("db/.keep")).to be(true)
         end
       end
