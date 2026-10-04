@@ -26,6 +26,32 @@ module Hanami
         Plugins::UnbootedSliceWarnings.activate
       end
 
+      # Reloads the app in place, for the console's `reload` method.
+      #
+      # Reloading in place keeps the session: local variables, history and anything else built up
+      # so far survive, where re-execing the console threw all of it away.
+      #
+      # Constants captured before the reload are the exception. They still point at the classes
+      # they did when they were captured, so anything held in a variable is stale afterwards.
+      #
+      # @api private
+      # @since 3.1.0
+      def self.reload_app(app)
+        # Either an older Hanami without in-place reloading, or an app that has it turned off.
+        unless app.respond_to?(:reload!) && app.config.code_reloading
+          puts "Reloading..."
+          return Kernel.exec("#{$PROGRAM_NAME} console")
+        end
+
+        print "Reloading... "
+
+        started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+        app.reload!
+        elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - started
+
+        puts "done (#{(elapsed * 1000).round}ms)"
+      end
+
       private
 
       def define_context_methods
@@ -40,8 +66,14 @@ module Hanami
         end
 
         define_method(:reload) do
-          puts "Reloading..."
-          Kernel.exec("#{$PROGRAM_NAME} console")
+          Context.reload_app(hanami_app)
+        end
+
+        # `reload!` would otherwise fall through to `Hanami.app.reload!` via #method_missing,
+        # skipping both the output above and the fallback for apps that cannot reload in place.
+        # It is a common enough thing to reach for that it should do the same as `reload`.
+        define_method(:reload!) do
+          Context.reload_app(hanami_app)
         end
 
         define_method(:method_missing) do |name, *args, &block|
