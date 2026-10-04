@@ -49,7 +49,6 @@ gem "hanami-devtools", github: "hanami/devtools", branch: "main"
 
 group :test do
   gem "pry"
-  gem "readline"
   gem "rspec", "~> 3.9"
   gem "ostruct", require: false
 end

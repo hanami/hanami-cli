@@ -38,6 +38,10 @@ module Hanami
                   require_relative("postgres")
                   Postgres
                 },
+                "mysql" => -> {
+                  require_relative("mysql")
+                  Mysql
+                },
                 "mysql2" => -> {
                   require_relative("mysql")
                   Mysql
@@ -45,10 +49,7 @@ module Hanami
               ).freeze
 
               def self.database_class(database_url)
-                database_scheme = URI(database_url).scheme
-                if database_scheme == "jdbc"
-                  database_scheme = URI(database_url.sub("jdbc:", "")).scheme
-                end
+                database_scheme = URI(database_url.delete_prefix("jdbc:")).scheme
                 DATABASE_CLASS_RESOLVER[database_scheme].call
               end
 
@@ -86,8 +87,20 @@ module Hanami
                 slice.container.providers[:db].source.database_urls.fetch(gateway_name)
               end
 
+              # JDBC URLs (required to connect via JRuby) nest the real URL after "jdbc:", e.g.
+              # "jdbc:postgresql://localhost/app", so parse that nested URL instead.
               def database_uri
-                @database_uri ||= URI(database_url)
+                @database_uri ||= URI(database_url.delete_prefix("jdbc:"))
+              end
+
+              # JDBC drivers expect the user and password as query params, e.g.
+              # "jdbc:postgresql://localhost/app?user=postgres&password=secret".
+              def database_user
+                database_uri.user || database_query_params["user"]
+              end
+
+              def database_password
+                database_uri.password || database_query_params["password"]
               end
 
               def gateway
@@ -197,10 +210,8 @@ module Hanami
 
               private
 
-              def database_path
-                database_uri.path ||
-                  # For `jdbc:` URIs the path is exposed via the opaque component
-                  database_uri.opaque.sub(%r{^\w+:/?}, "")
+              def database_query_params
+                @database_query_params ||= URI.decode_www_form(database_uri.query.to_s).to_h
               end
 
               def jruby?

@@ -27,6 +27,23 @@ module RSpec
         jruby? && dir ? File.join(dir, url) : url
       end
 
+      def postgres_url(db_suffix)
+        url = "#{POSTGRES_BASE_URL}#{db_suffix}"
+        jruby? ? jdbc_url(url, scheme: "postgresql") : url
+      end
+
+      def mysql_url(db_suffix)
+        url = "#{MYSQL_BASE_URL}#{db_suffix}"
+        jruby? ? jdbc_url(url, scheme: "mysql") : url
+      end
+
+      def jdbc_url(url, scheme:)
+        uri = URI(url)
+        # JDBC drivers expect the user and password as query params, not in the userinfo
+        query = URI.encode_www_form({user: uri.user, password: uri.password}.compact)
+        "jdbc:#{scheme}://#{uri.host}:#{uri.port}#{uri.path}?#{query}"
+      end
+
       def jruby?
         RUBY_ENGINE == "jruby"
       end
