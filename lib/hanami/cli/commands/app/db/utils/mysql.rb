@@ -71,13 +71,13 @@ module Hanami
                 [].tap { |opts|
                   opts << "--host=#{Shellwords.escape(database_uri.host)}" if database_uri.host
                   opts << "--port=#{Shellwords.escape(database_uri.port)}" if database_uri.port
-                  opts << "--user=#{Shellwords.escape(database_uri.user)}" if database_uri.user
+                  opts << "--user=#{Shellwords.escape(database_user)}" if database_user
                 }.join(" ")
               end
 
               def cli_env_vars
                 @cli_env_vars ||= {}.tap do |vars|
-                  vars["MYSQL_PWD"] = database_uri.password.to_s if database_uri.password
+                  vars["MYSQL_PWD"] = database_password.to_s if database_password
                 end
               end
             end

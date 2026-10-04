@@ -217,8 +217,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Dump, :app_integration
 
   describe "postgres", :postgres do
     before do
-      ENV["DATABASE_URL"] = "#{POSTGRES_BASE_URL}_app"
-      ENV["MAIN__DATABASE_URL"] = "#{POSTGRES_BASE_URL}_main"
+      ENV["DATABASE_URL"] = postgres_url("_app")
+      ENV["MAIN__DATABASE_URL"] = postgres_url("_main")
       db_migrate
     end
 
@@ -299,7 +299,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Dump, :app_integration
 
   describe "mysql", :mysql do
     before do
-      ENV["DATABASE_URL"] = "#{MYSQL_BASE_URL}_app"
+      ENV["DATABASE_URL"] = mysql_url("_app")
       db_migrate
     end
 

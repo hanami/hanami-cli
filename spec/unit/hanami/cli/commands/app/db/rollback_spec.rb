@@ -351,8 +351,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
 
   describe "postgres", :postgres do
     before do
-      ENV["DATABASE_URL"] = "#{POSTGRES_BASE_URL}_app"
-      ENV["MAIN__DATABASE_URL"] = "#{POSTGRES_BASE_URL}_main"
+      ENV["DATABASE_URL"] = postgres_url("_app")
+      ENV["MAIN__DATABASE_URL"] = postgres_url("_main")
     end
 
     context "single database" do
@@ -394,9 +394,9 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
       end
 
       before do
-        ENV["DATABASE_URL"] = "#{POSTGRES_BASE_URL}_app"
-        ENV["DATABASE_URL__EXTRA"] = "#{POSTGRES_BASE_URL}_extra"
-        ENV["DATABASE_URL__SUPER"] = "#{POSTGRES_BASE_URL}_super"
+        ENV["DATABASE_URL"] = postgres_url("_app")
+        ENV["DATABASE_URL__EXTRA"] = postgres_url("_extra")
+        ENV["DATABASE_URL__SUPER"] = postgres_url("_super")
 
         with_directory(@dir = make_tmp_directory) do
           write "config/app.rb", <<~RUBY
@@ -424,8 +424,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
 
   describe "mysql", :mysql do
     before do
-      ENV["DATABASE_URL"] = "#{MYSQL_BASE_URL}_app"
-      ENV["MAIN__DATABASE_URL"] = "#{MYSQL_BASE_URL}_main"
+      ENV["DATABASE_URL"] = mysql_url("_app")
+      ENV["MAIN__DATABASE_URL"] = mysql_url("_main")
     end
 
     context "single database" do
@@ -467,9 +467,9 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
       end
 
       before do
-        ENV["DATABASE_URL"] = "#{MYSQL_BASE_URL}_app"
-        ENV["DATABASE_URL__EXTRA"] = "#{MYSQL_BASE_URL}_extra"
-        ENV["DATABASE_URL__SUPER"] = "#{MYSQL_BASE_URL}_super"
+        ENV["DATABASE_URL"] = mysql_url("_app")
+        ENV["DATABASE_URL__EXTRA"] = mysql_url("_extra")
+        ENV["DATABASE_URL__SUPER"] = mysql_url("_super")
 
         with_directory(@dir = make_tmp_directory) do
           write "config/app.rb", <<~RUBY

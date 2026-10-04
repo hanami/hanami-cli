@@ -246,8 +246,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
 
     describe "postgres", :postgres do
       before do
-        ENV["DATABASE_URL"] = "#{POSTGRES_BASE_URL}_app"
-        ENV["MAIN__DATABASE_URL"] = "#{POSTGRES_BASE_URL}_main"
+        ENV["DATABASE_URL"] = postgres_url("_app")
+        ENV["MAIN__DATABASE_URL"] = postgres_url("_main")
         db_create
       end
 

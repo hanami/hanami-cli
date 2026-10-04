@@ -87,10 +87,12 @@ module Hanami
               end
 
               def cli_env_vars
-                @cli_env_vars ||= %i[host port user password].each_with_object({}) do |field, vars|
-                  value = database_uri.public_send(field).to_s
-                  vars["PG#{field}".upcase] = value unless value.empty?
-                end
+                @cli_env_vars ||= {
+                  "PGHOST" => database_uri.host,
+                  "PGPORT" => database_uri.port,
+                  "PGUSER" => database_user,
+                  "PGPASSWORD" => database_password
+                }.transform_values(&:to_s).reject { |_, value| value.empty? }
               end
             end
           end
