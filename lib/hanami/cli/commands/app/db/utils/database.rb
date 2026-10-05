@@ -38,13 +38,38 @@ module Hanami
                 }
               }.freeze
 
+              # Matches a URL's scheme, including any JDBC subprotocol, e.g. "jdbc:sqlserver"
+              DATABASE_SCHEME_MATCHER = /\A(?:jdbc:)?[a-z][a-z0-9+.-]*(?=:)/i
+              private_constant :DATABASE_SCHEME_MATCHER
+
               def self.database_class(database_url)
                 adapter = Hanami::DB::DatabaseURL.adapter(database_url)
 
                 DATABASE_CLASS_RESOLVER.fetch(adapter) {
-                  raise "#{Hanami::DB::DatabaseURL.uri(database_url).scheme} is not a supported db scheme"
+                  scheme = database_scheme(database_url)
+
+                  raise Hanami::CLI::InvalidDatabaseURLError.new(scheme) unless parseable?(database_url)
+
+                  raise Hanami::CLI::UnsupportedDatabaseSchemeError.new(scheme)
                 }.call
               end
+
+              # Returns false when the URL cannot be parsed. Avoids raising from a `rescue`, since
+              # the URI error (whose message includes the URL) would become the new error's cause.
+              def self.parseable?(database_url)
+                Hanami::DB::DatabaseURL.uri(database_url)
+                true
+              rescue URI::Error
+                false
+              end
+              private_class_method :parseable?
+
+              # Returns the URL's scheme for use in error messages. Unlike parsing the URL, this
+              # cannot fail, and never exposes the credentials the URL may contain.
+              def self.database_scheme(database_url)
+                database_url.to_s[DATABASE_SCHEME_MATCHER] || "(none)"
+              end
+              private_class_method :database_scheme
 
               def self.from_slice(slice:, system_call:)
                 provider = slice.container.providers[:db]

@@ -110,6 +110,19 @@ module Hanami
       end
     end
 
+    # Does not include the URL itself, since it may contain credentials.
+    #
+    # @since 3.1.0
+    # @api public
+    class InvalidDatabaseURLError < Error
+      def initialize(scheme)
+        super(
+          "`#{scheme}' database URL could not be parsed. " \
+          "Check it for characters that need escaping, such as in the password"
+        )
+      end
+    end
+
     # rubocop:disable Layout/LineLength
     # @since 2.2.0
     # @api public
