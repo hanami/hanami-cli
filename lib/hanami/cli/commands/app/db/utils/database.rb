@@ -41,10 +41,15 @@ module Hanami
               DATABASE_SCHEME_MATCHER = /\A(?:jdbc:)?[a-z][a-z0-9+.-]*(?=:)/i
               private_constant :DATABASE_SCHEME_MATCHER
 
+              # Minimum hanami-db version providing the Hanami::DB::DatabaseURL helpers used here.
+              #
+              # hanami-db is an optional dependency, so hanami-cli's gemspec cannot require it. This
+              # means apps can upgrade hanami-cli while keeping an older hanami-db.
+              MINIMUM_HANAMI_DB_VERSION = "3.1.0"
+              private_constant :MINIMUM_HANAMI_DB_VERSION
+
               def self.database_class(database_url)
-                # Required here rather than at the top of this file, since every app command loads
-                # this file, including in apps that do not use hanami-db.
-                require "hanami-db"
+                ensure_hanami_db_version
 
                 adapter = Hanami::DB::DatabaseURL.adapter(database_url)
 
@@ -56,6 +61,16 @@ module Hanami
                   raise Hanami::CLI::UnsupportedDatabaseSchemeError.new(scheme)
                 }.call
               end
+
+              # Requires hanami-db here rather than at the top of this file, since every app command
+              # loads this file, including in apps that do not use hanami-db.
+              def self.ensure_hanami_db_version
+                require "hanami-db"
+                return if defined?(Hanami::DB::DatabaseURL)
+
+                raise Hanami::CLI::HanamiDBVersionError.new(MINIMUM_HANAMI_DB_VERSION, Hanami::DB::VERSION)
+              end
+              private_class_method :ensure_hanami_db_version
 
               # Returns false when the URL cannot be parsed. Avoids raising from a `rescue`, since
               # the URI error (whose message includes the URL) would become the new error's cause.
