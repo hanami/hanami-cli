@@ -19,6 +19,16 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Utils::Database do
       end
     end
 
+    it "raises an error when the installed hanami-db is too old" do
+      hide_const "Hanami::DB::DatabaseURL"
+
+      expect { described_class.database_class("postgres://localhost/app") }
+        .to raise_error(Hanami::CLI::HanamiDBVersionError) { |error|
+          expect(error.message).to include "requires hanami-db 3.1.0 or later, but #{Hanami::DB::VERSION} is installed"
+          expect(error.message).to include "bundle update hanami-db"
+        }
+    end
+
     it "raises an error for unsupported schemes, without including the URL's credentials" do
       expect { described_class.database_class("oracle://user:secret@localhost/app") }
         .to raise_error(Hanami::CLI::UnsupportedDatabaseSchemeError, "`oracle' is not a supported db scheme")
