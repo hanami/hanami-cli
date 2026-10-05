@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require "uri"
 require "delegate"
+require "hanami-db"
 
 module Hanami
   module CLI
@@ -23,34 +23,27 @@ module Hanami
                 end
               end
 
-              DATABASE_CLASS_RESOLVER = Hash.new { |_, key|
-                raise "#{key} is not a supported db scheme"
-              }.update(
-                "sqlite" => -> {
+              DATABASE_CLASS_RESOLVER = {
+                sqlite: -> {
                   require_relative("sqlite")
                   Sqlite
                 },
-                "postgres" => -> {
+                postgres: -> {
                   require_relative("postgres")
                   Postgres
                 },
-                "postgresql" => -> {
-                  require_relative("postgres")
-                  Postgres
-                },
-                "mysql" => -> {
-                  require_relative("mysql")
-                  Mysql
-                },
-                "mysql2" => -> {
+                mysql: -> {
                   require_relative("mysql")
                   Mysql
                 }
-              ).freeze
+              }.freeze
 
               def self.database_class(database_url)
-                database_scheme = URI(database_url.delete_prefix("jdbc:")).scheme
-                DATABASE_CLASS_RESOLVER[database_scheme].call
+                adapter = Hanami::DB::DatabaseURL.adapter(database_url)
+
+                DATABASE_CLASS_RESOLVER.fetch(adapter) {
+                  raise "#{Hanami::DB::DatabaseURL.uri(database_url).scheme} is not a supported db scheme"
+                }.call
               end
 
               def self.from_slice(slice:, system_call:)
@@ -87,10 +80,10 @@ module Hanami
                 slice.container.providers[:db].source.database_urls.fetch(gateway_name)
               end
 
-              # JDBC URLs (required to connect via JRuby) nest the real URL after "jdbc:", e.g.
-              # "jdbc:postgresql://localhost/app", so parse that nested URL instead.
+              # Parses the URL nested in JDBC URLs (required to connect via JRuby), e.g.
+              # "jdbc:postgresql://localhost/app".
               def database_uri
-                @database_uri ||= URI(database_url.delete_prefix("jdbc:"))
+                @database_uri ||= Hanami::DB::DatabaseURL.uri(database_url)
               end
 
               # JDBC drivers expect the user and password as query params, e.g.
