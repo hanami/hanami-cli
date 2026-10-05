@@ -110,6 +110,17 @@ module Hanami
       end
     end
 
+    # @since 3.1.0
+    # @api public
+    class HanamiDBVersionError < Error
+      def initialize(minimum_version, installed_version)
+        super(
+          "hanami-cli #{Hanami::CLI::VERSION} requires hanami-db #{minimum_version} or later, " \
+          "but #{installed_version} is installed. Please run `bundle update hanami-db`."
+        )
+      end
+    end
+
     # Does not include the URL itself, since it may contain credentials.
     #
     # @since 3.1.0
