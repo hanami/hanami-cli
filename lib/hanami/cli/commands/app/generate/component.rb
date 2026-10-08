@@ -16,12 +16,10 @@ module Hanami
             option :force, required: false, type: :flag, default: false,
               desc: "Overwrite existing files during generation"
 
-            example [
-              %(isbn_decoder               (MyApp::IsbnDecoder)),
-              %(recommenders.fiction       (MyApp::Recommenders::Fiction)),
-              %(isbn_decoder --slice=admin (Admin::IsbnDecoder)),
-              %(Exporters::Complete::CSV   (MyApp::Exporters::Complete::CSV))
-            ]
+            example "isbn_decoder",               "MyApp::IsbnDecoder"
+            example "recommenders.fiction",       "MyApp::Recommenders::Fiction"
+            example "isbn_decoder --slice=admin", "Admin::IsbnDecoder"
+            example "Exporters::Complete::CSV",   "MyApp::Exporters::Complete::CSV"
 
             # @since 2.2.0
             # @api private

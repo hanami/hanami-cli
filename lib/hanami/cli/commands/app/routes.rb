@@ -44,10 +44,8 @@ module Hanami
             required: false,
             desc: "Output format"
 
-          example [
-            "             # Print app routes",
-            "--format=csv # Print app routes, using CSV format"
-          ]
+          example "",             "Print app routes"
+          example "--format=csv", "Print app routes, using CSV format"
 
           # @since 2.0.0
           # @api private

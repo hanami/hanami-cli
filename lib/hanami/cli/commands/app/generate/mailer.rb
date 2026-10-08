@@ -21,10 +21,8 @@ module Hanami
             option :force, required: false, type: :flag, default: false,
               desc: "Overwrite existing files during generation"
 
-            example [
-              %(welcome               (MyApp::Mailers::Welcome)),
-              %(welcome --slice=admin (Admin::Mailers::Welcome))
-            ]
+            example "welcome",               "MyApp::Mailers::Welcome"
+            example "welcome --slice=admin", "Admin::Mailers::Welcome"
 
             def generator_class
               Generators::App::Mailer

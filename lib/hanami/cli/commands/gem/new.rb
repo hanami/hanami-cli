@@ -86,21 +86,19 @@ module Hanami
             desc: "Test framework (supported: rspec, minitest)"
 
           # rubocop:disable Layout/LineLength
-          example [
-            "bookshelf                                    # Generate a new Hanami app in `bookshelf/' directory, using `Bookshelf' namespace",
-            "bookshelf --head                             # Generate a new Hanami app, using Hanami HEAD version from GitHub `main' branches",
-            "bookshelf --gem-source=gem.coop              # Generate a new Hanami app, using https://gem.coop as Ruby gem source",
-            "bookshelf --skip-install                     # Generate a new Hanami app, but it skips Hanami installation",
-            "bookshelf --skip-assets                      # Generate a new Hanami app without hanami-assets",
-            "bookshelf --skip-db                          # Generate a new Hanami app without hanami-db",
-            "bookshelf --skip-view                        # Generate a new Hanami app without hanami-view",
-            "bookshelf --skip-mailer                      # Generate a new Hanami app without hanami-mailer",
-            "bookshelf --skip-git                         # Generate a new Hanami app without git repository initialization",
-            "bookshelf --database={sqlite|postgres|mysql} # Generate a new Hanami app with a specified database (default: sqlite)",
-            "bookshelf --template-engine={erb|haml|slim}  # Generate a new Hanami app which will use HAML for templates by default (default: erb)",
-            "bookshelf --test={rspec|minitest}            # Generate a new Hanami app with specified test framework (default: rspec)",
-            "my_bookshelf --name=bookshelf                # Generate a new Hanami app in `my_bookshelf/' directory, using `Bookshelf' namespace"
-          ]
+          example "bookshelf",                                    "Generate a new Hanami app in `bookshelf/' directory, using `Bookshelf' namespace"
+          example "bookshelf --head",                             "Generate a new Hanami app, using Hanami HEAD version from GitHub `main' branches"
+          example "bookshelf --gem-source=gem.coop",              "Generate a new Hanami app, using https://gem.coop as Ruby gem source"
+          example "bookshelf --skip-install",                     "Generate a new Hanami app, but it skips Hanami installation"
+          example "bookshelf --skip-assets",                      "Generate a new Hanami app without hanami-assets"
+          example "bookshelf --skip-db",                          "Generate a new Hanami app without hanami-db"
+          example "bookshelf --skip-view",                        "Generate a new Hanami app without hanami-view"
+          example "bookshelf --skip-mailer",                      "Generate a new Hanami app without hanami-mailer"
+          example "bookshelf --skip-git",                         "Generate a new Hanami app without git repository initialization"
+          example "bookshelf --database={sqlite|postgres|mysql}", "Generate a new Hanami app with a specified database (default: sqlite)"
+          example "bookshelf --template-engine={erb|haml|slim}",  "Generate a new Hanami app which will use HAML for templates by default (default: erb)"
+          example "bookshelf --test={rspec|minitest}",            "Generate a new Hanami app with specified test framework (default: rspec)"
+          example "my_bookshelf --name=bookshelf",                "Generate a new Hanami app in `my_bookshelf/' directory, using `Bookshelf' namespace"
           # rubocop:enable Layout/LineLength
 
           def initialize(

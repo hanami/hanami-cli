@@ -16,10 +16,8 @@ module Hanami
             option :force, required: false, type: :flag, default: false,
               desc: "Overwrite existing files during generation"
 
-            example [
-              %(books.add               (MyApp::Books::Add)),
-              %(books.add --slice=admin (Admin::Books::Add))
-            ]
+            example "books.add",               "MyApp::Books::Add"
+            example "books.add --slice=admin", "Admin::Books::Add"
 
             def generator_class
               Generators::App::Operation

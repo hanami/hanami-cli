@@ -13,12 +13,10 @@ module Hanami
             option :force, required: false, type: :flag, default: false,
               desc: "Overwrite existing files during generation"
 
-            example [
-              %(books               (MyApp::Relation::Book)),
-              %(books/drafts        (MyApp::Relations::Books::Drafts)),
-              %(books --slice=admin (Admin::Relations::Books)),
-              %(books --slice=admin --gateway=extra (Admin::Relations::Books))
-            ]
+            example "books",                               "MyApp::Relation::Book"
+            example "books/drafts",                        "MyApp::Relations::Books::Drafts"
+            example "books --slice=admin",                 "Admin::Relations::Books"
+            example "books --slice=admin --gateway=extra", "Admin::Relations::Books"
 
             # @since 2.2.0
             # @api private
