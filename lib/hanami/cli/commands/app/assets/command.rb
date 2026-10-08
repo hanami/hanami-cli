@@ -2,7 +2,7 @@
 
 require "shellwords"
 require_relative "../command"
-require_relative "../../../interactive_system_call"
+require_relative "../../../system_call"
 
 module Hanami
   module CLI
@@ -29,10 +29,7 @@ module Hanami
           class Command < App::Command
             # @since 2.1.0
             # @api private
-            def initialize(
-              config: app.config.assets,
-              system_call: InteractiveSystemCall.new(out: stdout, err: stderr, exit_after: false)
-            )
+            def initialize(config: app.config.assets, system_call: SystemCall.new)
               @config = config
               @system_call = system_call
             end
@@ -78,7 +75,10 @@ module Hanami
             def spawn_assets_thread(slice)
               Thread.new do
                 cmd, *args = assets_command(slice)
-                system_call.call(cmd, *args, out_prefix: "[#{slice.slice_name}] ")
+                system_call.call(
+                  cmd, *args,
+                  stdout:, stderr:, out_prefix: "[#{slice.slice_name}] "
+                )
               rescue Interrupt
                 # When this has been interrupted (by the Signal.trap handler in #call), catch the
                 # interrupt and exit cleanly, without showing the default full backtrace.

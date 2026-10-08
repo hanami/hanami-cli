@@ -61,7 +61,7 @@ module Hanami
 
             def initialize(
               system_call: SystemCall.new,
-              test_env_executor: InteractiveSystemCall.new(out: stdout, err: stderr),
+              test_env_executor: SystemCall.new,
               nested_command: false
             )
               @system_call = system_call
@@ -218,13 +218,16 @@ module Hanami
               cmd = $0
               cmd = "bundle exec #{cmd}" if ENV.key?("BUNDLE_BIN_PATH")
 
-              test_env_executor.call(
+              result = test_env_executor.call(
                 cmd, *argv_without_env_args,
                 env: {
                   "HANAMI_ENV" => "test",
                   "HANAMI_CLI_DB_COMMAND_RE_RUN_IN_TEST" => "true"
-                }
+                },
+                stdout:, stderr:
               )
+
+              throw :exit, result.exit_code || 0
             end
 
             def re_running_in_test?

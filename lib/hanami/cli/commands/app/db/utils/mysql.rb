@@ -29,9 +29,9 @@ module Hanami
               # @since 2.2.0
               def exists?
                 result = exec_cli("mysql", %(-e "SHOW DATABASES LIKE '#{name}'" --batch))
-                raise Hanami::CLI::DatabaseExistenceCheckError.new(result.err) unless result.successful?
+                raise Hanami::CLI::DatabaseExistenceCheckError.new(result.stderr) unless result.successful?
 
-                result.out != ""
+                result.stdout != ""
               end
 
               # @api private

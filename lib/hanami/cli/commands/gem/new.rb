@@ -166,7 +166,7 @@ module Hanami
                     system_call.call("npm", ["install"]).tap do |result|
                       unless result.successful?
                         puts "NPM ERROR:"
-                        puts(result.err.lines.map { |line| line.prepend("    ") })
+                        puts(result.stderr.lines.map { |line| line.prepend("    ") })
                       end
                     end
                   end
@@ -212,7 +212,7 @@ module Hanami
               if result.successful?
                 bundler.exec("check").successful? || bundler.exec("install")
               else
-                raise HanamiInstallError.new(result.err)
+                raise HanamiInstallError.new(result.stderr)
               end
             end
           end
@@ -227,7 +227,7 @@ module Hanami
             system_call.call("git", ["init"]).tap do |result|
               unless result.successful?
                 puts "WARNING: Failed to initialize git repository"
-                puts(result.err.lines.map { |line| line.prepend("    ") })
+                puts(result.stderr.lines.map { |line| line.prepend("    ") })
               end
             end
           end

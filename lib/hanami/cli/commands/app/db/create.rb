@@ -22,7 +22,7 @@ module Hanami
                   puts "=> database #{database.name} created"
                 else
                   puts "=> failed to create database #{database.name}"
-                  puts "#{result.err}\n"
+                  puts "#{result.stderr}\n"
                 end
               end
 

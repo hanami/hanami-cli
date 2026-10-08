@@ -22,7 +22,7 @@ module Hanami
                   puts "=> database #{database.name} dropped"
                 else
                   puts "=> failed to drop database #{database.name}"
-                  puts "#{result.err}\n"
+                  puts "#{result.stderr}\n"
                 end
               end
 
