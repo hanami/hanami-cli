@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
-  subject(:command) { described_class.new(out: out, test_env_executor: test_env_executor) }
+  subject(:command) { described_class.new(stdout:, test_env_executor:) }
 
-  let(:out) { StringIO.new }
-  def output = out.string
+  let(:stdout) { StringIO.new }
+  def output = stdout.string
 
   let(:test_env_executor) { instance_spy(Hanami::CLI::InteractiveSystemCall) }
 
@@ -25,7 +25,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
 
   def db_create
     command.run_command(Hanami::CLI::Commands::App::DB::Create)
-    out.truncate(0)
+    stdout.truncate(0)
   end
 
   before do

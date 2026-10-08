@@ -45,7 +45,7 @@ module Hanami
 
               super
             rescue FileAlreadyExistsError => exception
-              err.puts(exception.message)
+              stderr.puts(exception.message)
               exit(1)
             end
           end
@@ -83,14 +83,11 @@ module Hanami
           # @since 2.0.0
           # @api public
           def run_command(klass, ...)
-            klass.new(
-              out: out,
-              fs: Hanami::CLI::Files
-            ).call(...)
+            klass.new(stderr:, stdin:, stdout:, fs:).call(...)
           end
 
-          # Executes a given block and prints string to the `out` stream with details of the time
-          # taken to execute.
+          # Executes a given block and prints string to the command's `stdout` stream with details
+          # of the time taken to execute.
           #
           # If the block returns a falsey value, then a failure message is printed.
           #
@@ -98,14 +95,14 @@ module Hanami
           #   measure("Reverse the polarity of the neutron flow") do
           #     # reverses the polarity, returns a truthy value
           #   end
-          #   # printed to `out`:
+          #   # printed to `stdout`:
           #   # => Reverse the polarity of the neutron flow in 2s
           #
           # @example
           #   measure("Disable the time dilation device") do
           #     # attempts to disable the device, returns a falsey favlue
           #   end
-          #   # printed to `out`:
+          #   # printed to `stdout`:
           #   # !!! => Disable the time dilation device FAILED
           #
           # @since 2.0.0
@@ -116,9 +113,9 @@ module Hanami
             stop = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 
             if result
-              out.puts "=> #{desc} in #{(stop - start).round(4)}s"
+              puts "=> #{desc} in #{(stop - start).round(4)}s"
             else
-              out.puts "!!! => #{desc.inspect} FAILED"
+              puts "!!! => #{desc.inspect} FAILED"
             end
           end
         end

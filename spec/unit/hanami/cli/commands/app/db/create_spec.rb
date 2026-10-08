@@ -3,17 +3,17 @@
 RSpec.describe Hanami::CLI::Commands::App::DB::Create, :app_integration do
   subject(:command) {
     described_class.new(
-      system_call: system_call,
-      test_env_executor: test_env_executor,
-      out: out
+      system_call:,
+      test_env_executor:,
+      stdout:
     )
   }
 
   let(:system_call) { Hanami::CLI::SystemCall.new }
   let(:test_env_executor) { instance_spy(Hanami::CLI::InteractiveSystemCall) }
 
-  let(:out) { StringIO.new }
-  def output = out.string
+  let(:stdout) { StringIO.new }
+  def output = stdout.string
 
   before do
     @env = ENV.to_h
@@ -89,7 +89,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Create, :app_integration do
 
       it "does not create the database if it already exists" do
         command.run_command(Hanami::CLI::Commands::App::DB::Create)
-        out.truncate(0)
+        stdout.truncate(0)
 
         command.call
 
@@ -114,7 +114,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Create, :app_integration do
 
       it "does not create the database if it already exists" do
         command.run_command(Hanami::CLI::Commands::App::DB::Create)
-        out.truncate(0)
+        stdout.truncate(0)
 
         command.call
 

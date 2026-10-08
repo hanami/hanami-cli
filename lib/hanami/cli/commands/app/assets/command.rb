@@ -30,13 +30,9 @@ module Hanami
             # @since 2.1.0
             # @api private
             def initialize(
-              out:, err:,
               config: app.config.assets,
-              system_call: InteractiveSystemCall.new(out: out, err: err, exit_after: false),
-              **opts
+              system_call: InteractiveSystemCall.new(out: stdout, err: stderr, exit_after: false)
             )
-              super(out: out, err: err, **opts)
-
               @config = config
               @system_call = system_call
             end
@@ -47,13 +43,13 @@ module Hanami
               slices = slices_with_assets
 
               if slices.empty?
-                out.puts "No assets found."
+                puts "No assets found."
                 return
               end
 
               slices.each do |slice|
                 unless assets_config(slice)
-                  out.puts "No assets config found for #{slice}. Please create a config/assets.js."
+                  puts "No assets config found for #{slice}. Please create a config/assets.js."
                   return # rubocop:disable Lint/NonLocalExitFromIterator
                 end
               end

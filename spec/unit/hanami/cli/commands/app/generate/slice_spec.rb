@@ -4,7 +4,7 @@ require "hanami"
 require "securerandom"
 
 RSpec.describe Hanami::CLI::Commands::App::Generate::Slice, :app do
-  subject { described_class.new(fs: fs, out: out, err: err, generator: generator) }
+  subject { described_class.new(fs:, stdout:, stderr:, generator:) }
 
   before do
     allow(Hanami).to receive(:bundled?)
@@ -15,21 +15,21 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Slice, :app do
     allow(Hanami).to receive(:bundled?).with("hanami-view").and_return(true)
   end
 
-  let(:out) { StringIO.new }
-  let(:err) { StringIO.new }
-  let(:fs) { Hanami::CLI::Files.new(memory: true, out: out) }
+  let(:stdout) { StringIO.new }
+  let(:stderr) { StringIO.new }
+  let(:fs) { Hanami::CLI::Files.new(memory: true, stdout:) }
   let(:inflector) { Dry::Inflector.new }
-  let(:generator) { Hanami::CLI::Generators::App::Slice.new(fs: fs, inflector: inflector) }
+  let(:generator) { Hanami::CLI::Generators::App::Slice.new(fs:, inflector:) }
   let(:app) { "Test" }
   let(:underscored_app) { inflector.underscore(app) }
   let(:dir) { underscored_app }
   let(:slice) { "admin" }
 
   def output
-    out.rewind && out.read.chomp
+    stdout.rewind && stdout.read.chomp
   end
 
-  def error_output = err.string.chomp
+  def error_output = stderr.string.chomp
 
   it "generates slice" do
     within_application_directory do

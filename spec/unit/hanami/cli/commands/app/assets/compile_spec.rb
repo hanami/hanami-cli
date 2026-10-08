@@ -4,16 +4,16 @@ RSpec.describe Hanami::CLI::Commands::App::Assets::Compile, "#call", :app_integr
   subject(:command) {
     described_class.new(
       system_call: interactive_system_call,
-      out: out
+      stdout:
     )
   }
 
   let(:interactive_system_call) { instance_double(Hanami::CLI::InteractiveSystemCall) }
 
-  let(:out) { StringIO.new }
+  let(:stdout) { StringIO.new }
   let(:output) {
-    out.rewind
-    out.read
+    stdout.rewind
+    stdout.read
   }
 
   before do

@@ -2,12 +2,12 @@
 
 RSpec.describe Hanami::CLI::Commands::Gem::New do
   subject do
-    described_class.new(bundler: bundler, out: out, fs: fs, system_call: system_call)
+    described_class.new(bundler:, stdout:, fs:, system_call:)
   end
 
-  let(:bundler) { Hanami::CLI::Bundler.new(fs: fs) }
-  let(:out) { StringIO.new }
-  let(:fs) { Hanami::CLI::Files.new(memory: true, out: out) }
+  let(:bundler) { Hanami::CLI::Bundler.new(fs:) }
+  let(:stdout) { StringIO.new }
+  let(:fs) { Hanami::CLI::Files.new(memory: true, stdout:) }
   let(:inflector) { Dry::Inflector.new }
   let(:system_call) { instance_double(Hanami::CLI::SystemCall, call: successful_system_call_result) }
   let(:app) { "bookshelf" }
@@ -23,7 +23,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
   let(:skip_git) { false }
   let(:database) { nil }
 
-  let(:output) { out.rewind && out.read.chomp }
+  let(:output) { stdout.rewind && stdout.read.chomp }
 
   before do
     allow(bundler).to receive(:bundle).with(a_string_starting_with("binstubs"))

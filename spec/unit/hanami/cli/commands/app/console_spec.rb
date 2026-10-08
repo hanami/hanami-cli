@@ -3,11 +3,11 @@
 require "irb"
 
 RSpec.describe Hanami::CLI::Commands::App::Console, :app do
-  subject { described_class.new(fs: fs, out: out, err: err) }
+  subject { described_class.new(fs:, stdout:, stderr:) }
 
-  let(:out) { StringIO.new }
-  let(:err) { StringIO.new }
-  let(:fs) { Hanami::CLI::Files.new(memory: true, out: out) }
+  let(:stdout) { StringIO.new }
+  let(:stderr) { StringIO.new }
+  let(:fs) { Hanami::CLI::Files.new(memory: true, stdout:) }
 
   before do
     irb_instance = double(IRB::Irb)

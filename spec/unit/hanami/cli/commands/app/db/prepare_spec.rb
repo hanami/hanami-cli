@@ -3,17 +3,17 @@
 RSpec.describe Hanami::CLI::Commands::App::DB::Prepare, :app_integration do
   subject(:command) {
     described_class.new(
-      system_call: system_call,
-      test_env_executor: test_env_executor,
-      out: out
+      system_call:,
+      test_env_executor:,
+      stdout:
     )
   }
 
   let(:system_call) { Hanami::CLI::SystemCall.new }
   let(:test_env_executor) { instance_spy(Hanami::CLI::InteractiveSystemCall) }
 
-  let(:out) { StringIO.new }
-  def output = out.string
+  let(:stdout) { StringIO.new }
+  def output = stdout.string
 
   before do
     # Prevent the command from exiting the spec run in the case of unexpected system call failures
@@ -121,7 +121,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Prepare, :app_integration do
         Main::Slice.start :db and Main::Slice.stop :db
         command.run_command(Hanami::CLI::Commands::App::DB::Drop)
 
-        out.truncate(0)
+        stdout.truncate(0)
       end
 
       it "creates the database, loads the structure, migrates the database, and loads the seeds" do
@@ -207,7 +207,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Prepare, :app_integration do
         Main::Slice.start :db and Main::Slice.stop :db
         command.run_command(Hanami::CLI::Commands::App::DB::Drop)
 
-        out.truncate(0)
+        stdout.truncate(0)
       end
 
       it "creates the database, loads the structure, migrates the database, and loads the seeds" do
@@ -327,7 +327,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Prepare, :app_integration do
         Hanami.app.start :db and Hanami.app.stop :db
         command.run_command(Hanami::CLI::Commands::App::DB::Drop)
 
-        out.truncate(0)
+        stdout.truncate(0)
       end
 
       it "creates the database, migrates the database, and loads the seeds" do

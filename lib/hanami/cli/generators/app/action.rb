@@ -16,14 +16,14 @@ module Hanami
 
           # @since 2.0.0
           # @api private
-          def initialize(fs:, inflector:, out: $stdout)
+          def initialize(fs:, inflector:, stdout: $stdout)
             @fs = fs
             @inflector = inflector
-            @out = out
+            @stdout = stdout
             @view_generator = Generators::App::View.new(
               fs: fs,
               inflector: inflector,
-              out: out
+              stdout: stdout
             )
           end
 
@@ -76,7 +76,7 @@ module Hanami
           PATH_SEPARATOR = "/"
           private_constant :PATH_SEPARATOR
 
-          attr_reader :fs, :inflector, :out, :view_generator
+          attr_reader :fs, :inflector, :stdout, :view_generator
 
           # @api private
           # @since 2.2.2
@@ -193,7 +193,7 @@ module Hanami
           def add_route_to_file(file:, route:)
             target_class = "class Routes"
             if fs.block_contains?(file, target_class, route)
-              out.puts "Route (#{route}) already exists, skipping..."
+              stdout.puts "Route (#{route}) already exists, skipping..."
             else
               fs.inject_line_at_class_bottom(file, "class Routes", route)
             end
@@ -202,7 +202,7 @@ module Hanami
           def add_route_to_block(file:, namespace:, route:)
             slice_matcher = /slice[[:space:]]*:#{namespace}/
             if fs.block_contains?(file, slice_matcher, route)
-              out.puts "Route (#{route}) already exists, skipping..."
+              stdout.puts "Route (#{route}) already exists, skipping..."
             else
               fs.inject_line_at_block_bottom(file, slice_matcher, route)
             end

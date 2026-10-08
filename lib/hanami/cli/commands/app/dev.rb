@@ -15,13 +15,7 @@ module Hanami
 
           # @since 2.1.0
           # @api private
-          def initialize(
-            out:, err:,
-            system_call: InteractiveSystemCall.new(out: out, err: err),
-            **opts
-          )
-            super(out: out, err: err, **opts)
-
+          def initialize(system_call: InteractiveSystemCall.new(out: stdout, err: stderr))
             @system_call = system_call
           end
 

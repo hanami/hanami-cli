@@ -3,13 +3,13 @@
 require "hanami"
 
 RSpec.describe Hanami::CLI::Commands::App::Generate::Migration, :app do
-  subject { described_class.new(fs: fs) }
+  subject { described_class.new(fs:) }
 
-  let(:fs) { Hanami::CLI::Files.new(memory: true, out: out) }
-  let(:out) { StringIO.new }
+  let(:fs) { Hanami::CLI::Files.new(memory: true, stdout:) }
+  let(:stdout) { StringIO.new }
 
   def output
-    out.string.strip
+    stdout.string.strip
   end
 
   let(:app) { Hanami.app.namespace }
@@ -67,7 +67,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Migration, :app do
   context "generating for a slice" do
     it "generates a migration" do
       fs.mkdir("slices/main")
-      out.truncate 0
+      stdout.truncate 0
 
       subject.call(name: "create_posts", slice: "main")
 

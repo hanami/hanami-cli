@@ -104,13 +104,10 @@ module Hanami
           # rubocop:enable Layout/LineLength
 
           def initialize(
-            fs:,
-            bundler: CLI::Bundler.new(fs: fs),
-            generator: Generators::Gem::App.new(fs: fs, inflector: inflector),
-            system_call: SystemCall.new,
-            **opts
+            bundler: CLI::Bundler.new(fs:),
+            generator: Generators::Gem::App.new(fs:, inflector:),
+            system_call: SystemCall.new
           )
-            super(fs: fs, **opts)
             @bundler = bundler
             @generator = generator
             @system_call = system_call
@@ -159,13 +156,13 @@ module Hanami
               )
               generator.call(app, context: context) do
                 if skip_install
-                  out.puts "Skipping installation, please enter `#{app}' directory and run `bundle exec hanami install'"
+                  puts "Skipping installation, please enter `#{app}' directory and run `bundle exec hanami install'"
                 else
-                  out.puts "Running bundle install..."
+                  puts "Running bundle install..."
                   bundler.install!
 
                   unless skip_assets
-                    out.puts "Running npm install..."
+                    puts "Running npm install..."
                     system_call.call("npm", ["install"]).tap do |result|
                       unless result.successful?
                         puts "NPM ERROR:"
@@ -174,14 +171,14 @@ module Hanami
                     end
                   end
 
-                  out.puts "Running hanami install..."
+                  puts "Running hanami install..."
                   run_install_command!(head: head)
 
-                  out.puts "Running bundle binstubs hanami-cli rake..."
+                  puts "Running bundle binstubs hanami-cli rake..."
                   install_binstubs!
 
                   unless skip_git
-                    out.puts "Initializing git repository..."
+                    puts "Initializing git repository..."
                     init_git_repository
                   end
                 end
@@ -229,8 +226,8 @@ module Hanami
           def init_git_repository
             system_call.call("git", ["init"]).tap do |result|
               unless result.successful?
-                out.puts "WARNING: Failed to initialize git repository"
-                out.puts(result.err.lines.map { |line| line.prepend("    ") })
+                puts "WARNING: Failed to initialize git repository"
+                puts(result.err.lines.map { |line| line.prepend("    ") })
               end
             end
           end

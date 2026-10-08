@@ -3,9 +3,9 @@
 RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Load, :app_integration do
   subject(:command) {
     described_class.new(
-      system_call: system_call,
-      test_env_executor: test_env_executor,
-      out: out
+      system_call:,
+      test_env_executor:,
+      stdout:
     )
   }
 
@@ -13,8 +13,8 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Load, :app_integration
   let(:test_env_executor) { instance_spy(Hanami::CLI::InteractiveSystemCall) }
   let(:exit_double) { double(:exit_method) }
 
-  let(:out) { StringIO.new }
-  def output = out.string
+  let(:stdout) { StringIO.new }
+  def output = stdout.string
 
   before do
     # Prevent the command from exiting the spec run in the case of unexpected system call failures
@@ -85,7 +85,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Load, :app_integration
     command.run_command(Hanami::CLI::Commands::App::DB::Drop)
     command.run_command(Hanami::CLI::Commands::App::DB::Create, command_exit: exit_double)
 
-    out.truncate(0)
+    stdout.truncate(0)
   end
 
   describe "sqlite" do

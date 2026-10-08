@@ -1,18 +1,18 @@
 # frozen_string_literal: true
 
 RSpec.describe Hanami::CLI::Commands::App::Generate::Repo, :app do
-  subject { described_class.new(fs: fs, out: out, err: err) }
+  subject { described_class.new(fs:, stdout:, stderr:) }
 
-  let(:out) { StringIO.new }
-  let(:err) { StringIO.new }
-  let(:fs) { Hanami::CLI::Files.new(memory: true, out: out) }
+  let(:stdout) { StringIO.new }
+  let(:stderr) { StringIO.new }
+  let(:fs) { Hanami::CLI::Files.new(memory: true, stdout:) }
   let(:app) { Hanami.app.namespace }
 
   def output
-    out.string
+    stdout.string
   end
 
-  def error_output = err.string.chomp
+  def error_output = stderr.string.chomp
 
   context "generating for app" do
     describe "without namespace" do
