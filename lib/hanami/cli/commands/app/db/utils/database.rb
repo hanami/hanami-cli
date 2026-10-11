@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "delegate"
+require "shellwords"
 
 module Hanami
   module CLI
@@ -216,7 +217,7 @@ module Hanami
               private
 
               def quoted_path(path)
-                "'#{path.to_s.gsub("'", %q('"'"'))}'"
+                Shellwords.escape(path.to_s)
               end
 
               def database_query_params
