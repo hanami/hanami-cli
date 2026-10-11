@@ -30,7 +30,7 @@ module Hanami
 
                 FileUtils.mkdir_p(File.dirname(file_path))
 
-                system_call.call(%(sqlite3 #{file_path} "VACUUM;"))
+                system_call.call(%(sqlite3 #{quoted_path(file_path)} "VACUUM;"))
               end
 
               # @api private
@@ -57,13 +57,13 @@ module Hanami
               # @api private
               # @since 2.2.0
               def exec_dump_command
-                system_call.call(%(sqlite3 #{file_path} ".schema --indent --nosys"))
+                system_call.call(%(sqlite3 #{quoted_path(file_path)} ".schema --indent --nosys"))
               end
 
               # @api private
               # @since 2.2.0
               def exec_load_command
-                system_call.call("sqlite3 #{file_path} < #{structure_file}")
+                system_call.call("sqlite3 #{quoted_path(file_path)} < #{quoted_path(structure_file)}")
               end
 
               # @api private
