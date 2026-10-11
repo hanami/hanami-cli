@@ -23,6 +23,15 @@ RSpec.describe "bin/hanami", :app do
     end
   end
 
+  context "command help" do
+    let(:args) { %w[routes --help] }
+
+    it "prints each example with its description" do
+      expect(stdout).to match(/^  hanami routes\s+# Print app routes$/)
+      expect(stdout).to match(/^  hanami routes --format=csv\s+# Print app routes, using CSV format$/)
+    end
+  end
+
   context "error" do
     context "with unknown command" do
       let(:args) { %w[unknown command] }

@@ -77,7 +77,7 @@ module Hanami
       # @api public
       def install!
         install.tap do |result|
-          raise BundleInstallError.new(result.err) unless result.successful?
+          raise BundleInstallError.new(result.stderr) unless result.successful?
         end
       end
 
@@ -91,7 +91,7 @@ module Hanami
       # @api public
       def hanami_exec(cmd, env: nil, &blk)
         exec("hanami #{cmd}", env: env, &blk).tap do |result|
-          raise HanamiExecError.new(cmd, result.err) unless result.successful?
+          raise HanamiExecError.new(cmd, result.stderr) unless result.successful?
         end
       end
 

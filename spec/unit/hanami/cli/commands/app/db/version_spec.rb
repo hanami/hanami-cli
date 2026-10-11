@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 RSpec.describe Hanami::CLI::Commands::App::DB::Version, :app_integration do
-  subject(:command) { described_class.new(out: out) }
+  subject(:command) { described_class.new(stdout:) }
 
-  let(:out) { StringIO.new }
-  def output = out.string
+  let(:stdout) { StringIO.new }
+  def output = stdout.string
 
   before do
     @env = ENV.to_h
@@ -60,7 +60,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Version, :app_integration do
 
   def db_migrate
     command.run_command(Hanami::CLI::Commands::App::DB::Migrate, dump: false)
-    out.truncate(0)
+    stdout.truncate(0)
   end
 
   before do

@@ -20,10 +20,8 @@ module Hanami
             option :force, required: false, type: :flag, default: false,
               desc: "Overwrite existing files during generation"
 
-            example [
-              %(book               (MyApp::Views::Parts::Book)),
-              %(book --slice=admin (Admin::Views::Parts::Book))
-            ]
+            example "book",               "MyApp::Views::Parts::Book"
+            example "book --slice=admin", "Admin::Views::Parts::Book"
 
             def generator_class
               Generators::App::Part

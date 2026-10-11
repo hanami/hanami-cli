@@ -38,18 +38,23 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
 
   subject(:command) {
     described_class.new(
-      system_call: system_call,
-      out: out,
-      err: err,
-      test_env_executor: test_env_executor
+      system_call:,
+      stdout:,
+      stderr:,
+      test_env_executor:
     )
   }
 
   let(:system_call) { Hanami::CLI::SystemCall.new }
-  let(:out) { StringIO.new }
-  let(:err) { StringIO.new }
-  def output = out.string + err.string
-  let(:test_env_executor) { instance_spy(Hanami::CLI::InteractiveSystemCall) }
+  let(:stdout) { StringIO.new }
+  let(:stderr) { StringIO.new }
+  def output = stdout.string + stderr.string
+  let(:test_env_executor) do
+    instance_spy(
+      Hanami::CLI::SystemCall,
+      call: Hanami::CLI::SystemCall::Result.new(exit_code: 0, stdout: nil, stderr: nil)
+    )
+  end
 
   let(:dump_command) { instance_spy(Hanami::CLI::Commands::App::DB::Structure::Dump) }
 
@@ -68,12 +73,12 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
 
   def db_create
     command.run_command(Hanami::CLI::Commands::App::DB::Create, dump: false)
-    out.truncate(0)
+    stdout.truncate(0)
   end
 
   def db_migrate
     command.run_command(Hanami::CLI::Commands::App::DB::Migrate, dump: false)
-    out.truncate(0)
+    stdout.truncate(0)
   end
 
   # Execute most tests for this feature against sqlite.
@@ -215,7 +220,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
 
         it "handles case when there are no migrations to roll back" do
           command.call(steps: "5")
-          out.truncate(0)
+          stdout.truncate(0)
 
           command.call
 
@@ -223,7 +228,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
         end
 
         it "handles case when input timestamp target is invalid" do
-          out.truncate(0)
+          stdout.truncate(0)
 
           command.call(target: "20250101101110")
 
@@ -231,7 +236,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
         end
 
         it "handles case when input timestamp target is valid" do
-          out.truncate(0)
+          stdout.truncate(0)
 
           command.call(target: "20250602201330")
 
@@ -308,7 +313,12 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
     end
 
     describe "automatic test env execution" do
-      let(:test_env_executor) { instance_spy(Hanami::CLI::InteractiveSystemCall) }
+      let(:test_env_executor) do
+        instance_spy(
+          Hanami::CLI::SystemCall,
+          call: Hanami::CLI::SystemCall::Result.new(exit_code: 0, stdout: nil, stderr: nil)
+        )
+      end
 
       around do |example|
         as_hanami_cli_with_args(%w[db rollback]) { example.run }
@@ -336,14 +346,14 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
         db_create
         db_migrate
 
-        command.call(env: "development")
+        expect_exit_code(0) { command.call(env: "development") }
 
         expect(test_env_executor).to have_received(:call).with(
           "bundle exec hanami",
           "db", "rollback",
-          {
+          hash_including(
             env: hash_including("HANAMI_ENV" => "test")
-          }
+          )
         )
       end
     end

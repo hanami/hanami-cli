@@ -1,18 +1,18 @@
 # frozen_string_literal: true
 
 RSpec.describe Hanami::CLI::Commands::App::Generate::Operation, :app do
-  subject { described_class.new(fs: fs, out: out, err: err) }
+  subject { described_class.new(fs:, stdout:, stderr:) }
 
-  let(:out) { StringIO.new }
-  let(:err) { StringIO.new }
-  let(:fs) { Hanami::CLI::Files.new(memory: true, out: out) }
+  let(:stdout) { StringIO.new }
+  let(:stderr) { StringIO.new }
+  let(:fs) { Hanami::CLI::Files.new(memory: true, stdout:) }
   let(:app) { Hanami.app.namespace }
 
   def output
-    out.string.chomp
+    stdout.string.chomp
   end
 
-  def error_output = err.string.chomp
+  def error_output = stderr.string.chomp
 
   context "generating for app" do
     it "generates an operation without a namespace, with a recommendation" do

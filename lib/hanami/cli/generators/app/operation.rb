@@ -11,10 +11,10 @@ module Hanami
         class Operation
           # @since 2.2.0
           # @api private
-          def initialize(fs:, inflector:, out: $stdout)
+          def initialize(fs:, inflector:, stdout: $stdout)
             @fs = fs
             @inflector = inflector
-            @out = out
+            @stdout = stdout
           end
 
           # @since 2.2.0
@@ -31,7 +31,7 @@ module Hanami
             ).create(force:)
 
             unless key.match?(KEY_SEPARATOR)
-              out.puts(
+              stdout.puts(
                 "  Note: We generated a top-level operation. " \
                 "To generate into a directory, add a namespace: `my_namespace.add_book`"
               )
@@ -40,7 +40,7 @@ module Hanami
 
           private
 
-          attr_reader :fs, :inflector, :out
+          attr_reader :fs, :inflector, :stdout
         end
       end
     end

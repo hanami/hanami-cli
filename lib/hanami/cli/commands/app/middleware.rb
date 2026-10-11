@@ -36,10 +36,8 @@ module Hanami
           option :with_arguments, default: DEFAULT_WITH_ARGUMENTS, required: false,
             desc: "Include inspected arguments", type: :flag
 
-          example [
-            "                 # Print app Rack middleware stack",
-            "--with-arguments # Print app Rack middleware stack, including initialize arguments"
-          ]
+          example "",                 "Print app Rack middleware stack"
+          example "--with-arguments", "Print app Rack middleware stack, including initialize arguments"
 
           # @since 2.0.0
           # @api private
@@ -48,7 +46,7 @@ module Hanami
 
             if Hanami.app.router
               inspector = MiddlewareStackInspector.new(stack: Hanami.app.router.middleware_stack)
-              out.puts inspector.inspect(include_arguments: with_arguments)
+              puts inspector.inspect(include_arguments: with_arguments)
             end
           end
         end

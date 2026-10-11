@@ -18,11 +18,9 @@ module Hanami
             option :force, required: false, type: :flag, default: false,
               desc: "Overwrite existing files during generation"
 
-            example [
-              %(books               (MyApp::Repos::BooksRepo)),
-              %(books/drafts_repo   (MyApp::Repos::Books::DraftsRepo)),
-              %(books --slice=admin (Admin::Repos::BooksRepo))
-            ]
+            example "books",               "MyApp::Repos::BooksRepo"
+            example "books/drafts_repo",   "MyApp::Repos::Books::DraftsRepo"
+            example "books --slice=admin", "Admin::Repos::BooksRepo"
 
             # @since 2.2.0
             # @api private

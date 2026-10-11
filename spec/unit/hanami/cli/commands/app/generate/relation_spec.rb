@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 RSpec.describe Hanami::CLI::Commands::App::Generate::Relation, "#call", :app_integration do
-  subject { described_class.new(out: out, err: err) }
+  subject { described_class.new(stdout:, stderr:) }
 
-  let(:out) { StringIO.new }
-  let(:err) { StringIO.new }
+  let(:stdout) { StringIO.new }
+  let(:stderr) { StringIO.new }
 
-  def output = out.string
+  def output = stdout.string
 
-  def error_output = err.string.chomp
+  def error_output = stderr.string.chomp
 
   before do
     with_directory(@dir = make_tmp_directory) do

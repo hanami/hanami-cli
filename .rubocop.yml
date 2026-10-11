@@ -2,6 +2,7 @@
 
 inherit_from:
   - https://raw.githubusercontent.com/hanakai-rb/repo-sync/main/rubocop/rubocop.yml
+  - .rubocop.local.yml
 
 Style/NumericPredicate:
   Enabled: false

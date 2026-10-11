@@ -19,10 +19,10 @@ module Hanami
                 exit_codes << result.exit_code if result.respond_to?(:exit_code)
 
                 if result == true || result.successful?
-                  out.puts "=> database #{database.name} dropped"
+                  puts "=> database #{database.name} dropped"
                 else
-                  out.puts "=> failed to drop database #{database.name}"
-                  out.puts "#{result.err}\n"
+                  puts "=> failed to drop database #{database.name}"
+                  puts "#{result.stderr}\n"
                 end
               end
 

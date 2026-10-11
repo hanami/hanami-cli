@@ -2,13 +2,13 @@
 
 RSpec.describe Hanami::CLI::Commands::App::DB::Seed, :app_integration do
   subject(:command) {
-    described_class.new(system_call: system_call, out: out)
+    described_class.new(system_call:, stdout:)
   }
 
   let(:system_call) { Hanami::CLI::SystemCall.new }
 
-  let(:out) { StringIO.new }
-  def output = out.string
+  let(:stdout) { StringIO.new }
+  def output = stdout.string
 
   before do
     @env = ENV.to_h
@@ -83,7 +83,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Seed, :app_integration do
 
   def db_migrate
     command.run_command(Hanami::CLI::Commands::App::DB::Migrate, dump: false)
-    out.truncate(0)
+    stdout.truncate(0)
   end
 
   before do

@@ -3,18 +3,23 @@
 RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
   subject(:command) {
     described_class.new(
-      system_call: system_call,
-      test_env_executor: test_env_executor,
-      out: out
+      system_call:,
+      test_env_executor:,
+      stdout:
     )
   }
 
   let(:system_call) { Hanami::CLI::SystemCall.new }
-  let(:test_env_executor) { instance_spy(Hanami::CLI::InteractiveSystemCall) }
+  let(:test_env_executor) do
+    instance_spy(
+      Hanami::CLI::SystemCall,
+      call: Hanami::CLI::SystemCall::Result.new(exit_code: 0, stdout: nil, stderr: nil)
+    )
+  end
   let(:exit_double) { double(:exit_method) }
 
-  let(:out) { StringIO.new }
-  def output = out.string
+  let(:stdout) { StringIO.new }
+  def output = stdout.string
 
   before do
     # Prevent the command from exiting the spec run in the case of unexpected system call failures
@@ -65,7 +70,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
 
     it "drops each database" do
       command.run_command(Hanami::CLI::Commands::App::DB::Create, command_exit: exit_double)
-      out.truncate(0)
+      stdout.truncate(0)
 
       expect { command.call }
         .to change { File.exist?(@dir.join("db", "app.sqlite3")) }
@@ -80,7 +85,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
 
     it "drops the app database when given --app" do
       command.run_command(Hanami::CLI::Commands::App::DB::Create, command_exit: exit_double)
-      out.truncate(0)
+      stdout.truncate(0)
 
       expect { command.call(app: true) }
         .to change {
@@ -98,7 +103,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
 
     it "drops a slice database when given --slice" do
       command.run_command(Hanami::CLI::Commands::App::DB::Create, command_exit: exit_double)
-      out.truncate(0)
+      stdout.truncate(0)
 
       expect { command.call(slice: "main") }
         .to change {
@@ -128,7 +133,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
 
     it "removes the journal, WAL and shared memory files alongside each database" do
       command.run_command(Hanami::CLI::Commands::App::DB::Create, command_exit: exit_double)
-      out.truncate(0)
+      stdout.truncate(0)
 
       write "db/app.sqlite3-journal", ""
       write "db/app.sqlite3-wal", ""
@@ -162,7 +167,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
 
     it "prints errors for any drops that fail and exits with non-zero status" do
       command.run_command(Hanami::CLI::Commands::App::DB::Create, command_exit: exit_double)
-      out.truncate(0)
+      stdout.truncate(0)
 
       allow(File).to receive(:delete).and_call_original
       allow(File).to receive(:delete)
@@ -182,7 +187,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
 
     it "keeps the database when its WAL file cannot be removed" do
       command.run_command(Hanami::CLI::Commands::App::DB::Create, command_exit: exit_double)
-      out.truncate(0)
+      stdout.truncate(0)
 
       write "db/app.sqlite3-wal", ""
       write "db/app.sqlite3-shm", ""
@@ -212,7 +217,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
 
       before do
         command.run_command(Hanami::CLI::Commands::App::DB::Create, command_exit: exit_double)
-        out.truncate(0)
+        stdout.truncate(0)
       end
 
       it "drops the databases for all gateways" do
@@ -241,7 +246,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
 
       before do
         command.run_command(Hanami::CLI::Commands::App::DB::Create, command_exit: exit_double)
-        out.truncate(0)
+        stdout.truncate(0)
       end
 
       it "drops the databases for all the app's gateways when given --app" do
@@ -275,7 +280,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
 
       before do
         command.run_command(Hanami::CLI::Commands::App::DB::Create, command_exit: exit_double)
-        out.truncate(0)
+        stdout.truncate(0)
       end
 
       it "drops the databases for all the slice's gateways when given --slice" do
@@ -312,7 +317,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
 
     it "drops each database" do
       command.run_command(Hanami::CLI::Commands::App::DB::Create, command_exit: exit_double)
-      out.truncate(0)
+      stdout.truncate(0)
 
       expect { Hanami.app["db.gateway"].connection.test_connection }.not_to raise_error
       expect { Main::Slice["db.gateway"].connection.test_connection }.not_to raise_error
@@ -336,7 +341,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
 
     it "drops the app database when given --app" do
       command.run_command(Hanami::CLI::Commands::App::DB::Create, command_exit: exit_double)
-      out.truncate(0)
+      stdout.truncate(0)
 
       command.call(app: true)
 
@@ -355,7 +360,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
 
     it "drops a slice database when given --slice" do
       command.run_command(Hanami::CLI::Commands::App::DB::Create)
-      out.truncate(0)
+      stdout.truncate(0)
 
       command.call(slice: "main")
 
@@ -374,7 +379,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
 
     it "does not drop databases that do not exist" do
       command.run_command(Hanami::CLI::Commands::App::DB::Create, app: true, command_exit: exit_double)
-      out.truncate(0)
+      stdout.truncate(0)
 
       expect { Hanami.app["db.gateway"].connection.test_connection }.not_to raise_error
       Hanami.app.stop :db
@@ -396,13 +401,13 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
 
     it "prints errors for any drop commands that fail and exits with non-zero status" do
       command.run_command(Hanami::CLI::Commands::App::DB::Create)
-      out.truncate(0)
+      stdout.truncate(0)
 
       allow(system_call).to receive(:call).and_call_original
       allow(system_call)
         .to receive(:call)
         .with(a_string_matching(/dropdb.+_app/), anything)
-        .and_return Hanami::CLI::SystemCall::Result.new(exit_code: 2, out: "", err: "app-db-err")
+        .and_return Hanami::CLI::SystemCall::Result.new(exit_code: 2, stdout: "", stderr: "app-db-err")
 
       expect_exit_code(2) { command.call }
 
@@ -419,7 +424,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
       allow(system_call)
         .to receive(:call)
         .with(a_string_matching(/\\list.+_app/), anything)
-        .and_return Hanami::CLI::SystemCall::Result.new(exit_code: 2, out: "", err: "app-db-err")
+        .and_return Hanami::CLI::SystemCall::Result.new(exit_code: 2, stdout: "", stderr: "app-db-err")
 
       expect { command.call }.to raise_error(Hanami::CLI::Error)
     end
@@ -432,7 +437,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
 
     it "drops the database" do
       command.run_command(Hanami::CLI::Commands::App::DB::Create, command_exit: exit_double)
-      out.truncate(0)
+      stdout.truncate(0)
 
       expect { Hanami.app["db.gateway"].connection.test_connection }.not_to raise_error
       Hanami.app.stop :db
@@ -463,13 +468,13 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
 
     it "prints errors for any drop commands that fail and exits with non-zero status" do
       command.run_command(Hanami::CLI::Commands::App::DB::Create, command_exit: exit_double)
-      out.truncate(0)
+      stdout.truncate(0)
 
       allow(system_call).to receive(:call).and_call_original
       allow(system_call)
         .to receive(:call)
         .with(a_string_matching(/-e "DROP DATABASE/), anything)
-        .and_return Hanami::CLI::SystemCall::Result.new(exit_code: 2, out: "", err: "app-db-err")
+        .and_return Hanami::CLI::SystemCall::Result.new(exit_code: 2, stdout: "", stderr: "app-db-err")
 
       expect_exit_code(2) { command.call }
 
@@ -481,13 +486,13 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
 
     it "prints errors when check for DB existence fails" do
       command.run_command(Hanami::CLI::Commands::App::DB::Create, command_exit: exit_double)
-      out.truncate(0)
+      stdout.truncate(0)
 
       allow(system_call).to receive(:call).and_call_original
       allow(system_call)
         .to receive(:call)
         .with(a_string_matching(/-e "SHOW DATABASES/), anything)
-        .and_return Hanami::CLI::SystemCall::Result.new(exit_code: 2, out: "", err: "app-db-err")
+        .and_return Hanami::CLI::SystemCall::Result.new(exit_code: 2, stdout: "", stderr: "app-db-err")
 
       expect {
         command.call
@@ -505,14 +510,14 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Drop, :app_integration do
     end
 
     it "re-executes the command in test env when run with development env" do
-      command.call(env: "development")
+      expect_exit_code(0) { command.call(env: "development") }
 
       expect(test_env_executor).to have_received(:call).with(
         "bundle exec hanami",
         "db", "drop",
-        {
+        hash_including(
           env: hash_including("HANAMI_ENV" => "test")
-        }
+        )
       )
     end
 

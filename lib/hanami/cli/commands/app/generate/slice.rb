@@ -46,19 +46,12 @@ module Hanami
             option :force, required: false, type: :flag, default: false,
               desc: "Overwrite existing files during generation"
 
-            example [
-              "admin          # Admin slice (/admin URL prefix)",
-              "users --url=/u # Users slice (/u URL prefix)"
-            ]
+            example "admin",          "Admin slice (/admin URL prefix)"
+            example "users --url=/u", "Users slice (/u URL prefix)"
 
             # @since 2.0.0
             # @api private
-            def initialize(
-              fs:,
-              generator: Generators::App::Slice.new(fs: fs, inflector: inflector),
-              **opts
-            )
-              super(fs: fs, **opts)
+            def initialize(generator: Generators::App::Slice.new(fs:, inflector:))
               @generator = generator
             end
 

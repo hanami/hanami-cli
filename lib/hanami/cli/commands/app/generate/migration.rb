@@ -11,12 +11,10 @@ module Hanami
             argument :name, required: true, desc: "Migration name"
             option :gateway, desc: "Generate migration for gateway"
 
-            example [
-              %(create_posts),
-              %(add_published_at_to_posts),
-              %(create_users --slice=admin),
-              %(create_comments --slice=admin --gateway=extra)
-            ]
+            example "create_posts",                                  "Migration for the app"
+            example "add_published_at_to_posts",                     "Migration for the app"
+            example "create_users --slice=admin",                    "Migration for the admin slice"
+            example "create_comments --slice=admin --gateway=extra", "Migration for the admin slice's extra gateway"
 
             def generator_class
               Generators::App::Migration

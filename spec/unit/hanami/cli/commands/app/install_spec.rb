@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 RSpec.describe Hanami::CLI::Commands::App::Install do
-  subject { described_class.new(fs: fs, bundler: bundler, out: out) }
+  subject { described_class.new(fs:, bundler:, stdout:) }
 
-  let(:fs) { Hanami::CLI::Files.new(memory: true, out: out) }
-  let(:bundler) { Hanami::CLI::Bundler.new(fs: fs) }
-  let(:out) { StringIO.new }
+  let(:fs) { Hanami::CLI::Files.new(memory: true, stdout:) }
+  let(:bundler) { Hanami::CLI::Bundler.new(fs:) }
+  let(:stdout) { StringIO.new }
 
   describe "#call" do
     it "installs third-party plugins" do
@@ -15,8 +15,8 @@ RSpec.describe Hanami::CLI::Commands::App::Install do
 
       subject.call
 
-      out.rewind
-      expect(out.read.chomp).to eq("")
+      stdout.rewind
+      expect(stdout.read.chomp).to eq("")
     end
   end
 end

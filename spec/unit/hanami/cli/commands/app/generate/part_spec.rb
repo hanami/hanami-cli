@@ -3,20 +3,20 @@
 require "hanami"
 
 RSpec.describe Hanami::CLI::Commands::App::Generate::Part, :app do
-  subject { described_class.new(fs: fs, out: out, err: err) }
+  subject { described_class.new(fs:, stdout:, stderr:) }
 
-  let(:out) { StringIO.new }
-  let(:err) { StringIO.new }
-  let(:fs) { Hanami::CLI::Files.new(memory: true, out: out) }
+  let(:stdout) { StringIO.new }
+  let(:stderr) { StringIO.new }
+  let(:fs) { Hanami::CLI::Files.new(memory: true, stdout:) }
   let(:inflector) { Dry::Inflector.new }
   let(:app) { Hanami.app.namespace }
   let(:dir) { inflector.underscore(app) }
 
   def output
-    out.rewind && out.read.chomp
+    stdout.rewind && stdout.read.chomp
   end
 
-  def error_output = err.string.chomp
+  def error_output = stderr.string.chomp
 
   context "generating for app" do
     context "without base part" do

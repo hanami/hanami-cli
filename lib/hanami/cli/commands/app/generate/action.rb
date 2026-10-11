@@ -68,19 +68,18 @@ module Hanami
 
             # option :format, required: false, type: :string, default: DEFAULT_FORMAT, desc: "Template format"
 
-            example [
-              %(books.index               # GET    /books          to: "books.index"    (MyApp::Actions::Books::Index)),
-              %(books.new                 # GET    /books/new      to: "books.new"      (MyApp::Actions::Books::New)),
-              %(books.create              # POST   /books          to: "books.create"   (MyApp::Actions::Books::Create)),
-              %(books.edit                # GET    /books/:id/edit to: "books.edit"     (MyApp::Actions::Books::Edit)),
-              %(books.update              # PATCH  /books/:id      to: "books.update"   (MyApp::Actions::Books::Update)),
-              %(books.show                # GET    /books/:id      to: "books.show"     (MyApp::Actions::Books::Show)),
-              %(books.destroy             # DELETE /books/:id      to: "books.destroy"  (MyApp::Actions::Books::Destroy)),
-              %(books.sale                # GET    /books/sale     to: "books.sale"     (MyApp::Actions::Books::Sale)),
-              %(sessions.new --url=/login # GET    /login          to: "sessions.new"   (MyApp::Actions::Sessions::New)),
-              %(authors.update --http=put # PUT    /authors/:id    to: "authors.update" (MyApp::Actions::Authors::Update)),
-              %(users.index --slice=admin # GET    /admin/users    to: "users.index"    (Admin::Actions::Users::Update))
-            ]
+            example "books.index",               %(GET    /books          to: "books.index"    (MyApp::Actions::Books::Index))
+            example "books.new",                 %(GET    /books/new      to: "books.new"      (MyApp::Actions::Books::New))
+            example "books.create",              %(POST   /books          to: "books.create"   (MyApp::Actions::Books::Create))
+            example "books.edit",                %(GET    /books/:id/edit to: "books.edit"     (MyApp::Actions::Books::Edit))
+            example "books.update",              %(PATCH  /books/:id      to: "books.update"   (MyApp::Actions::Books::Update))
+            example "books.show",                %(GET    /books/:id      to: "books.show"     (MyApp::Actions::Books::Show))
+            example "books.destroy",             %(DELETE /books/:id      to: "books.destroy"  (MyApp::Actions::Books::Destroy))
+            example "books.sale",                %(GET    /books/sale     to: "books.sale"     (MyApp::Actions::Books::Sale))
+            example "sessions.new --url=/login", %(GET    /login          to: "sessions.new"   (MyApp::Actions::Sessions::New))
+            example "authors.update --http=put", %(PUT    /authors/:id    to: "authors.update" (MyApp::Actions::Authors::Update))
+            example "users.index --slice=admin", %(GET    /admin/users    to: "users.index"    (Admin::Actions::Users::Update))
+
             def generator_class
               Generators::App::Action
             end

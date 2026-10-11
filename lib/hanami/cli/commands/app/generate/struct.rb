@@ -12,11 +12,9 @@ module Hanami
             option :force, required: false, type: :flag, default: false,
               desc: "Overwrite existing files during generation"
 
-            example [
-              %(book                (MyApp::Structs::Book)),
-              %(book/published_book (MyApp::Structs::Book::PublishedBook)),
-              %(book --slice=admin  (Admin::Structs::Book))
-            ]
+            example "book",                "MyApp::Structs::Book"
+            example "book/published_book", "MyApp::Structs::Book::PublishedBook"
+            example "book --slice=admin",  "Admin::Structs::Book"
 
             def generator_class
               Generators::App::Struct

@@ -11,10 +11,8 @@ module Hanami
             option :force, required: false, type: :flag, default: false,
               desc: "Overwrite existing files during generation"
 
-            example [
-              %(mailer                (config/providers/mailer.rb)),
-              %(mailer --slice=admin  (slices/admin/config/providers/mailer.rb))
-            ]
+            example "mailer",               "config/providers/mailer.rb"
+            example "mailer --slice=admin", "slices/admin/config/providers/mailer.rb"
 
             def generator_class
               Generators::App::Provider

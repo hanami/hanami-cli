@@ -3,17 +3,22 @@
 RSpec.describe Hanami::CLI::Commands::App::DB::Prepare, :app_integration do
   subject(:command) {
     described_class.new(
-      system_call: system_call,
-      test_env_executor: test_env_executor,
-      out: out
+      system_call:,
+      test_env_executor:,
+      stdout:
     )
   }
 
   let(:system_call) { Hanami::CLI::SystemCall.new }
-  let(:test_env_executor) { instance_spy(Hanami::CLI::InteractiveSystemCall) }
+  let(:test_env_executor) do
+    instance_spy(
+      Hanami::CLI::SystemCall,
+      call: Hanami::CLI::SystemCall::Result.new(exit_code: 0, stdout: nil, stderr: nil)
+    )
+  end
 
-  let(:out) { StringIO.new }
-  def output = out.string
+  let(:stdout) { StringIO.new }
+  def output = stdout.string
 
   before do
     # Prevent the command from exiting the spec run in the case of unexpected system call failures
@@ -121,7 +126,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Prepare, :app_integration do
         Main::Slice.start :db and Main::Slice.stop :db
         command.run_command(Hanami::CLI::Commands::App::DB::Drop)
 
-        out.truncate(0)
+        stdout.truncate(0)
       end
 
       it "creates the database, loads the structure, migrates the database, and loads the seeds" do
@@ -207,7 +212,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Prepare, :app_integration do
         Main::Slice.start :db and Main::Slice.stop :db
         command.run_command(Hanami::CLI::Commands::App::DB::Drop)
 
-        out.truncate(0)
+        stdout.truncate(0)
       end
 
       it "creates the database, loads the structure, migrates the database, and loads the seeds" do
@@ -327,7 +332,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Prepare, :app_integration do
         Hanami.app.start :db and Hanami.app.stop :db
         command.run_command(Hanami::CLI::Commands::App::DB::Drop)
 
-        out.truncate(0)
+        stdout.truncate(0)
       end
 
       it "creates the database, migrates the database, and loads the seeds" do
@@ -417,7 +422,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Prepare, :app_integration do
       allow(system_call)
         .to receive(:call)
         .with(a_string_matching(/createdb.+_main/), anything)
-        .and_return Hanami::CLI::SystemCall::Result.new(exit_code: 2, out: "", err: "main-db-err")
+        .and_return Hanami::CLI::SystemCall::Result.new(exit_code: 2, stdout: "", stderr: "main-db-err")
 
       expect_exit_code(2) { command.call }
 
@@ -445,14 +450,14 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Prepare, :app_integration do
     end
 
     it "re-executes the command in test env when run with development env" do
-      command.call(env: "development")
+      expect_exit_code(0) { command.call(env: "development") }
 
       expect(test_env_executor).to have_received(:call).with(
         "bundle exec hanami",
         "db", "prepare",
-        {
+        hash_including(
           env: hash_including("HANAMI_ENV" => "test")
-        }
+        )
       )
     end
 

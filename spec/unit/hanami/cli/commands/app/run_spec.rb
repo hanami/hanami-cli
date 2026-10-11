@@ -4,9 +4,9 @@ require "spec_helper"
 require "hanami/cli/commands/app/run"
 
 RSpec.describe Hanami::CLI::Commands::App::Run do
-  subject { described_class.new(out: out, err: err) }
-  let(:out) { StringIO.new }
-  let(:err) { StringIO.new }
+  subject { described_class.new(stdout:, stderr:) }
+  let(:stdout) { StringIO.new }
+  let(:stderr) { StringIO.new }
 
   before do
     # Mock the hanami/prepare requirement
@@ -41,7 +41,7 @@ RSpec.describe Hanami::CLI::Commands::App::Run do
         it "prints error message and exits with code 1" do
           expect_exit_code(1) { subject.call(code_or_path: "puts 'unclosed string") }
 
-          expect(err.string).to include("Syntax error in code")
+          expect(stderr.string).to include("Syntax error in code")
         end
       end
 
@@ -49,7 +49,7 @@ RSpec.describe Hanami::CLI::Commands::App::Run do
         it "prints error message and exits with code 1" do
           expect_exit_code(1) { subject.call(code_or_path: "undefined_variable") }
 
-          expect(err.string).to include("Name error in code")
+          expect(stderr.string).to include("Name error in code")
         end
       end
 
@@ -57,7 +57,7 @@ RSpec.describe Hanami::CLI::Commands::App::Run do
         it "prints error message and exits with code 1" do
           expect_exit_code(1) { subject.call(code_or_path: "1 / 0") }
 
-          expect(err.string).to include("Error executing code")
+          expect(stderr.string).to include("Error executing code")
         end
       end
     end

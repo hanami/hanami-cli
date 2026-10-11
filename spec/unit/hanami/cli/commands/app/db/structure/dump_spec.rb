@@ -2,14 +2,14 @@
 
 RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Dump, :app_integration do
   subject(:command) {
-    described_class.new(system_call: system_call, out: out)
+    described_class.new(system_call:, stdout:)
   }
 
   let(:system_call) { Hanami::CLI::SystemCall.new }
   let(:exit_double) { double(:exit_method) }
 
-  let(:out) { StringIO.new }
-  def output = out.string
+  let(:stdout) { StringIO.new }
+  def output = stdout.string
 
   before do
     # Prevent the command from exiting the spec run in the case of unexpected system call failures
@@ -70,7 +70,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Dump, :app_integration
   def db_migrate
     command.run_command(Hanami::CLI::Commands::App::DB::Create, command_exit: exit_double)
     command.run_command(Hanami::CLI::Commands::App::DB::Migrate, dump: false)
-    out.truncate(0)
+    stdout.truncate(0)
   end
 
   describe "sqlite" do
@@ -203,7 +203,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Dump, :app_integration
       allow(system_call)
         .to receive(:call)
         .with(a_string_including("db/app.sqlite3"))
-        .and_return Hanami::CLI::SystemCall::Result.new(exit_code: 2, out: "", err: "dump-err")
+        .and_return Hanami::CLI::SystemCall::Result.new(exit_code: 2, stdout: "", stderr: "dump-err")
 
       expect_exit_code(2) { command.call }
 
@@ -285,7 +285,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Dump, :app_integration
       allow(system_call)
         .to receive(:call)
         .with(a_string_including("app"), anything)
-        .and_return Hanami::CLI::SystemCall::Result.new(exit_code: 2, out: "", err: "dump-err")
+        .and_return Hanami::CLI::SystemCall::Result.new(exit_code: 2, stdout: "", stderr: "dump-err")
 
       expect_exit_code(2) { command.call }
 
@@ -324,7 +324,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Structure::Dump, :app_integration
       allow(system_call)
         .to receive(:call)
         .with(a_string_including("mysqldump"), anything)
-        .and_return Hanami::CLI::SystemCall::Result.new(exit_code: 2, out: "", err: "dump-err")
+        .and_return Hanami::CLI::SystemCall::Result.new(exit_code: 2, stdout: "", stderr: "dump-err")
 
       expect_exit_code(2) { command.call }
 

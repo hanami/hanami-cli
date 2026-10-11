@@ -86,31 +86,26 @@ module Hanami
             desc: "Test framework (supported: rspec, minitest)"
 
           # rubocop:disable Layout/LineLength
-          example [
-            "bookshelf                                    # Generate a new Hanami app in `bookshelf/' directory, using `Bookshelf' namespace",
-            "bookshelf --head                             # Generate a new Hanami app, using Hanami HEAD version from GitHub `main' branches",
-            "bookshelf --gem-source=gem.coop              # Generate a new Hanami app, using https://gem.coop as Ruby gem source",
-            "bookshelf --skip-install                     # Generate a new Hanami app, but it skips Hanami installation",
-            "bookshelf --skip-assets                      # Generate a new Hanami app without hanami-assets",
-            "bookshelf --skip-db                          # Generate a new Hanami app without hanami-db",
-            "bookshelf --skip-view                        # Generate a new Hanami app without hanami-view",
-            "bookshelf --skip-mailer                      # Generate a new Hanami app without hanami-mailer",
-            "bookshelf --skip-git                         # Generate a new Hanami app without git repository initialization",
-            "bookshelf --database={sqlite|postgres|mysql} # Generate a new Hanami app with a specified database (default: sqlite)",
-            "bookshelf --template-engine={erb|haml|slim}  # Generate a new Hanami app which will use HAML for templates by default (default: erb)",
-            "bookshelf --test={rspec|minitest}            # Generate a new Hanami app with specified test framework (default: rspec)",
-            "my_bookshelf --name=bookshelf                # Generate a new Hanami app in `my_bookshelf/' directory, using `Bookshelf' namespace"
-          ]
+          example "bookshelf",                                    "Generate a new Hanami app in `bookshelf/' directory, using `Bookshelf' namespace"
+          example "bookshelf --head",                             "Generate a new Hanami app, using Hanami HEAD version from GitHub `main' branches"
+          example "bookshelf --gem-source=gem.coop",              "Generate a new Hanami app, using https://gem.coop as Ruby gem source"
+          example "bookshelf --skip-install",                     "Generate a new Hanami app, but it skips Hanami installation"
+          example "bookshelf --skip-assets",                      "Generate a new Hanami app without hanami-assets"
+          example "bookshelf --skip-db",                          "Generate a new Hanami app without hanami-db"
+          example "bookshelf --skip-view",                        "Generate a new Hanami app without hanami-view"
+          example "bookshelf --skip-mailer",                      "Generate a new Hanami app without hanami-mailer"
+          example "bookshelf --skip-git",                         "Generate a new Hanami app without git repository initialization"
+          example "bookshelf --database={sqlite|postgres|mysql}", "Generate a new Hanami app with a specified database (default: sqlite)"
+          example "bookshelf --template-engine={erb|haml|slim}",  "Generate a new Hanami app which will use HAML for templates by default (default: erb)"
+          example "bookshelf --test={rspec|minitest}",            "Generate a new Hanami app with specified test framework (default: rspec)"
+          example "my_bookshelf --name=bookshelf",                "Generate a new Hanami app in `my_bookshelf/' directory, using `Bookshelf' namespace"
           # rubocop:enable Layout/LineLength
 
           def initialize(
-            fs:,
-            bundler: CLI::Bundler.new(fs: fs),
-            generator: Generators::Gem::App.new(fs: fs, inflector: inflector),
-            system_call: SystemCall.new,
-            **opts
+            bundler: CLI::Bundler.new(fs:),
+            generator: Generators::Gem::App.new(fs:, inflector:),
+            system_call: SystemCall.new
           )
-            super(fs: fs, **opts)
             @bundler = bundler
             @generator = generator
             @system_call = system_call
@@ -159,29 +154,29 @@ module Hanami
               )
               generator.call(app, context: context) do
                 if skip_install
-                  out.puts "Skipping installation, please enter `#{app}' directory and run `bundle exec hanami install'"
+                  puts "Skipping installation, please enter `#{app}' directory and run `bundle exec hanami install'"
                 else
-                  out.puts "Running bundle install..."
+                  puts "Running bundle install..."
                   bundler.install!
 
                   unless skip_assets
-                    out.puts "Running npm install..."
+                    puts "Running npm install..."
                     system_call.call("npm", ["install"]).tap do |result|
                       unless result.successful?
                         puts "NPM ERROR:"
-                        puts(result.err.lines.map { |line| line.prepend("    ") })
+                        puts(result.stderr.lines.map { |line| line.prepend("    ") })
                       end
                     end
                   end
 
-                  out.puts "Running hanami install..."
+                  puts "Running hanami install..."
                   run_install_command!(head: head)
 
-                  out.puts "Running bundle binstubs hanami-cli rake..."
+                  puts "Running bundle binstubs hanami-cli rake..."
                   install_binstubs!
 
                   unless skip_git
-                    out.puts "Initializing git repository..."
+                    puts "Initializing git repository..."
                     init_git_repository
                   end
                 end
@@ -215,7 +210,7 @@ module Hanami
               if result.successful?
                 bundler.exec("check").successful? || bundler.exec("install")
               else
-                raise HanamiInstallError.new(result.err)
+                raise HanamiInstallError.new(result.stderr)
               end
             end
           end
@@ -229,8 +224,8 @@ module Hanami
           def init_git_repository
             system_call.call("git", ["init"]).tap do |result|
               unless result.successful?
-                out.puts "WARNING: Failed to initialize git repository"
-                out.puts(result.err.lines.map { |line| line.prepend("    ") })
+                puts "WARNING: Failed to initialize git repository"
+                puts(result.stderr.lines.map { |line| line.prepend("    ") })
               end
             end
           end

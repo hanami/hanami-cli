@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 RSpec.describe Hanami::CLI::Commands::App::Routes, :app_integration do
-  subject(:command) { described_class.new(out: out) }
+  subject(:command) { described_class.new(stdout:) }
 
-  let(:out) { StringIO.new }
+  let(:stdout) { StringIO.new }
   let(:output) {
-    out.rewind
-    out.read
+    stdout.rewind
+    stdout.read
   }
 
   before do

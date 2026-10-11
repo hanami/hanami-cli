@@ -3,13 +3,13 @@
 require "hanami"
 
 RSpec.describe "file conflict handling", :app do
-  subject(:cmd) { Hanami::CLI::Commands::App::Generate::View.new(fs:, out:, err:) }
+  subject(:cmd) { Hanami::CLI::Commands::App::Generate::View.new(fs:, stdout:, stderr:) }
 
-  let(:out) { StringIO.new }
-  let(:err) { StringIO.new }
-  let(:fs) { Hanami::CLI::Files.new(memory: true, out: out) }
+  let(:stdout) { StringIO.new }
+  let(:stderr) { StringIO.new }
+  let(:fs) { Hanami::CLI::Files.new(memory: true, stdout:) }
 
-  def error_output = err.string.chomp
+  def error_output = stderr.string.chomp
 
   context "when file to be generated already exists" do
     it "exits with error" do

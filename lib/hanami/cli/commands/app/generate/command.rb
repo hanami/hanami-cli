@@ -21,16 +21,15 @@ module Hanami
 
             # @since 2.2.0
             # @api private
-            def initialize(fs:, out:, **)
-              super
-              @generator = generator_class.new(fs:, inflector:, out:)
+            def initialize
+              @generator = generator_class.new(fs:, inflector:, stdout:)
             end
 
             # @since 2.2.0
             # @api private
             def generator_class
               # Must be implemented by subclasses, with initialize method that takes:
-              # fs:, out:
+              # fs:, inflector:, stdout:
             end
 
             # @since 2.2.0
