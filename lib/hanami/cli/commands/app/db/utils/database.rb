@@ -210,6 +210,10 @@ module Hanami
 
               private
 
+              def quoted_path(path)
+                "'#{path.to_s.gsub("'", %q('"'"'))}'"
+              end
+
               def database_query_params
                 @database_query_params ||= URI.decode_www_form(database_uri.query.to_s).to_h
               end

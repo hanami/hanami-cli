@@ -23,6 +23,7 @@ and this project adheres to [Break Versioning](https://www.taoensso.com/break-ve
 
 ### Fixed
 
+- Quote database and structure file paths for SQLite, PostgreSQL, and MySQL so app paths can contain spaces and other fun shell stuff.
 - Remove SQLite's `-journal`, `-wal` and `-shm` files alongside the database file in `hanami db drop`, so a stale journal or WAL file cannot corrupt a newly created database of the same name. (@cllns in #451)
 - Fix a namespace conflict in generated classes when a namespace matches the app or slice name. (@mddelk in #436)
 
