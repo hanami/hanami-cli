@@ -22,7 +22,7 @@ module Hanami
                   puts Styles::ACCENT["=>"] + " database #{database.name} dropped"
                 else
                   puts Styles::FAILURE["=> failed to drop database #{database.name}"]
-                  puts "#{result.stderr}\n"
+                  print_failure_output(result.stderr)
                 end
               end
 

@@ -32,7 +32,7 @@ module Hanami
                       exit_codes << result.exit_code if result.respond_to?(:exit_code)
 
                       unless result.successful?
-                        puts result.stderr
+                        print_failure_output(result.stderr)
                         throw :load_failed, false
                       end
 

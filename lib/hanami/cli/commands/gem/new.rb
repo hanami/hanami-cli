@@ -111,8 +111,6 @@ module Hanami
             @system_call = system_call
           end
 
-          # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
-
           def call(
             app:,
             head: HEAD_DEFAULT,
@@ -158,34 +156,11 @@ module Hanami
                     "Skipping installation, please enter `#{app}' directory and run `bundle exec hanami install'"
                   ]
                 else
-                  puts Styles::EMPHASIS["Running bundle install..."]
-                  bundler.install!
-
-                  unless skip_assets
-                    puts Styles::EMPHASIS["Running npm install..."]
-                    system_call.call("npm", ["install"]).tap do |result|
-                      unless result.successful?
-                        puts Styles::FAILURE["NPM ERROR:"]
-                        puts(result.stderr.lines.map { |line| line.prepend("    ") })
-                      end
-                    end
-                  end
-
-                  puts Styles::EMPHASIS["Running hanami install..."]
-                  run_install_command!(head: head)
-
-                  puts Styles::EMPHASIS["Running bundle binstubs hanami-cli rake..."]
-                  install_binstubs!
-
-                  unless skip_git
-                    puts Styles::EMPHASIS["Initializing git repository..."]
-                    init_git_repository
-                  end
+                  install(head:, skip_assets:, skip_git:)
                 end
               end
             end
           end
-          # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity
 
           private
 
@@ -206,6 +181,17 @@ module Hanami
             end
           end
 
+          # Installs the new app's gems and npm packages, runs `hanami install`, and initializes git.
+          #
+          # @api private
+          def install(head:, skip_assets:, skip_git:)
+            step("bundle install") { bundler.install! }
+            step("npm install") { system_call.call("npm", ["install"]) } unless skip_assets
+            step("hanami install") { run_install_command!(head:) }
+            step("bundle binstubs hanami-cli rake") { install_binstubs! }
+            step("git init") { system_call.call("git", ["init"]) } unless skip_git
+          end
+
           def run_install_command!(head:)
             head_flag = head ? " --head" : ""
             bundler.exec("hanami install#{head_flag}").tap do |result|
@@ -220,16 +206,6 @@ module Hanami
           # @api private
           def install_binstubs!
             bundler.bundle("binstubs hanami-cli rake")
-          end
-
-          # @api private
-          def init_git_repository
-            system_call.call("git", ["init"]).tap do |result|
-              unless result.successful?
-                puts Styles::WARNING["WARNING: Failed to initialize git repository"]
-                puts(result.stderr.lines.map { |line| line.prepend("    ") })
-              end
-            end
           end
         end
       end

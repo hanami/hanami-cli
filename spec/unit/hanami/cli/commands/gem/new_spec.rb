@@ -2,11 +2,12 @@
 
 RSpec.describe Hanami::CLI::Commands::Gem::New do
   subject do
-    described_class.new(bundler:, stdout:, fs:, system_call:)
+    described_class.new(bundler:, stdout:, stderr:, fs:, system_call:)
   end
 
   let(:bundler) { Hanami::CLI::Bundler.new(fs:) }
   let(:stdout) { StringIO.new }
+  let(:stderr) { StringIO.new }
   let(:fs) { Hanami::CLI::Files.new(memory: true, stdout:) }
   let(:inflector) { Dry::Inflector.new }
   let(:system_call) { instance_double(Hanami::CLI::SystemCall, call: successful_system_call_result) }
@@ -27,6 +28,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
 
   before do
     allow(bundler).to receive(:bundle).with(a_string_starting_with("binstubs"))
+      .and_return(successful_system_call_result)
   end
 
   it "normalizes app name" do
@@ -108,9 +110,9 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
     expect(fs.directory?(app)).to be(true)
     expect(output).to include("Created #{app}/")
     expect(output).to include("-> Within #{app}/")
-    expect(output).to include("Running bundle install...")
-    expect(output).to include("Running npm install...")
-    expect(output).to include("Running hanami install...")
+    expect(output).to include("  ✓ bundle install")
+    expect(output).to include("  ✓ npm install")
+    expect(output).to include("  ✓ hanami install")
 
     fs.chdir(app) do
       # .gitignore
@@ -799,9 +801,9 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
       expect(fs.directory?(app)).to be(true)
       expect(output).to include("Created #{app}/")
       expect(output).to include("-> Within #{app}/")
-      expect(output).to include("Running bundle install...")
-      expect(output).to include("Running npm install...")
-      expect(output).to include("Running hanami install...")
+      expect(output).to include("  ✓ bundle install")
+      expect(output).to include("  ✓ npm install")
+      expect(output).to include("  ✓ hanami install")
 
       fs.chdir(app) do
         # .gitignore
@@ -1905,7 +1907,29 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
     subject.call(app: app, **kwargs)
 
     expect(fs.directory?(app)).to be(true)
-    expect(output).to include("Running bundle binstubs hanami-cli rake...")
+    expect(output).to include("  ✓ bundle binstubs hanami-cli rake")
+  end
+
+  it "prints the output of a failed npm install, and continues" do
+    expect(bundler).to receive(:install!)
+      .and_return(true)
+
+    expect(bundler).to receive(:exec)
+      .with("hanami install")
+      .and_return(successful_system_call_result)
+
+    expect(bundler).to receive(:exec)
+      .with("check")
+      .at_least(1)
+      .and_return(successful_system_call_result)
+
+    expect(system_call).to receive(:call).with("npm", ["install"])
+      .and_return(Hanami::CLI::SystemCall::Result.new(exit_code: 1, stdout: "", stderr: "npm broke\n"))
+
+    subject.call(app: app, **kwargs)
+
+    expect(output).to include("  ✗ npm install\n    npm broke\n")
+    expect(output).to include("  ✓ hanami install")
   end
 
   it "initializes a git repository" do
@@ -1931,7 +1955,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
     subject.call(app: app, **kwargs)
 
     expect(fs.directory?(app)).to be(true)
-    expect(output).to include("Initializing git repository...")
+    expect(output).to include("  ✓ git init")
   end
 
   context "without git" do
@@ -1957,7 +1981,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
       subject.call(app: app, **kwargs)
 
       expect(fs.directory?(app)).to be(true)
-      expect(output).to_not include("Initializing git repository...")
+      expect(output).to_not include("git init")
 
       fs.chdir(app) do
         expect(fs.exist?(".gitignore")).to be(false)
