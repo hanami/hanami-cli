@@ -95,12 +95,19 @@ module Hanami
 
               # JDBC drivers expect the user and password as query params, e.g.
               # "jdbc:postgresql://localhost/app?user=postgres&password=secret".
+              #
+              # URI leaves userinfo percent-encoded, so decode it to match what Sequel logs in with. Query
+              # params are already decoded by `database_query_params`.
               def database_user
-                database_uri.user || database_query_params["user"]
+                decode_userinfo(database_uri.user) || database_query_params["user"]
               end
 
               def database_password
-                database_uri.password || database_query_params["password"]
+                decode_userinfo(database_uri.password) || database_query_params["password"]
+              end
+
+              def decode_userinfo(value)
+                URI.decode_uri_component(value) if value
               end
 
               def gateway
