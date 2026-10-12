@@ -108,9 +108,9 @@ module Hanami
             stop = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 
             if result
-              puts "=> #{desc} in #{(stop - start).round(4)}s"
+              puts Styles::ACCENT["=>"] + " #{desc} " + Styles::MUTED["in #{(stop - start).round(4)}s"]
             else
-              puts "!!! => #{desc.inspect} FAILED"
+              puts Styles::FAILURE["!!! => #{desc.inspect} FAILED"]
             end
           end
         end

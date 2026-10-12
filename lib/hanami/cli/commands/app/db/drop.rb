@@ -19,9 +19,9 @@ module Hanami
                 exit_codes << result.exit_code if result.respond_to?(:exit_code)
 
                 if result == true || result.successful?
-                  puts "=> database #{database.name} dropped"
+                  puts Styles::ACCENT["=>"] + " database #{database.name} dropped"
                 else
-                  puts "=> failed to drop database #{database.name}"
+                  puts Styles::FAILURE["=> failed to drop database #{database.name}"]
                   puts "#{result.stderr}\n"
                 end
               end

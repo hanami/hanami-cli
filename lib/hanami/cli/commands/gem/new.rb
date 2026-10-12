@@ -154,29 +154,31 @@ module Hanami
               )
               generator.call(app, context: context) do
                 if skip_install
-                  puts "Skipping installation, please enter `#{app}' directory and run `bundle exec hanami install'"
+                  puts Styles::WARNING[
+                    "Skipping installation, please enter `#{app}' directory and run `bundle exec hanami install'"
+                  ]
                 else
-                  puts "Running bundle install..."
+                  puts Styles::EMPHASIS["Running bundle install..."]
                   bundler.install!
 
                   unless skip_assets
-                    puts "Running npm install..."
+                    puts Styles::EMPHASIS["Running npm install..."]
                     system_call.call("npm", ["install"]).tap do |result|
                       unless result.successful?
-                        puts "NPM ERROR:"
+                        puts Styles::FAILURE["NPM ERROR:"]
                         puts(result.stderr.lines.map { |line| line.prepend("    ") })
                       end
                     end
                   end
 
-                  puts "Running hanami install..."
+                  puts Styles::EMPHASIS["Running hanami install..."]
                   run_install_command!(head: head)
 
-                  puts "Running bundle binstubs hanami-cli rake..."
+                  puts Styles::EMPHASIS["Running bundle binstubs hanami-cli rake..."]
                   install_binstubs!
 
                   unless skip_git
-                    puts "Initializing git repository..."
+                    puts Styles::EMPHASIS["Initializing git repository..."]
                     init_git_repository
                   end
                 end
@@ -224,7 +226,7 @@ module Hanami
           def init_git_repository
             system_call.call("git", ["init"]).tap do |result|
               unless result.successful?
-                puts "WARNING: Failed to initialize git repository"
+                puts Styles::WARNING["WARNING: Failed to initialize git repository"]
                 puts(result.stderr.lines.map { |line| line.prepend("    ") })
               end
             end

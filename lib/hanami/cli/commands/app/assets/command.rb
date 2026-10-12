@@ -40,13 +40,13 @@ module Hanami
               slices = slices_with_assets
 
               if slices.empty?
-                puts "No assets found."
+                puts Styles::MUTED["No assets found."]
                 return
               end
 
               slices.each do |slice|
                 unless assets_config(slice)
-                  puts "No assets config found for #{slice}. Please create a config/assets.js."
+                  puts Styles::WARNING["No assets config found for #{slice}. Please create a config/assets.js."]
                   return # rubocop:disable Lint/NonLocalExitFromIterator
                 end
               end

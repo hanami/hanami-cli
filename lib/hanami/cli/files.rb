@@ -11,7 +11,7 @@ module Hanami
       # @api private
       def initialize(stdout: $stdout, **args)
         super(**args)
-        @stdout = stdout
+        @stdout = Dry::CLI::Stream.for(stdout)
       end
 
       # @api private
@@ -90,15 +90,15 @@ module Hanami
       end
 
       def updated(path)
-        stdout.puts "Updated #{path}"
+        stdout.puts Styles::CHANGED["Updated"] + " #{path}"
       end
 
       def created(path)
-        stdout.puts "Created #{path}"
+        stdout.puts Styles::SUCCESS["Created"] + " #{path}"
       end
 
       def within_folder(path)
-        stdout.puts "-> Within #{dir_path(path)}"
+        stdout.puts Styles::MUTED["-> Within #{dir_path(path)}"]
       end
 
       def dir_path(path)
