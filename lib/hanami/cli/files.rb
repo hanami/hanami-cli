@@ -7,6 +7,10 @@ module Hanami
     # @since 2.0.0
     # @api private
     class Files < Dry::Files
+      # @api private
+      REPORT_VERB_WIDTH = 8
+      private_constant :REPORT_VERB_WIDTH
+
       # @since 2.0.0
       # @api private
       def initialize(stdout: $stdout, **args)
@@ -90,15 +94,23 @@ module Hanami
       end
 
       def updated(path)
-        stdout.puts Styles::CHANGED["Updated"] + " #{path}"
+        report(Styles::CHANGED["update"], path)
       end
 
       def created(path)
-        stdout.puts Styles::SUCCESS["Created"] + " #{path}"
+        report(Styles::SUCCESS["create"], path)
       end
 
       def within_folder(path)
-        stdout.puts Styles::MUTED["-> Within #{dir_path(path)}"]
+        report(Styles::MUTED["within"], dir_path(path))
+      end
+
+      # Prints a line for a change to a path, with its verb right-aligned so the paths line up:
+      #
+      #     create  app/actions/books/index.rb
+      #     update  config/routes.rb
+      def report(verb, path)
+        stdout.puts verb.rjust(REPORT_VERB_WIDTH) + "  #{path}"
       end
 
       def dir_path(path)

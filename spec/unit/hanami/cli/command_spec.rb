@@ -36,7 +36,7 @@ RSpec.describe Hanami::CLI::Command do
       # Calling the reporter directly keeps this about the wiring, with no file system to clean up
       described_class.new(stdout:).fs.send(:created, "some/file.rb")
 
-      expect(stdout.string).to eq "Created some/file.rb\n"
+      expect(stdout.string).to eq "  create  some/file.rb\n"
     end
   end
 

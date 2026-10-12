@@ -36,7 +36,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Part, :app do
           EXPECTED
 
           expect(fs.read("app/views/part.rb")).to eq(base_part)
-          expect(output).to include("Created app/views/part.rb")
+          expect(output).to include("create  app/views/part.rb")
 
           # part
           part = <<~EXPECTED
@@ -54,7 +54,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Part, :app do
           EXPECTED
 
           expect(fs.read("app/views/parts/user.rb")).to eq(part)
-          expect(output).to include("Created app/views/parts/user.rb")
+          expect(output).to include("create  app/views/parts/user.rb")
         end
       end
 
@@ -110,10 +110,10 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Part, :app do
           EXPECTED
 
           expect(fs.read("app/views/parts/user.rb")).to eq(part)
-          expect(output).to include("Created app/views/parts/user.rb")
+          expect(output).to include("create  app/views/parts/user.rb")
 
           # This is still printed because the fs.write above still prints
-          # expect(output).to_not include("Created app/views/part.rb")
+          # expect(output).to_not include("create  app/views/part.rb")
         end
       end
     end
@@ -140,7 +140,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Part, :app do
           EXPECTED
 
           expect(fs.read("app/views/part.rb")).to eq(app_base_part)
-          expect(output).to include("Created app/views/part.rb")
+          expect(output).to include("create  app/views/part.rb")
 
           # base_part
           base_part = <<~EXPECTED
@@ -156,7 +156,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Part, :app do
           EXPECTED
 
           expect(fs.read("slices/main/views/part.rb")).to eq(base_part)
-          expect(output).to include("Created slices/main/views/part.rb")
+          expect(output).to include("create  slices/main/views/part.rb")
 
           # part
           part = <<~EXPECTED
@@ -174,7 +174,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Part, :app do
           EXPECTED
 
           expect(fs.read("slices/main/views/parts/user.rb")).to eq(part)
-          expect(output).to include("Created slices/main/views/parts/user.rb")
+          expect(output).to include("create  slices/main/views/parts/user.rb")
         end
       end
     end
@@ -216,10 +216,10 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Part, :app do
           EXPECTED
 
           expect(fs.read("slices/main/views/parts/user.rb")).to eq(part)
-          expect(output).to include("Created slices/main/views/parts/user.rb")
+          expect(output).to include("create  slices/main/views/parts/user.rb")
 
           # This is still printed because the fs.write above still prints
-          # expect(output).to_not include("Created slices/main/views/part.rb")
+          # expect(output).to_not include("create  slices/main/views/part.rb")
         end
       end
     end

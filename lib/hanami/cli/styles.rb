@@ -11,7 +11,7 @@ module Hanami
     # Styles render only when written to a terminal. Output sent to a file or a pipe stays plain.
     #
     # Keep styled text unrendered until it reaches a stream: start with the styled part and join
-    # with `+` (`SUCCESS["Created"] + " #{path}"`), instead of interpolating it into a string.
+    # with `+` (`SUCCESS["✓"] + " #{desc}"`), instead of interpolating it into a string.
     #
     # @see Dry::CLI::Style
     #

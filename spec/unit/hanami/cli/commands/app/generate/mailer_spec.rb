@@ -33,13 +33,13 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Mailer, :app do
         EXPECTED
 
         expect(fs.read("app/mailers/welcome.rb")).to eq(mailer_file)
-        expect(output).to include("Created app/mailers/welcome.rb")
+        expect(output).to include("create  app/mailers/welcome.rb")
 
         expect(fs.read("app/templates/mailers/welcome.html.erb")).to eq("<h1>Test::Mailers::Welcome</h1>\n")
-        expect(output).to include("Created app/templates/mailers/welcome.html.erb")
+        expect(output).to include("create  app/templates/mailers/welcome.html.erb")
 
         expect(fs.read("app/templates/mailers/welcome.text.erb")).to eq("Test::Mailers::Welcome\n")
-        expect(output).to include("Created app/templates/mailers/welcome.text.erb")
+        expect(output).to include("create  app/templates/mailers/welcome.text.erb")
       end
     end
 
@@ -69,7 +69,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Mailer, :app do
         EXPECTED
 
         expect(fs.read("app/mailers/notifications/welcome.rb")).to eq(mailer_file)
-        expect(output).to include("Created app/mailers/notifications/welcome.rb")
+        expect(output).to include("create  app/mailers/notifications/welcome.rb")
 
         expect(fs.directory?("app/templates/mailers/notifications")).to be(true)
         expect(fs.read("app/templates/mailers/notifications/welcome.html.erb"))
@@ -114,7 +114,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Mailer, :app do
           subject.call(name: "welcome")
 
           expect(fs.read("app/templates/mailers/welcome.html.slim")).to eq("h1 Test::Mailers::Welcome\n")
-          expect(output).to include("Created app/templates/mailers/welcome.html.slim")
+          expect(output).to include("create  app/templates/mailers/welcome.html.slim")
         end
       end
 
@@ -123,7 +123,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Mailer, :app do
           subject.call(name: "welcome", template_engine: "haml")
 
           expect(fs.read("app/templates/mailers/welcome.html.haml")).to eq("%h1 Test::Mailers::Welcome\n")
-          expect(output).to include("Created app/templates/mailers/welcome.html.haml")
+          expect(output).to include("create  app/templates/mailers/welcome.html.haml")
         end
       end
     end
@@ -176,7 +176,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Mailer, :app do
       it "overwrites the mailer file" do
         within_application_directory do
           subject.call(name: "welcome", force: true)
-          expect(output).to include("Created #{mailer_file_path}")
+          expect(output).to include("create  #{mailer_file_path}")
           expect(fs.read(mailer_file_path)).to include("class Welcome < Test::Mailer")
         end
       end
@@ -184,7 +184,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Mailer, :app do
       it "overwrites the template file" do
         within_application_directory do
           subject.call(name: "welcome", force: true)
-          expect(output).to include("Created #{template_file_path}")
+          expect(output).to include("create  #{template_file_path}")
           expect(fs.read(template_file_path)).to eq("<h1>Test::Mailers::Welcome</h1>\n")
         end
       end
@@ -209,7 +209,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Mailer, :app do
         EXPECTED
 
         expect(fs.read("slices/main/mailers/welcome.rb")).to eq(mailer_file)
-        expect(output).to include("Created slices/main/mailers/welcome.rb")
+        expect(output).to include("create  slices/main/mailers/welcome.rb")
 
         expect(fs.read("slices/main/templates/mailers/welcome.html.erb")).to eq("<h1>Main::Mailers::Welcome</h1>\n")
         expect(fs.read("slices/main/templates/mailers/welcome.text.erb")).to eq("Main::Mailers::Welcome\n")
