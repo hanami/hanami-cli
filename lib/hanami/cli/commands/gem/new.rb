@@ -111,6 +111,8 @@ module Hanami
             @system_call = system_call
           end
 
+          # rubocop:disable Metrics/AbcSize
+
           def call(
             app:,
             head: HEAD_DEFAULT,
@@ -133,6 +135,8 @@ module Hanami
             raise ForbiddenAppNameError.new(app) if FORBIDDEN_APP_NAMES.include?(app)
 
             normalized_database ||= normalize_database(database)
+
+            start = monotonic_time
 
             fs.mkdir(directory)
             fs.chdir(directory) do
@@ -160,7 +164,10 @@ module Hanami
                 end
               end
             end
+
+            print_next_steps(directory, start:) unless skip_install
           end
+          # rubocop:enable Metrics/AbcSize
 
           private
 
@@ -206,6 +213,26 @@ module Hanami
           # @api private
           def install_binstubs!
             bundler.bundle("binstubs hanami-cli rake")
+          end
+
+          # Prints how long the app took to create (since `start`), then the commands to start
+          # working on it. These match the "Getting started" steps in the app's README.
+          #
+          # @api private
+          def print_next_steps(directory, start:)
+            seconds = monotonic_time - start
+
+            puts
+            puts Styles::ACCENT["🌸 Your new Hanami app is ready!"] + " " + Styles::MUTED[format("(%.1fs)", seconds)]
+            puts
+            puts Styles::EMPHASIS["  cd #{directory}"]
+            puts Styles::EMPHASIS["  bin/setup"]
+            puts Styles::EMPHASIS["  bin/dev"]
+            puts
+            puts "View your app at http://localhost:2300"
+            puts
+            puts "📚 Learn more   https://hanakai.org/learn/hanami"
+            puts "💬 Join us      https://hanakai.org/community"
           end
         end
       end
