@@ -67,7 +67,7 @@ module Hanami
               if Hanami.bundled?("hanami-db")
                 prefix.register "migration", Generate::Migration
                 prefix.register "relation", Generate::Relation
-                prefix.register "repo", Generate::Repo
+                prefix.register "repo", Generate::Repo, aliases: ["repository"]
                 prefix.register "struct", Generate::Struct
               end
             end
