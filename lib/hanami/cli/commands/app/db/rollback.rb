@@ -13,8 +13,12 @@ module Hanami
 
             argument :steps, desc: "Number of migrations to rollback", required: false
             option :target, desc: "Target migration number", aliases: ["-t"]
-            option :dump, desc: "Dump structure after rolling back", default: true
             option :gateway, required: false, desc: "Use database for gateway"
+            option :dump,
+              required: false,
+              type: :boolean,
+              default: true,
+              desc: "Dump the database structure after migrating"
 
             # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
             def call(
