@@ -12,7 +12,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Utils::Postgres do
   }
 
   let(:database_uri) {
-    Struct.new(:host, :port, :user, :password).new(host, port, user, password)
+    Struct.new(:host, :port, :user, :password, :query).new(host, port, user, password, query)
   }
 
   before do
@@ -24,6 +24,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Utils::Postgres do
     let(:port) { 5433 }
     let(:user) { "hanami" }
     let(:password) { "secret" }
+    let(:query) { nil }
 
     it "uses connection values from the database URL" do
       expect(database.send(:cli_env_vars)).to eq(
@@ -32,6 +33,31 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Utils::Postgres do
         "PGUSER" => "hanami",
         "PGPASSWORD" => "secret"
       )
+    end
+
+    context "when the user and password are percent-encoded" do
+      let(:user) { "app%40corp" }
+      let(:password) { "p%40ss%3Aw%2F0rd+%25" }
+
+      it "decodes them" do
+        expect(database.send(:cli_env_vars)).to include(
+          "PGUSER" => "app@corp",
+          "PGPASSWORD" => "p@ss:w/0rd+%"
+        )
+      end
+    end
+
+    context "when the user and password are percent-encoded query params" do
+      let(:user) { nil }
+      let(:password) { nil }
+      let(:query) { "user=app%40corp&password=p%40ss%3Aw%2F0rd%25" }
+
+      it "decodes them" do
+        expect(database.send(:cli_env_vars)).to include(
+          "PGUSER" => "app@corp",
+          "PGPASSWORD" => "p@ss:w/0rd%"
+        )
+      end
     end
 
     context "when the database URL has blank values" do
