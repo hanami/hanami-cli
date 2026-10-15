@@ -49,6 +49,7 @@ and this project adheres to [Break Versioning](https://www.taoensso.com/break-ve
 
     For example, `hanami generate action books.index` in an app named `Books` generates `Books::Actions::Books::Index`, whose `Books::Action` superclass previously resolved to the nested `Books::Actions::Books` module rather than the top-level app class. The superclass is now written as `::Books::Action` so it resolves correctly. 
 - Avoid loading user config when running Postgres CLI commands, to ensure command output is in the expected format. (@mddelk in #437)
+- Decode percent-encoded DB user and password for CLI tools (@aaronmallen #457)
 
 ### Security
 
