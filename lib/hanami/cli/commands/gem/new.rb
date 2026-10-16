@@ -138,7 +138,9 @@ module Hanami
 
             start = monotonic_time
 
-            fs.mkdir(directory)
+            # This heading stands in for the directory's own "create" line
+            heading("Creating #{directory}/")
+            fs.mkdir(directory, report: false)
             fs.chdir(directory) do
               context = Generators::Context.new(
                 inflector,
@@ -156,6 +158,7 @@ module Hanami
               )
               generator.call(app, context: context) do
                 if skip_install
+                  puts
                   puts Styles::WARNING[
                     "Skipping installation, please enter `#{app}' directory and run `bundle exec hanami install'"
                   ]
@@ -192,6 +195,8 @@ module Hanami
           #
           # @api private
           def install(head:, skip_assets:, skip_git:)
+            heading("Installing")
+
             step("bundle install") { bundler.install! }
             step("npm install") { system_call.call("npm", ["install"]) } unless skip_assets
             step("hanami install") { run_install_command!(head:) }
@@ -213,6 +218,15 @@ module Hanami
           # @api private
           def install_binstubs!
             bundler.bundle("binstubs hanami-cli rake")
+          end
+
+          # Prints a heading for the output that follows it. The blank line above sets it apart from
+          # the output before it, or from the command the user typed.
+          #
+          # @api private
+          def heading(text)
+            puts
+            puts Styles::EMPHASIS[text]
           end
 
           # Prints how long the app took to create (since `start`), then the commands to start

@@ -108,8 +108,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
     subject.call(app: app, **kwargs)
 
     expect(fs.directory?(app)).to be(true)
-    expect(output).to include("create  #{app}/")
-    expect(output).to include("within  #{app}/")
+    expect(output).to include("Creating #{app}/")
     expect(output).to include("  ✓ bundle install")
     expect(output).to include("  ✓ npm install")
     expect(output).to include("  ✓ hanami install")
@@ -799,8 +798,7 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
       subject.call(app: app, **kwargs)
 
       expect(fs.directory?(app)).to be(true)
-      expect(output).to include("create  #{app}/")
-      expect(output).to include("within  #{app}/")
+      expect(output).to include("Creating #{app}/")
       expect(output).to include("  ✓ bundle install")
       expect(output).to include("  ✓ npm install")
       expect(output).to include("  ✓ hanami install")

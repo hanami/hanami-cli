@@ -41,20 +41,16 @@ module Hanami
         end
       end
 
+      # Pass `report: false` to make the directory without printing it, such as when a command has
+      # already printed its own heading for the directory.
+      #
       # @since 2.0.0
       # @api private
-      def mkdir(path)
+      def mkdir(path, report: true)
         return if exist?(path)
 
-        super
-        created(dir_path(path))
-      end
-
-      # @since 2.0.0
-      # @api private
-      def chdir(path, &blk)
-        within_folder(path)
-        super
+        super(path)
+        created(dir_path(path)) if report
       end
 
       def touch(path)
@@ -99,10 +95,6 @@ module Hanami
 
       def created(path)
         report(Styles::SUCCESS["create"], path)
-      end
-
-      def within_folder(path)
-        report(Styles::MUTED["within"], dir_path(path))
       end
 
       # Prints a line for a change to a path, with its verb right-aligned so the paths line up:
