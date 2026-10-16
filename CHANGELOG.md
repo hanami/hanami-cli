@@ -35,6 +35,7 @@ and this project adheres to [Break Versioning](https://www.taoensso.com/break-ve
     ```
 - `Hanami::CLI::SystemCall#call` takes optional `stdout:` and `stderr:` streams, plus an `out_prefix:`. When given, the command's output is written to these streams line by line as it arrives, instead of being captured. (@timriley)
 - `Hanami::CLI::SystemCall::Result#out` and `#err` are now `#stdout` and `#stderr`. These return strings of the captured output, or `nil` when output was written to a given stream instead. (@timriley)
+- App commands now receive arguments based on their `#call` params, consistent with standard Dry CLI 2.0 commands. They no longer need a `**` catch-all for params they don't use, such as `env:`, or params that other gems add to the same command. (@timriley in #460)
 
 ### Deprecated
 

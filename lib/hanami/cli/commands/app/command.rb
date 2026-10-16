@@ -14,6 +14,8 @@ module Hanami
         # @since 2.0.0
         # @api public
         class Command < Hanami::CLI::Command
+          option :env, desc: "App environment (development, test, production)", aliases: ["e"]
+
           # Overloads {Hanami::CLI::Commands::App::Command#call} to ensure an appropriate
           # `HANAMI_ENV` environment variable is set.
           #
@@ -23,16 +25,6 @@ module Hanami
           # @since 2.0.0
           # @api private
           module Environment
-            # @since 2.2.0
-            # @api private
-            def self.prepended(klass)
-              # This module is included each time the class is inherited from
-              # Without this check, the --env option is duplicated each time
-              unless klass.options.map(&:name).include?(:env)
-                klass.option :env, desc: "App environment (development, test, production)", aliases: ["e"]
-              end
-            end
-
             # @since 2.0.0
             # @api private
             def call(*args, **opts)
@@ -43,18 +35,23 @@ module Hanami
               ENV["HANAMI_ENV"] = hanami_env
               Hanami::Env.load
 
-              super
+              # Pass only the params that the command's own `#call` declares, as Dry::CLI would if
+              # this module's `#call` were not in the way.
+              super(*args, **Dry::CLI::Dispatch.args_for(method(:call).super_method, opts))
             rescue FileAlreadyExistsError => exception
               stderr.puts(exception.message)
               exit(1)
             end
           end
 
-          # @since 2.0.0
+          # Extends each command instance with {Environment}.
+          #
+          # This puts {Environment#call} ahead of the `#call` of every class in the command's
+          # ancestors and only once, regardless of how deep the subclassing may go.
+          #
           # @api private
-          def self.inherited(klass)
-            super
-            klass.prepend(Environment)
+          def self.new(...)
+            super.extend(Environment)
           end
 
           # Returns the Hanami app class.
