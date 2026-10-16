@@ -110,7 +110,12 @@ module Hanami
       #     create  app/actions/books/index.rb
       #     update  config/routes.rb
       def report(verb, path)
-        stdout.puts verb.rjust(REPORT_VERB_WIDTH) + "  #{path}"
+        path = path.to_s
+
+        # A `.keep` file only holds its directory in place, so it matters less than the files around it
+        path = Styles::MUTED[path] if ::File.basename(path) == ".keep"
+
+        stdout.puts verb.rjust(REPORT_VERB_WIDTH) + "  " + path
       end
 
       def dir_path(path)
