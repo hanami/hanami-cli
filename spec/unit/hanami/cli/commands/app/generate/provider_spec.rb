@@ -14,8 +14,6 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Provider, :app do
     stdout.rewind && stdout.read.chomp
   end
 
-  def error_output = stderr.string.chomp
-
   context "generating for app" do
     it "generates the provider" do
       subject.call(name: "mailers")
@@ -56,10 +54,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Provider, :app do
       it "exits with error message" do
         expect do
           subject.call(name: "mailers")
-        end.to raise_error SystemExit do |exception|
-          expect(exception.status).to eq 1
-          expect(error_output).to eq Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
-        end
+        end.to raise_error Hanami::CLI::FileAlreadyExistsError, Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
       end
 
       it "overwrites the file when --force is given" do

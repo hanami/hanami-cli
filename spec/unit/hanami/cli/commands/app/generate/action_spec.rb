@@ -19,8 +19,6 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
     stdout.rewind && stdout.read.chomp
   end
 
-  def error_output = stderr.string.chomp
-
   shared_context "with existing files" do
     before do
       allow(Hanami).to receive(:bundled?).and_call_original
@@ -77,10 +75,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
       it "exits with error message" do
         expect do
           within_application_directory { generate_action }
-        end.to raise_error SystemExit do |exception|
-          expect(exception.status).to eq 1
-          expect(error_output).to eq Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
-        end
+        end.to raise_error Hanami::CLI::FileAlreadyExistsError, Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
       end
 
       it "overwrites the file if force flag is passed" do
@@ -104,10 +99,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
       it "exits with error message" do
         expect do
           within_application_directory { generate_action }
-        end.to raise_error SystemExit do |exception|
-          expect(exception.status).to eq 1
-          expect(error_output).to eq Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
-        end
+        end.to raise_error Hanami::CLI::FileAlreadyExistsError, Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
       end
 
       it "overwrites the file if force flag is passed" do
@@ -133,10 +125,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
           within_application_directory do
             generate_action
           end
-        end.to raise_error SystemExit do |exception|
-          expect(exception.status).to eq 1
-          expect(error_output).to eq Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
-        end
+        end.to raise_error Hanami::CLI::FileAlreadyExistsError, Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
       end
 
       it "overwrites the file if force flag is passed" do

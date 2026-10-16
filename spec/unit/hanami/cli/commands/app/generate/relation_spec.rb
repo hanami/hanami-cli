@@ -8,8 +8,6 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Relation, "#call", :app_int
 
   def output = stdout.string
 
-  def error_output = stderr.string.chomp
-
   before do
     with_directory(@dir = make_tmp_directory) do
       write "config/app.rb", <<~RUBY
@@ -127,10 +125,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Relation, "#call", :app_int
       it "exits with error message" do
         expect do
           subject.call(name: "books")
-        end.to raise_error SystemExit do |exception|
-          expect(exception.status).to eq 1
-          expect(error_output).to eq Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
-        end
+        end.to raise_error Hanami::CLI::FileAlreadyExistsError, Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
       end
     end
   end
@@ -208,10 +203,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Relation, "#call", :app_int
       it "exits with error message" do
         expect do
           subject.call(name: "books", slice: "main")
-        end.to raise_error SystemExit do |exception|
-          expect(exception.status).to eq 1
-          expect(error_output).to eq Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
-        end
+        end.to raise_error Hanami::CLI::FileAlreadyExistsError, Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
       end
     end
   end

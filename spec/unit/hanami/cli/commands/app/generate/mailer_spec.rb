@@ -16,8 +16,6 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Mailer, :app do
     stdout.rewind && stdout.read.chomp
   end
 
-  def error_output = stderr.string.chomp
-
   context "generating for app" do
     it "generates a mailer in a top-level namespace" do
       within_application_directory do
@@ -142,10 +140,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Mailer, :app do
       it "exits with error message" do
         expect do
           within_application_directory { subject.call(name: "welcome") }
-        end.to raise_error SystemExit do |exception|
-          expect(exception.status).to eq 1
-          expect(error_output).to eq Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
-        end
+        end.to raise_error Hanami::CLI::FileAlreadyExistsError, Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
       end
     end
 
@@ -162,10 +157,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Mailer, :app do
         within_application_directory do
           expect do
             subject.call(name: "welcome")
-          end.to raise_error SystemExit do |exception|
-            expect(exception.status).to eq 1
-            expect(error_output).to eq Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
-          end
+          end.to raise_error Hanami::CLI::FileAlreadyExistsError, Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
         end
       end
     end
@@ -237,10 +229,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Mailer, :app do
       it "exits with error message" do
         expect do
           within_application_directory { subject.call(name: "welcome", slice: "main") }
-        end.to raise_error SystemExit do |exception|
-          expect(exception.status).to eq 1
-          expect(error_output).to eq Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
-        end
+        end.to raise_error Hanami::CLI::FileAlreadyExistsError, Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
       end
     end
   end

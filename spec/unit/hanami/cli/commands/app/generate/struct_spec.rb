@@ -10,8 +10,6 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Struct, :app do
 
   def output = stdout.string.chomp
 
-  def error_output = stderr.string.chomp
-
   context "generating for app" do
     it "generates a struct without a namespace" do
       subject.call(name: "book")
@@ -83,10 +81,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Struct, :app do
       it "exits with error message" do
         expect do
           subject.call(name: "book/published/hardcover")
-        end.to raise_error SystemExit do |exception|
-          expect(exception.status).to eq 1
-          expect(error_output).to eq Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
-        end
+        end.to raise_error Hanami::CLI::FileAlreadyExistsError, Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
       end
     end
   end
@@ -142,10 +137,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Struct, :app do
       it "exits with error message" do
         expect do
           subject.call(name: "book.draft_book", slice: "main")
-        end.to raise_error SystemExit do |exception|
-          expect(exception.status).to eq 1
-          expect(error_output).to eq Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
-        end
+        end.to raise_error Hanami::CLI::FileAlreadyExistsError, Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
       end
     end
   end
