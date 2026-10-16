@@ -38,9 +38,6 @@ module Hanami
               # Pass only the params that the command's own `#call` declares, as Dry::CLI would if
               # this module's `#call` were not in the way.
               super(*args, **Dry::CLI::Dispatch.args_for(method(:call).super_method, opts))
-            rescue FileAlreadyExistsError => exception
-              stderr.puts(exception.message)
-              exit(1)
             end
           end
 

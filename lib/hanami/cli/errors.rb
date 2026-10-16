@@ -44,8 +44,12 @@ module Hanami
       end
     end
 
+    # Raised when a file to be generated already exists.
+    #
+    # This is a `Dry::CLI::ExitError`, so the CLI prints its message to stderr and exits with 1.
+    #
     # @api public
-    class FileAlreadyExistsError < Error
+    class FileAlreadyExistsError < Dry::CLI::ExitError
       ERROR_MESSAGE = <<~ERROR.chomp
         The file `%{file_path}` could not be generated because it already exists.
       ERROR
