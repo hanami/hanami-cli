@@ -3,7 +3,7 @@
 require "hanami"
 
 RSpec.describe Hanami::CLI::Commands::App::Generate::Migration, :app do
-  subject { described_class.new(fs:) }
+  subject { described_class.new(fs:, stdout:) }
 
   let(:fs) { Hanami::CLI::Files.new(memory: true, stdout:) }
   let(:stdout) { StringIO.new }
@@ -36,21 +36,40 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Migration, :app do
         subject.call(name: "create_posts")
 
         expect(fs.read("config/db/migrate/20240713140600_create_posts.rb")).to eq migration_file_contents
-        expect(output).to eq("  create  config/db/migrate/20240713140600_create_posts.rb")
+        expect(output).to eq(<<~OUTPUT.chomp)
+          \  create  config/db/migrate/20240713140600_create_posts.rb
+          ✓ Generated migration create_posts
+        OUTPUT
       end
 
       it "generates a migration for a gateway" do
         subject.call(name: "create_posts", gateway: "extra")
 
         expect(fs.read("config/db/extra_migrate/20240713140600_create_posts.rb")).to eq migration_file_contents
-        expect(output).to eq("  create  config/db/extra_migrate/20240713140600_create_posts.rb")
+        expect(output).to eq(<<~OUTPUT.chomp)
+          \  create  config/db/extra_migrate/20240713140600_create_posts.rb
+          ✓ Generated migration create_posts
+        OUTPUT
       end
 
       it "generates a migration with underscored version of camel cased name" do
         subject.call(name: "CreatePosts")
 
         expect(fs.read("config/db/migrate/20240713140600_create_posts.rb")).to eq migration_file_contents
-        expect(output).to eq("  create  config/db/migrate/20240713140600_create_posts.rb")
+        expect(output).to eq(<<~OUTPUT.chomp)
+          \  create  config/db/migrate/20240713140600_create_posts.rb
+          ✓ Generated migration CreatePosts
+        OUTPUT
+      end
+
+      it "accepts --env, even though its #call does not declare it" do
+        # --env sets HANAMI_ENV, which would otherwise leak into later specs
+        original_hanami_env = ENV["HANAMI_ENV"]
+        subject.call(name: "create_posts", env: "test")
+
+        expect(output).to end_with("✓ Generated migration create_posts")
+      ensure
+        ENV["HANAMI_ENV"] = original_hanami_env
       end
 
       it "raises an error if given an invalid name" do
@@ -83,21 +102,30 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Migration, :app do
         subject.call(name: "create_posts", sql: true)
 
         expect(fs.read("config/db/migrate/20240713140600_create_posts.sql")).to eq migration_file_contents
-        expect(output).to eq("  create  config/db/migrate/20240713140600_create_posts.sql")
+        expect(output).to eq(<<~OUTPUT.chomp)
+          \  create  config/db/migrate/20240713140600_create_posts.sql
+          ✓ Generated migration create_posts
+        OUTPUT
       end
 
       it "generates a migration for a gateway" do
         subject.call(name: "create_posts", gateway: "extra", sql: true)
 
         expect(fs.read("config/db/extra_migrate/20240713140600_create_posts.sql")).to eq migration_file_contents
-        expect(output).to eq("  create  config/db/extra_migrate/20240713140600_create_posts.sql")
+        expect(output).to eq(<<~OUTPUT.chomp)
+          \  create  config/db/extra_migrate/20240713140600_create_posts.sql
+          ✓ Generated migration create_posts
+        OUTPUT
       end
 
       it "generates a migration with underscored version of camel cased name" do
         subject.call(name: "CreatePosts", sql: true)
 
         expect(fs.read("config/db/migrate/20240713140600_create_posts.sql")).to eq migration_file_contents
-        expect(output).to eq("  create  config/db/migrate/20240713140600_create_posts.sql")
+        expect(output).to eq(<<~OUTPUT.chomp)
+          \  create  config/db/migrate/20240713140600_create_posts.sql
+          ✓ Generated migration CreatePosts
+        OUTPUT
       end
 
       it "raises an error if given an invalid name" do
@@ -132,7 +160,10 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Migration, :app do
       subject.call(name: "create_posts", slice: "main")
 
       expect(fs.read("slices/main/config/db/migrate/20240713140600_create_posts.rb")).to eq migration_file_contents
-      expect(output).to eq("  create  slices/main/config/db/migrate/20240713140600_create_posts.rb")
+      expect(output).to eq(<<~OUTPUT.chomp)
+        \  create  slices/main/config/db/migrate/20240713140600_create_posts.rb
+        ✓ Generated migration create_posts
+      OUTPUT
     end
   end
 end

@@ -16,6 +16,14 @@ module Hanami
           class Command < App::Command
             option :slice, required: false, desc: "Slice name"
 
+            # Extends each command instance with {Summary}, ahead of {App::Command::Environment}.
+            #
+            # @since 3.0.0
+            # @api private
+            def self.new(...)
+              super.extend(Summary)
+            end
+
             attr_reader :generator
             private :generator
 

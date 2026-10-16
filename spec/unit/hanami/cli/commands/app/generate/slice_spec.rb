@@ -52,6 +52,9 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Slice, :app do
       expect(fs.read("config/routes.rb")).to include(routes)
       expect(output).to include("create  config/routes.rb")
 
+      # Summary
+      expect(output).to end_with("✓ Generated slice #{slice}")
+
       # Slice directory
       expect(fs.directory?("slices/#{slice}")).to be(true)
       expect(output).to include("create  slices/#{slice}/")

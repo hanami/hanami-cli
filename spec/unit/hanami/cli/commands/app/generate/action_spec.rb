@@ -76,6 +76,8 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
         expect do
           within_application_directory { generate_action }
         end.to raise_error Hanami::CLI::FileAlreadyExistsError, Hanami::CLI::FileAlreadyExistsError::ERROR_MESSAGE % {file_path:}
+
+        expect(output).not_to include("Generated")
       end
 
       it "overwrites the file if force flag is passed" do
@@ -142,6 +144,8 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
     it "generates action" do
       within_application_directory do
         subject.call(name: action_name, skip_view: true)
+
+        expect(output).to end_with("✓ Generated action #{action_name}")
 
         # Route
         routes = <<~CODE
