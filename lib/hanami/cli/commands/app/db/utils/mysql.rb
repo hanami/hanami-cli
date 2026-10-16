@@ -49,7 +49,7 @@ module Hanami
               def exec_load_command
                 exec_cli(
                   "mysql",
-                  %(--commands --execute "SET FOREIGN_KEY_CHECKS = 0; SOURCE #{structure_file}; SET FOREIGN_KEY_CHECKS = 1" --database #{escaped_name})
+                  %(--commands --init-command="SET FOREIGN_KEY_CHECKS = 0" --database #{escaped_name} < #{quoted_path(structure_file)})
                 )
               end
               # rubocop:enable Layout/LineLength

@@ -2,6 +2,7 @@
 
 require "uri"
 require "delegate"
+require "shellwords"
 
 module Hanami
   module CLI
@@ -216,6 +217,10 @@ module Hanami
               end
 
               private
+
+              def quoted_path(path)
+                Shellwords.escape(path.to_s)
+              end
 
               def database_query_params
                 @database_query_params ||= URI.decode_www_form(database_uri.query.to_s).to_h

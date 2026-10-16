@@ -57,7 +57,7 @@ module Hanami
               # @since 2.2.0
               def exec_load_command
                 system_call.call(
-                  "psql --set ON_ERROR_STOP=1 --quiet --no-psqlrc --output #{File::NULL} --file #{structure_file} #{escaped_name}",
+                  "psql --set ON_ERROR_STOP=1 --quiet --no-psqlrc --output #{File::NULL} --file #{quoted_path(structure_file)} #{escaped_name}",
                   env: cli_env_vars
                 )
               end
