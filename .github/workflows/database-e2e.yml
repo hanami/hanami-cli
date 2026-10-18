@@ -11,24 +11,41 @@ permissions:
 
 jobs:
   database-e2e:
-    name: Database E2E (${{ matrix.db }}, Ruby 4.0)
+    name: Database E2E (${{ matrix.db }}, ${{ matrix.ruby == 'jruby' && 'JRuby' || format('Ruby {0}', matrix.ruby) }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
+        ruby:
+          - "4.0"
+          - "jruby"
+        db:
+          - sqlite
+          - mysql
+          - mariadb
+          - postgres
+        exclude:
+          # MariaDB is not supported on JRuby
+          - ruby: jruby
+            db: mariadb
         # NOTE: database names carry the `_test` suffix already: with HANAMI_ENV=test, Hanami
         # maps every database URL through Hanami::DB::Testing.database_url, which appends `_test`
-        # (a no-op when the name is suffixed already). Pre-suffixing keeps DATABASE_URL and the
+        # (a no-op when the name is suffixed already). Pre-suffixing keeps E2E_DATABASE_URL and the
         # asserted names 1:1 instead of relying on the mapping implicitly.
+        #
+        # `jdbc_database_url` is the JRuby equivalent of `database_url`: JRuby connects through
+        # JDBC, so the e2e script selects it when running on JRuby.
         include:
           - db: sqlite
             database_flag: sqlite
             database_url: sqlite://db/sqlite_e2e_test.sqlite
+            jdbc_database_url: jdbc:sqlite:db/sqlite_e2e_test.sqlite
             db_name: db/sqlite_e2e_test.sqlite
             db_file: db/sqlite_e2e_test.sqlite
           - db: mysql
             database_flag: mysql
             database_url: mysql2://root:password@127.0.0.1:3307/mysql_e2e_test
+            jdbc_database_url: jdbc:mysql://127.0.0.1:3307/mysql_e2e_test?user=root&password=password
             db_name: mysql_e2e_test
             db_port: "3307"
           - db: mariadb
@@ -39,15 +56,18 @@ jobs:
           - db: postgres
             database_flag: postgres
             database_url: postgres://postgres:password@127.0.0.1:5432/postgres_e2e_test
+            jdbc_database_url: jdbc:postgresql://127.0.0.1:5432/postgres_e2e_test?user=postgres&password=password
             db_name: postgres_e2e_test
     env:
       HANAMI_ENV: test
-      DATABASE_URL: ${{ matrix.database_url }}
+      E2E_DATABASE_URL: ${{ matrix.database_url }}
+      E2E_JDBC_DATABASE_URL: ${{ matrix.jdbc_database_url }}
       E2E_DB: ${{ matrix.db }}
       E2E_DATABASE_FLAG: ${{ matrix.database_flag }}
       E2E_DB_NAME: ${{ matrix.db_name }}
       E2E_DB_PORT: ${{ matrix.db_port }}
       E2E_DB_FILE: ${{ matrix.db_file }}
+      JRUBY_OPTS: "-X+O"
     services:
       mysql:
         image: mysql:9.6.0
@@ -119,7 +139,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@0cb964fd540e0a24c900370abf38a33466142735 # zizmor: ignore[cache-poisoning]
         with:
-          ruby-version: "4.0"
+          ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
       - name: Run database E2E script
         run: bash .github/workflows/database-e2e.sh
