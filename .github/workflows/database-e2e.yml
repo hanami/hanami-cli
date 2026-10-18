@@ -67,7 +67,6 @@ jobs:
       E2E_DB_NAME: ${{ matrix.db_name }}
       E2E_DB_PORT: ${{ matrix.db_port }}
       E2E_DB_FILE: ${{ matrix.db_file }}
-      JRUBY_OPTS: "-X+O"
     services:
       mysql:
         image: mysql:9.6.0
