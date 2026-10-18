@@ -9,8 +9,8 @@ and this project adheres to [Break Versioning](https://www.taoensso.com/break-ve
 
 ### Added
 
-- Add `hanami new --skip-git` to generate an app without initializing a git repository or generating a `.gitignore`.
-  (@aaronmallen #441)
+- Add `hanami new --skip-git` to generate an app without initializing a git repository or generating a `.gitignore`. (@aaronmallen #441)
+- Proper support for MariaDB (@katafrakt in #458)
 
 ### Changed
 
