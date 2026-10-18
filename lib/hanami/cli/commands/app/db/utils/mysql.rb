@@ -10,12 +10,12 @@ module Hanami
           module Utils
             # @api private
             class Mysql < Database
-              # We need to know the executable name and what flavour is inside. These might be:
-              # * mariadb executable, which means maradb flavour
+              # We need to know the executable name and what flavor is inside. These might be:
+              # * mariadb executable, which means mariadb flavor
               # * mysql executable with MariaDB inside
-              # * otherwise we assume Oracle MySQL flavour
+              # * otherwise we assume Oracle MySQL flavor
               # @api private
-              Env = Data.define(:executable, :flavour)
+              Env = Data.define(:executable, :flavor)
 
               # @api private
               def exec_create_command
@@ -50,7 +50,7 @@ module Hanami
                                "mariadb-dump"
                              end
 
-                gtid_option = env.flavour == :oracle ? "--set-gtid-purged=off" : ""
+                gtid_option = env.flavor == :oracle ? "--set-gtid-purged=off" : ""
 
                 exec_cli(
                   executable,
@@ -62,7 +62,7 @@ module Hanami
               # @api private
               # @since 2.2.0
               def exec_load_command
-                commands_option = env.flavour == :oracle ? "--commands " : ""
+                commands_option = env.flavor == :oracle ? "--commands " : ""
 
                 exec_cli(
                   env.executable,
