@@ -1,6 +1,14 @@
 #!/bin/bash
 set -euo pipefail
 
+JRUBY=false
+if [ "$(ruby -e 'print RUBY_ENGINE')" = "jruby" ]; then
+  JRUBY=true
+  export DATABASE_URL="${E2E_JDBC_DATABASE_URL:?E2E_JDBC_DATABASE_URL must be set on JRuby}"
+else
+  export DATABASE_URL="${E2E_DATABASE_URL:?E2E_DATABASE_URL must be set}"
+fi
+
 list_tables() {
   case "$E2E_DB" in
     mysql|mariadb)
@@ -8,7 +16,7 @@ list_tables() {
         --user=root --batch --execute="SHOW TABLES FROM $E2E_DB_NAME" | tee tables.log
       ;;
     postgres)
-      psql "$DATABASE_URL" --command="\dt" | tee tables.log
+      psql "${E2E_DATABASE_URL:?E2E_DATABASE_URL must be set for $E2E_DB}" --command="\dt" | tee tables.log
       ;;
     sqlite)
       sqlite3 "${E2E_DB_FILE:?E2E_DB_FILE must be set for sqlite}" ".tables" | tee tables.log
@@ -26,6 +34,26 @@ grep -q 'gem "hanami-cli", path:' testapp/Gemfile
 # Currently we need hanami-reloader from main and dry-cli from main for app to work
 sed -i 's|^\([[:space:]]*\)gem "hanami-reloader".*|\1gem "hanami-reloader", github: "hanami/hanami-reloader", branch: "main"|' testapp/Gemfile
 echo 'gem "dry-cli", github: "dry-rb/dry-cli", branch: "main"' >> testapp/Gemfile
+
+if [ "$JRUBY" = "true" ]; then
+  case "$E2E_DATABASE_FLAG" in
+    sqlite)
+      original_gem="sqlite3"
+      jdbc_gem="jdbc-sqlite3"
+      ;;
+    postgres)
+      original_gem="pg"
+      jdbc_gem="jdbc-postgres"
+      ;;
+    mysql)
+      original_gem="mysql2"
+      jdbc_gem="jdbc-mysql"
+      ;;
+  esac
+
+  sed -i "s#^gem \"${original_gem}\"#gem \"${jdbc_gem}\"#" testapp/Gemfile
+  grep -q "gem \"${jdbc_gem}\"" testapp/Gemfile
+fi
 
 cd testapp
 bundle install
