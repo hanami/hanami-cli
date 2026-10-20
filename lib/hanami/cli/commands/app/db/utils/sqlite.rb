@@ -72,7 +72,7 @@ module Hanami
                 @name ||=
                   begin
                     raw =
-                      if database_url.start_with?("jdbc:")
+                      if Hanami::DB::DatabaseURL.jdbc?(database_url)
                         # For JDBC SQLite URIs like "jdbc:sqlite:db/app.sqlite3",
                         # we need to extract the path part after "jdbc:sqlite:"
                         # The standard URI.parse doesn't handle JDBC URIs well, so we remove the prefix manually
