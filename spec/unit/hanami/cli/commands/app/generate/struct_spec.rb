@@ -71,6 +71,43 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Struct, :app do
       expect(output).to include("Created app/structs/book/published/hardcover.rb")
     end
 
+    context "without base struct" do
+      it "generates the app base struct" do
+        subject.call(name: "book")
+
+        base_struct = <<~EXPECTED
+          # frozen_string_literal: true
+
+          require "hanami/db/struct"
+
+          module Test
+            module DB
+              class Struct < Hanami::DB::Struct
+              end
+            end
+          end
+        EXPECTED
+
+        expect(fs.read("app/db/struct.rb")).to eq(base_struct)
+        expect(output).to include("Created app/db/struct.rb")
+      end
+    end
+
+    context "with base struct" do
+      before do
+        fs.write("app/db/struct.rb", "existing base struct")
+        stdout.truncate 0
+      end
+
+      it "does not overwrite the app base struct" do
+        subject.call(name: "book")
+
+        expect(fs.read("app/db/struct.rb")).to eq("existing base struct")
+        expect(output).not_to include("Created app/db/struct.rb")
+        expect(fs.exist?("app/structs/book.rb")).to be(true)
+      end
+    end
+
     context "with existing file" do
       let(:file_path) { "app/structs/book/published/hardcover.rb" }
 
@@ -125,6 +162,47 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Struct, :app do
 
       expect(fs.read("slices/main/structs/book/draft_book.rb")).to eq(struct_file)
       expect(output).to include("Created slices/main/structs/book/draft_book.rb")
+    end
+
+    context "without base structs" do
+      it "generates the app and slice base structs" do
+        fs.mkdir("slices/main")
+        subject.call(name: "book", slice: "main")
+
+        slice_base_struct = <<~EXPECTED
+          # frozen_string_literal: true
+
+          module Main
+            module DB
+              class Struct < Test::DB::Struct
+              end
+            end
+          end
+        EXPECTED
+
+        expect(fs.read("slices/main/db/struct.rb")).to eq(slice_base_struct)
+        expect(output).to include("Created slices/main/db/struct.rb")
+        expect(fs.exist?("app/db/struct.rb")).to be(true)
+        expect(output).to include("Created app/db/struct.rb")
+      end
+    end
+
+    context "with base structs" do
+      before do
+        fs.write("app/db/struct.rb", "existing app base struct")
+        fs.write("slices/main/db/struct.rb", "existing slice base struct")
+        stdout.truncate 0
+      end
+
+      it "does not overwrite the base structs" do
+        subject.call(name: "book", slice: "main")
+
+        expect(fs.read("app/db/struct.rb")).to eq("existing app base struct")
+        expect(fs.read("slices/main/db/struct.rb")).to eq("existing slice base struct")
+        expect(output).not_to include("Created app/db/struct.rb")
+        expect(output).not_to include("Created slices/main/db/struct.rb")
+        expect(fs.exist?("slices/main/structs/book.rb")).to be(true)
+      end
     end
 
     context "with existing file" do

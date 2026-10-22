@@ -11,6 +11,7 @@ and this project adheres to [Break Versioning](https://www.taoensso.com/break-ve
 
 - Add `hanami new --skip-git` to generate an app without initializing a git repository or generating a `.gitignore`. (@aaronmallen #441)
 - Proper support for MariaDB (@katafrakt in #458)
+- Generate the app or slice base struct class (`db/struct.rb`) in `hanami generate struct` when it does not exist yet, as `hanami generate part` does for the base part. (@anyingiit in #465)
 
 ### Changed
 
