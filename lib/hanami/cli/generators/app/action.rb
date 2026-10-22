@@ -76,6 +76,16 @@ module Hanami
           PATH_SEPARATOR = "/"
           private_constant :PATH_SEPARATOR
 
+          # Matches a block written on a single line with braces, such as
+          # `slice(:main, at: "/") { root to: "home.show" }`.
+          SINGLE_LINE_BLOCK = /
+            \A(?<indent>[[:blank:]]*)
+            (?<call>.*?\))[[:blank:]]*
+            \{[[:blank:]]*(?<body>.*?)[[:blank:]]*\}
+            [[:blank:]]*\z
+          /x
+          private_constant :SINGLE_LINE_BLOCK
+
           attr_reader :fs, :inflector, :stdout, :view_generator
 
           # @api private
@@ -200,12 +210,36 @@ module Hanami
           end
 
           def add_route_to_block(file:, namespace:, route:)
-            slice_matcher = /slice[[:space:]]*:#{namespace}/
+            slice_matcher = /slice[[:space:]]*\(?[[:space:]]*:#{namespace}/
             if fs.block_contains?(file, slice_matcher, route)
               stdout.puts "Route (#{route}) already exists, skipping..."
+            elsif (content = expand_single_line_block(fs.read(file), slice_matcher, route))
+              fs.write(file, content)
             else
               fs.inject_line_at_block_bottom(file, slice_matcher, route)
             end
+          end
+
+          # Routes cannot be appended to a single-line block like `slice(:main, at: "/") { ... }`,
+          # so rewrite it as a multi-line `do ... end` block that includes the new route.
+          #
+          # Returns nil if the block matching the given matcher is not a single-line block.
+          def expand_single_line_block(content, matcher, route)
+            lines = content.lines
+            index = lines.index { |line| line.match?(matcher) }
+            return unless index
+
+            match = SINGLE_LINE_BLOCK.match(lines[index].chomp)
+            return unless match
+
+            indent = match[:indent]
+            block = ["#{indent}#{match[:call]} do\n"]
+            block << "#{indent}  #{match[:body]}\n" unless match[:body].empty?
+            block << "#{indent}  #{route}\n"
+            block << "#{indent}end\n"
+
+            lines[index] = block.join
+            lines.join
           end
         end
       end

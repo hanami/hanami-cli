@@ -52,6 +52,7 @@ and this project adheres to [Break Versioning](https://www.taoensso.com/break-ve
     For example, `hanami generate action books.index` in an app named `Books` generates `Books::Actions::Books::Index`, whose `Books::Action` superclass previously resolved to the nested `Books::Actions::Books` module rather than the top-level app class. The superclass is now written as `::Books::Action` so it resolves correctly. 
 - Avoid loading user config when running Postgres CLI commands, to ensure command output is in the expected format. (@mddelk in #437)
 - Decode percent-encoded DB user and password for CLI tools (@aaronmallen #457)
+- Fix `generate action --slice` failing to find the slice in `config/routes.rb` when the slice is declared with parentheses, such as `slice(:main, at: "/") do`, or as a single-line block, such as `slice(:main, at: "/") { root to: "home.show" }`. Single-line slice blocks are expanded into `do ... end` blocks so the new route can be added. (@anyingiit in #464, fixes hanami/hanami#1284)
 
 ### Security
 

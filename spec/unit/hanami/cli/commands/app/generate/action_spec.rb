@@ -1309,6 +1309,111 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
         end
       end
 
+      it "appends routes within the proper slice block when slice arguments use parentheses" do
+        within_application_directory do
+          prepare_slice!
+          fs.mkdir("slices/api")
+
+          routes_contents = <<~CODE
+            # frozen_string_literal: true
+
+            require "hanami/routes"
+
+            module #{app}
+              class Routes < Hanami::Routes
+                root { "Hello from Hanami" }
+
+                slice(:#{slice}, at: "/#{slice}") do
+                  root to: "home.index"
+                end
+
+                slice( :api, at: "/api" ) do
+                  root to: "home.index"
+                end
+              end
+            end
+          CODE
+          fs.write("config/routes.rb", routes_contents)
+
+          expected = <<~CODE
+            # frozen_string_literal: true
+
+            require "hanami/routes"
+
+            module #{app}
+              class Routes < Hanami::Routes
+                root { "Hello from Hanami" }
+
+                slice(:#{slice}, at: "/#{slice}") do
+                  root to: "home.index"
+                  get "/users", to: "users.index"
+                end
+
+                slice( :api, at: "/api" ) do
+                  root to: "home.index"
+                  get "/users/:id", to: "users.show"
+                end
+              end
+            end
+          CODE
+
+          subject.call(slice: slice, name: "users.index")
+          subject.call(slice: "api", name: "users.show")
+
+          expect(fs.read("config/routes.rb")).to eq(expected)
+        end
+      end
+
+      it "expands single-line slice blocks to append routes" do
+        within_application_directory do
+          prepare_slice!
+          fs.mkdir("slices/api")
+
+          routes_contents = <<~CODE
+            # frozen_string_literal: true
+
+            require "hanami/routes"
+
+            module #{app}
+              class Routes < Hanami::Routes
+                root { "Hello from Hanami" }
+
+                slice(:api, at: "/api") { root to: "home.index" }
+                slice(:#{slice}, at: "/") { root to: "home.show" }
+              end
+            end
+          CODE
+          fs.write("config/routes.rb", routes_contents)
+
+          expected = <<~CODE
+            # frozen_string_literal: true
+
+            require "hanami/routes"
+
+            module #{app}
+              class Routes < Hanami::Routes
+                root { "Hello from Hanami" }
+
+                slice(:api, at: "/api") do
+                  root to: "home.index"
+                  get "/users/:id", to: "users.show"
+                end
+                slice(:#{slice}, at: "/") do
+                  root to: "home.show"
+                  post "/subscribe", to: "home.subscribe"
+                end
+              end
+            end
+          CODE
+
+          subject.call(slice: slice, name: "home.subscribe", url_path: "/subscribe", http_method: "post")
+          subject.call(slice: "api", name: "users.show")
+
+          expect(fs.read("config/routes.rb")).to eq(expected)
+          expect(output).to include("Updated config/routes.rb")
+        end
+      end
+
       it "does not add a duplicate route to the slice block" do
         within_application_directory do
           prepare_slice!
