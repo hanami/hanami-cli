@@ -50,11 +50,9 @@ module Hanami
           # @since 2.0.0
           # @api private
           def call(format: DEFAULT_FORMAT, **)
-            require "hanami/router/inspector"
             require "hanami/prepare"
-            inspector = Hanami::Router::Inspector.new(formatter: resolve_formatter(format))
-            app.router(inspector: inspector)
-            puts inspector.call
+            routes = app.router.routes
+            puts resolve_formatter(format).call(routes)
           end
 
           private
@@ -70,10 +68,8 @@ module Hanami
           def resolve_formatter_from_hanami_router(format)
             case format
             when "human_friendly"
-              require "hanami/router/formatter/human_friendly"
               Hanami::Router::Formatter::HumanFriendly.new
             when "csv"
-              require "hanami/router/formatter/csv"
               Hanami::Router::Formatter::CSV.new
             end
           end
