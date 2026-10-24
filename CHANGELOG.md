@@ -37,6 +37,7 @@ and this project adheres to [Break Versioning](https://www.taoensso.com/break-ve
 - `Hanami::CLI::SystemCall::Result#out` and `#err` are now `#stdout` and `#stderr`. These return strings of the captured output, or `nil` when output was written to a given stream instead. (@timriley)
 - App commands now receive arguments based on their `#call` params, consistent with standard Dry CLI 2.0 commands. They no longer need a `**` catch-all for params they don't use, such as `env:`, or params that other gems add to the same command. (@timriley in #460)
 - `Hanami::CLI::FileAlreadyExistsError` is now a `Dry::CLI::ExitError`, not a `Hanami::CLI::Error`. When this is raised through a full CLI invocation, this continues to print a message and exit with 1. Any code otherwise calling these commands directly (such as tests) now get this error raised, not a full exit. (@timriley in #461)
+- `hanami routes` passes the app router's `#routes` directly to a formatter, instead of using the `Hanami::Router::Inspector` removed in hanami-router 3.1. (@timriley in #466)
 
 ### Deprecated
 
