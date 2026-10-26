@@ -10,9 +10,9 @@ mysql:
     --health-timeout 5s
     --health-retries 3
 postgres:
-  # Use postgres:14 for CLI compatibility with ubuntu-latest, currently ubuntu-22.04
-  # See https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2204-Readme.md
-  image: postgres:14
+  # Use postgres:18 for CLI compatibility with ubuntu-latest, currently ubuntu-26.04
+  # See https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2604-Readme.md
+  image: postgres:18
   env:
     POSTGRES_USER: postgres
     POSTGRES_PASSWORD: password
