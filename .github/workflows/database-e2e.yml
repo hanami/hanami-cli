@@ -91,7 +91,7 @@ jobs:
           --health-timeout 5s
           --health-retries 3
       postgres:
-        image: postgres:14
+        image: postgres:18
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: password
