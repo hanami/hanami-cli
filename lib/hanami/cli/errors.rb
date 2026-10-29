@@ -2,9 +2,14 @@
 
 module Hanami
   module CLI
+    # This is a `Dry::CLI::ExitError`, so the CLI prints its message to stderr and exits with 1.
+    #
     # @since 0.1.0
     # @api public
-    class Error < StandardError
+    class Error < Dry::CLI::ExitError
+      def initialize(message = self.class.name, exit_code: 1)
+        super
+      end
     end
 
     # @since 2.0.0
