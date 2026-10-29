@@ -119,6 +119,30 @@ module Hanami
       end
     end
 
+    # @since 3.1.0
+    # @api public
+    class HanamiDBVersionError < Error
+      def initialize(minimum_version, installed_version)
+        super(
+          "hanami-cli #{Hanami::CLI::VERSION} requires hanami-db #{minimum_version} or later, " \
+          "but #{installed_version} is installed. Please run `bundle update hanami-db`."
+        )
+      end
+    end
+
+    # Does not include the URL itself, since it may contain credentials.
+    #
+    # @since 3.1.0
+    # @api public
+    class InvalidDatabaseURLError < Error
+      def initialize(scheme)
+        super(
+          "`#{scheme}' database URL could not be parsed. " \
+          "Check it for characters that need escaping, such as in the password"
+        )
+      end
+    end
+
     # rubocop:disable Layout/LineLength
     # @since 2.2.0
     # @api public
