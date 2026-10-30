@@ -35,9 +35,10 @@ module Hanami
               ENV["HANAMI_ENV"] = hanami_env
               Hanami::Env.load
 
-              # Pass only the params that the command's own `#call` declares, as Dry::CLI would if
-              # this module's `#call` were not in the way.
-              super(*args, **Dry::CLI::Dispatch.args_for(method(:call).super_method, opts))
+              # Find the next `#call` after this wrapper, and pass only the keyword args that it
+              # accepts, as Dry CLI would if this module's `#call` were not in the way.
+              next_call = Environment.instance_method(:call).bind(self).super_method
+              super(*args, **Dry::CLI.accepted_kwargs(next_call, opts))
             end
           end
 
