@@ -17,16 +17,16 @@ module Hanami
 
           # @since 2.2.0
           # @api private
-          def call(key:, base_path:, gateway: nil, **_opts)
+          def call(key:, base_path:, gateway: nil, ext: "rb", **_opts)
             name = inflector.underscore(key)
             ensure_valid_name(name)
 
             base_path = nil if base_path == "app" # Migrations are in the root dir, not app/
             migrate_dir = gateway ? "#{gateway}_migrate" : "migrate"
 
-            path = fs.join(*[base_path, "config", "db", migrate_dir, file_name(name)].compact)
+            path = fs.join(*[base_path, "config", "db", migrate_dir, file_name(name, ext)].compact)
 
-            fs.create(path, FILE_CONTENTS)
+            fs.create(path, FILE_CONTENTS[ext])
           end
 
           private
@@ -42,14 +42,14 @@ module Hanami
             end
           end
 
-          def file_name(name)
-            "#{Time.now.strftime(VERSION_FORMAT)}_#{name}.rb"
+          def file_name(name, ext)
+            "#{Time.now.strftime(VERSION_FORMAT)}_#{name}.#{ext}"
           end
 
           VERSION_FORMAT = "%Y%m%d%H%M%S"
           private_constant :VERSION_FORMAT
 
-          FILE_CONTENTS = <<~RUBY
+          FILE_CONTENTS = {"rb" => <<~RUBY, "sql" => <<~SQL}.freeze
             # frozen_string_literal: true
 
             ROM::SQL.migration do
@@ -60,6 +60,19 @@ module Hanami
               end
             end
           RUBY
+            -- Add your migration here.
+            --
+            -- See https://hanakai.org/learn/hanami/database/migrations/ for details.
+            -- @migrate up
+            -- @begin
+            SELECT 'up SQL query';
+            -- @end
+
+            -- @migrate down
+            -- @begin
+            SELECT 'down SQL query';
+            -- @end
+          SQL
           private_constant :FILE_CONTENTS
         end
       end

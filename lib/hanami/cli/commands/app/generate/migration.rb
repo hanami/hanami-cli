@@ -10,6 +10,7 @@ module Hanami
           class Migration < Command
             argument :name, required: true, desc: "Migration name"
             option :gateway, desc: "Generate migration for gateway"
+            option :sql, type: :boolean, default: false, desc: "Generate SQL (default: Ruby)"
 
             example "create_posts",                                  "Migration for the app"
             example "add_published_at_to_posts",                     "Migration for the app"
@@ -20,20 +21,24 @@ module Hanami
               Generators::App::Migration
             end
 
-            def call(name:, slice: nil, gateway: nil)
+            def call(name:, slice: nil, gateway: nil, sql: false)
+              ext = sql ? "sql" : "rb"
+
               if slice
                 generator.call(
                   key: name,
                   namespace: slice,
                   base_path: fs.join("slices", inflector.underscore(slice)),
-                  gateway: gateway
+                  gateway: gateway,
+                  ext: ext
                 )
               else
                 generator.call(
                   key: name,
                   namespace: app.namespace,
                   base_path: "app",
-                  gateway: gateway
+                  gateway: gateway,
+                  ext: ext
                 )
               end
             end
