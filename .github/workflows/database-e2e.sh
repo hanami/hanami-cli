@@ -35,6 +35,11 @@ grep -q 'gem "hanami-cli", path:' testapp/Gemfile
 sed -i 's|^\([[:space:]]*\)gem "hanami-reloader".*|\1gem "hanami-reloader", github: "hanami/hanami-reloader", branch: "main"|' testapp/Gemfile
 echo 'gem "dry-cli", github: "dry-rb/dry-cli", branch: "main"' >> testapp/Gemfile
 
+# Use the same hanami-db as hanami-cli's own Gemfile, since hanami-cli may need unreleased hanami-db changes
+HANAMI_DB_GEM=$(grep '^gem "hanami-db"' "$GITHUB_WORKSPACE/Gemfile")
+sed -i "s|^\([[:space:]]*\)gem \"hanami-db\".*|\1$HANAMI_DB_GEM|" testapp/Gemfile
+grep -qF "$HANAMI_DB_GEM" testapp/Gemfile
+
 if [ "$JRUBY" = "true" ]; then
   case "$E2E_DATABASE_FLAG" in
     sqlite)
