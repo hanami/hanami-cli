@@ -11,6 +11,7 @@ and this project adheres to [Break Versioning](https://www.taoensso.com/break-ve
 
 - Add `hanami new --skip-git` to generate an app without initializing a git repository or generating a `.gitignore`. (@aaronmallen #441)
 - Proper support for MariaDB (@katafrakt in #458)
+- Add `--sql` flag to migration generator to use a SQL template instead of Ruby. (@alassek in #470)
 
 ### Changed
 
