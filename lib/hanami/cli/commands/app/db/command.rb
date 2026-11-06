@@ -69,21 +69,13 @@ module Hanami
               @nested_command = nested_command
             end
 
-            def run_command(klass, ...)
-              klass.new(
-                stderr:, stdin:, stdout:,
-                fs: fs,
-                system_call: system_call,
-                test_env_executor: test_env_executor,
-                nested_command: true
-              ).call(...)
-            end
-
             def nested_command?
               @nested_command
             end
 
             private
+
+            def invoke_dependencies(...) = super.merge(system_call:, test_env_executor:, nested_command: true)
 
             def databases(app: false, slice: nil, gateway: nil)
               if gateway && !app && !slice
