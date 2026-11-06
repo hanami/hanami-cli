@@ -97,6 +97,9 @@ module Hanami
 
               # Parses the URL nested in JDBC URLs (required to connect via JRuby), e.g.
               # "jdbc:postgresql://localhost/app".
+              #
+              # Needs no handling for URLs that cannot be parsed, since `.database_class` has already
+              # rejected them.
               def database_uri
                 @database_uri ||= Hanami::DB::DatabaseURL.uri(database_url)
               end
