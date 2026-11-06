@@ -35,7 +35,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Component, :app do
         EXPECTED
 
         expect(fs.read("app/operations/send_welcome_email.rb")).to eq(component)
-        expect(output).to include("Created app/operations/send_welcome_email.rb")
+        expect(output).to include("create  app/operations/send_welcome_email.rb")
       end
 
       context "with existing file" do
@@ -73,7 +73,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Component, :app do
         EXPECTED
 
         expect(fs.read("app/operations/user/mailing/send_welcome_email.rb")).to eq(component)
-        expect(output).to include("Created app/operations/user/mailing/send_welcome_email.rb")
+        expect(output).to include("create  app/operations/user/mailing/send_welcome_email.rb")
       end
 
       context "with existing file" do
@@ -110,7 +110,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Component, :app do
         EXPECTED
 
         expect(fs.read("slices/main/renderers/welcome_email.rb")).to eq(component)
-        expect(output).to include("Created slices/main/renderers/welcome_email.rb")
+        expect(output).to include("create  slices/main/renderers/welcome_email.rb")
       end
 
       context "with existing file" do
@@ -149,7 +149,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Component, :app do
         EXPECTED
 
         expect(fs.read("slices/main/renderers/user/mailing/welcome_email.rb")).to eq(component)
-        expect(output).to include("Created slices/main/renderers/user/mailing/welcome_email.rb")
+        expect(output).to include("create  slices/main/renderers/user/mailing/welcome_email.rb")
       end
 
       context "with existing file" do
@@ -190,7 +190,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Component, :app do
       EXPECTED
 
       expect(fs.read("app/operations/send_welcome_email.rb")).to eq(component)
-      expect(output).to include("Created app/operations/send_welcome_email.rb")
+      expect(output).to include("create  app/operations/send_welcome_email.rb")
     end
   end
 
@@ -208,7 +208,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Component, :app do
       EXPECTED
 
       expect(fs.read("app/create_entry.rb")).to eq(component)
-      expect(output).to include("Created app/create_entry.rb")
+      expect(output).to include("create  app/create_entry.rb")
     end
 
     context "when nested" do
@@ -227,7 +227,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Component, :app do
         EXPECTED
 
         expect(fs.read("app/services/create_entry.rb")).to eq(component)
-        expect(output).to include("Created app/services/create_entry.rb")
+        expect(output).to include("create  app/services/create_entry.rb")
       end
     end
 
@@ -247,7 +247,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Component, :app do
         EXPECTED
 
         expect(fs.read("app/services/create_entry.rb")).to eq(component)
-        expect(output).to include("Created app/services/create_entry.rb")
+        expect(output).to include("create  app/services/create_entry.rb")
       end
     end
 
@@ -267,7 +267,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Component, :app do
         EXPECTED
 
         expect(fs.read("app/services/create_entry.rb")).to eq(component)
-        expect(output).to include("Created app/services/create_entry.rb")
+        expect(output).to include("create  app/services/create_entry.rb")
       end
     end
   end

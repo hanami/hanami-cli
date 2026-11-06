@@ -12,6 +12,7 @@ and this project adheres to [Break Versioning](https://www.taoensso.com/break-ve
 - Add `hanami new --skip-git` to generate an app without initializing a git repository or generating a `.gitignore`. (@aaronmallen #441)
 - Proper support for MariaDB (@katafrakt in #458)
 - Add `--sql` flag to migration generator to use a SQL template instead of Ruby. (@alassek in #470)
+- Style CLI output in terminals (plain when piped, and `NO_COLOR` is respected). Files are listed with aligned verbs (`  create  app/action.rb`), `hanami generate` ends with a summary line, and `hanami new` groups its output under headings, shows a spinner for each install step, and ends with next steps. (@timriley)
 
 ### Changed
 

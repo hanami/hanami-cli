@@ -42,7 +42,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::View, :app do
         EXPECTED
 
         expect(fs.read("app/views/users/index.rb")).to eq(view_file)
-        expect(output).to include("Created app/views/users/index.rb")
+        expect(output).to include("create  app/views/users/index.rb")
 
         # template
         expect(fs.directory?("app/templates/users")).to be(true)
@@ -52,7 +52,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::View, :app do
         EXPECTED
 
         expect(fs.read("app/templates/users/index.html.erb")).to eq(template_file)
-        expect(output).to include("Created app/templates/users/index.html.erb")
+        expect(output).to include("create  app/templates/users/index.html.erb")
       end
     end
 
@@ -77,7 +77,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::View, :app do
         EXPECTED
 
         expect(fs.read("app/views/special/users/index.rb")).to eq(view_file)
-        expect(output).to include("Created app/views/special/users/index.rb")
+        expect(output).to include("create  app/views/special/users/index.rb")
 
         # template
         expect(fs.directory?("app/templates/special/users")).to be(true)
@@ -87,7 +87,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::View, :app do
         EXPECTED
 
         expect(fs.read("app/templates/special/users/index.html.erb")).to eq(template_file)
-        expect(output).to include("Created app/templates/special/users/index.html.erb")
+        expect(output).to include("create  app/templates/special/users/index.html.erb")
       end
     end
 
@@ -132,7 +132,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::View, :app do
           EXPECTED
 
           expect(fs.read("app/templates/users/index.html.slim")).to eq(template_file)
-          expect(output).to include("Created app/templates/users/index.html.slim")
+          expect(output).to include("create  app/templates/users/index.html.slim")
         end
       end
 
@@ -145,7 +145,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::View, :app do
           EXPECTED
 
           expect(fs.read("app/templates/users/index.html.haml")).to eq(template_file)
-          expect(output).to include("Created app/templates/users/index.html.haml")
+          expect(output).to include("create  app/templates/users/index.html.haml")
         end
       end
     end
@@ -198,7 +198,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::View, :app do
       it "overwrites the view file" do
         within_application_directory do
           subject.call(name: "users.index", force: true)
-          expect(output).to include("Created #{view_file_path}")
+          expect(output).to include("create  #{view_file_path}")
           expect(fs.read(view_file_path)).to include("class Index < Test::View")
         end
       end
@@ -206,7 +206,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::View, :app do
       it "overwrites the template file" do
         within_application_directory do
           subject.call(name: "users.index", force: true)
-          expect(output).to include("Created #{template_file_path}")
+          expect(output).to include("create  #{template_file_path}")
           expect(fs.read(template_file_path)).to eq("<h1>Test::Views::Users::Index</h1>\n")
         end
       end
@@ -234,7 +234,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::View, :app do
         EXPECTED
 
         expect(fs.read("slices/main/views/users/index.rb")).to eq(view_file)
-        expect(output).to include("Created slices/main/views/users/index.rb")
+        expect(output).to include("create  slices/main/views/users/index.rb")
 
         # template
         expect(fs.directory?("slices/main/templates/users")).to be(true)
@@ -244,7 +244,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::View, :app do
         EXPECTED
 
         expect(fs.read("slices/main/templates/users/index.html.erb")).to eq(template_file)
-        expect(output).to include("Created slices/main/templates/users/index.html.erb")
+        expect(output).to include("create  slices/main/templates/users/index.html.erb")
       end
     end
     it "allows to specify slim template engine" do

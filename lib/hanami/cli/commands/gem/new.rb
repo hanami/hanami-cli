@@ -111,7 +111,7 @@ module Hanami
             @system_call = system_call
           end
 
-          # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
+          # rubocop:disable Metrics/AbcSize
 
           def call(
             app:,
@@ -136,7 +136,11 @@ module Hanami
 
             normalized_database ||= normalize_database(database)
 
-            fs.mkdir(directory)
+            start = monotonic_time
+
+            # This heading stands in for the directory's own "create" line
+            heading("Creating #{directory}/")
+            fs.mkdir(directory, report: false)
             fs.chdir(directory) do
               context = Generators::Context.new(
                 inflector,
@@ -154,36 +158,19 @@ module Hanami
               )
               generator.call(app, context: context) do
                 if skip_install
-                  puts "Skipping installation, please enter `#{app}' directory and run `bundle exec hanami install'"
+                  puts
+                  puts Styles::WARNING[
+                    "Skipping installation, please enter `#{app}' directory and run `bundle exec hanami install'"
+                  ]
                 else
-                  puts "Running bundle install..."
-                  bundler.install!
-
-                  unless skip_assets
-                    puts "Running npm install..."
-                    system_call.call("npm", ["install"]).tap do |result|
-                      unless result.successful?
-                        puts "NPM ERROR:"
-                        puts(result.stderr.lines.map { |line| line.prepend("    ") })
-                      end
-                    end
-                  end
-
-                  puts "Running hanami install..."
-                  run_install_command!(head: head)
-
-                  puts "Running bundle binstubs hanami-cli rake..."
-                  install_binstubs!
-
-                  unless skip_git
-                    puts "Initializing git repository..."
-                    init_git_repository
-                  end
+                  install(head:, skip_assets:, skip_git:)
                 end
               end
             end
+
+            print_next_steps(directory, start:) unless skip_install
           end
-          # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity
+          # rubocop:enable Metrics/AbcSize
 
           private
 
@@ -204,6 +191,19 @@ module Hanami
             end
           end
 
+          # Installs the new app's gems and npm packages, runs `hanami install`, and initializes git.
+          #
+          # @api private
+          def install(head:, skip_assets:, skip_git:)
+            heading("Installing")
+
+            step("bundle install") { bundler.install! }
+            step("npm install") { system_call.call("npm", ["install"]) } unless skip_assets
+            step("hanami install") { run_install_command!(head:) }
+            step("bundle binstubs hanami-cli rake") { install_binstubs! }
+            step("git init") { system_call.call("git", ["init"]) } unless skip_git
+          end
+
           def run_install_command!(head:)
             head_flag = head ? " --head" : ""
             bundler.exec("hanami install#{head_flag}").tap do |result|
@@ -220,14 +220,33 @@ module Hanami
             bundler.bundle("binstubs hanami-cli rake")
           end
 
+          # Prints a heading for the output that follows it. The blank line above sets it apart from
+          # the output before it, or from the command the user typed.
+          #
           # @api private
-          def init_git_repository
-            system_call.call("git", ["init"]).tap do |result|
-              unless result.successful?
-                puts "WARNING: Failed to initialize git repository"
-                puts(result.stderr.lines.map { |line| line.prepend("    ") })
-              end
-            end
+          def heading(text)
+            puts
+            puts Styles::EMPHASIS[text]
+          end
+
+          # Prints how long the app took to create (since `start`), then the commands to start
+          # working on it. These match the "Getting started" steps in the app's README.
+          #
+          # @api private
+          def print_next_steps(directory, start:)
+            seconds = monotonic_time - start
+
+            puts
+            puts Styles::ACCENT["🌸 Your new Hanami app is ready!"] + " " + Styles::MUTED[format("(%.1fs)", seconds)]
+            puts
+            puts Styles::EMPHASIS["  cd #{directory}"]
+            puts Styles::EMPHASIS["  bin/setup"]
+            puts Styles::EMPHASIS["  bin/dev"]
+            puts
+            puts "View your app at http://localhost:2300"
+            puts
+            puts "📚 Learn more   https://hanakai.org/learn/hanami"
+            puts "💬 Join us      https://hanakai.org/community"
           end
         end
       end

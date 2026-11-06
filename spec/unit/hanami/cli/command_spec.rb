@@ -36,7 +36,36 @@ RSpec.describe Hanami::CLI::Command do
       # Calling the reporter directly keeps this about the wiring, with no file system to clean up
       described_class.new(stdout:).fs.send(:created, "some/file.rb")
 
-      expect(stdout.string).to eq "Created some/file.rb\n"
+      expect(stdout.string).to eq "  create  some/file.rb\n"
+    end
+  end
+
+  describe "#step" do
+    subject(:command) { described_class.new(stdout:, stderr:) }
+
+    let(:stdout) { StringIO.new }
+    let(:stderr) { StringIO.new }
+
+    it "prints a success line with the time taken, and returns the block's value" do
+      allow(Process).to receive(:clock_gettime).with(Process::CLOCK_MONOTONIC).and_return(10.0, 11.24)
+
+      expect(command.send(:step, "do thing") { :result }).to eq :result
+
+      expect(stdout.string).to eq "  ✓ do thing in 1.2s\n"
+    end
+
+    it "prints a failure line and the stderr when the block returns an unsuccessful system call result" do
+      result = Hanami::CLI::SystemCall::Result.new(exit_code: 1, stdout: "", stderr: "oops\n")
+
+      command.send(:step, "do thing") { result }
+
+      expect(stdout.string).to eq "  ✗ do thing\n    oops\n"
+    end
+
+    it "prints a failure line and raises again when the block raises" do
+      expect { command.send(:step, "do thing") { raise "boom" } }.to raise_error("boom")
+
+      expect(stdout.string).to eq "  ✗ do thing\n"
     end
   end
 end

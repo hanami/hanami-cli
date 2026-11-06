@@ -13,6 +13,11 @@ module Hanami
           # @since 2.0.0
           # @api private
           class Slice < App::Command
+            # @see Generate::Command.new
+            def self.new(...)
+              super.extend(Summary)
+            end
+
             argument :name, required: true, desc: "The slice name"
             option :url, required: false, type: :string, desc: "The slice URL prefix"
 

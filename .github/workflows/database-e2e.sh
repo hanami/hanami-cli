@@ -64,7 +64,7 @@ grep -q "database $E2E_DB_NAME created" create.log
 
 # Generate migration
 bundle exec hanami generate migration create_posts | tee generate.log
-grep -q "Created config/db/migrate/.*_create_posts.rb" generate.log
+grep -q "create  config/db/migrate/.*_create_posts.rb" generate.log
 MIGRATION=$(ls config/db/migrate/*_create_posts.rb)
 printf '%s\n' \
   'ROM::SQL.migration do' \

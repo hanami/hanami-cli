@@ -51,7 +51,7 @@ module Hanami
             console_engine = resolve_engine(engine, opts)
 
             if console_engine.nil?
-              stderr.puts "`#{engine}' is not bundled. Please run `bundle add #{engine}' and retry."
+              stderr.puts Styles::FAILURE["`#{engine}' is not bundled. Please run `bundle add #{engine}' and retry."]
               exit(1)
             end
 

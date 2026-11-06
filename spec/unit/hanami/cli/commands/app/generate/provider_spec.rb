@@ -33,7 +33,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Provider, :app do
       EXPECTED
 
       expect(fs.read("config/providers/mailers.rb")).to eq(provider)
-      expect(output).to include("Created config/providers/mailers.rb")
+      expect(output).to include("create  config/providers/mailers.rb")
     end
 
     it "underscores the provider name" do
@@ -41,7 +41,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Provider, :app do
 
       expect(fs.read("config/providers/error_alerting.rb"))
         .to include("Hanami.app.register_provider :error_alerting do")
-      expect(output).to include("Created config/providers/error_alerting.rb")
+      expect(output).to include("create  config/providers/error_alerting.rb")
     end
 
     context "with existing file" do
@@ -61,7 +61,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Provider, :app do
         subject.call(name: "mailers", force: true)
 
         expect(fs.read(file_path)).to include("Hanami.app.register_provider :mailers do")
-        expect(output).to include("Created config/providers/mailers.rb")
+        expect(output).to include("create  config/providers/mailers.rb")
       end
     end
   end
@@ -86,7 +86,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Provider, :app do
       EXPECTED
 
       expect(fs.read("slices/admin/config/providers/mailers.rb")).to eq(provider)
-      expect(output).to include("Created slices/admin/config/providers/mailers.rb")
+      expect(output).to include("create  slices/admin/config/providers/mailers.rb")
     end
 
     context "with missing slice" do

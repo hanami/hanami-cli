@@ -103,14 +103,14 @@ module Hanami
           # @since 2.0.0
           # @api public
           def measure(desc)
-            start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+            start = monotonic_time
             result = yield
-            stop = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+            stop = monotonic_time
 
             if result
-              puts "=> #{desc} in #{(stop - start).round(4)}s"
+              puts Styles::ACCENT["=>"] + " #{desc} " + Styles::MUTED["in #{(stop - start).round(4)}s"]
             else
-              puts "!!! => #{desc.inspect} FAILED"
+              puts Styles::FAILURE["!!! => #{desc.inspect} FAILED"]
             end
           end
         end

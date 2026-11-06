@@ -19,10 +19,10 @@ module Hanami
                 exit_codes << result.exit_code if result.respond_to?(:exit_code)
 
                 if result == true || result.successful?
-                  puts "=> database #{database.name} created"
+                  puts Styles::ACCENT["=>"] + " database #{database.name} created"
                 else
-                  puts "=> failed to create database #{database.name}"
-                  puts "#{result.stderr}\n"
+                  puts Styles::FAILURE["=> failed to create database #{database.name}"]
+                  print_failure_output(result.stderr)
                 end
               end
 

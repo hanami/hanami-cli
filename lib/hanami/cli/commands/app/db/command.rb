@@ -87,7 +87,7 @@ module Hanami
 
             def databases(app: false, slice: nil, gateway: nil)
               if gateway && !app && !slice
-                stderr.puts "When specifying --gateway, an --app or --slice must also be given"
+                stderr.puts Styles::FAILURE["When specifying --gateway, an --app or --slice must also be given"]
                 exit 1
               end
 
@@ -115,7 +115,7 @@ module Hanami
 
               if gateway
                 databases.fetch(gateway.to_sym) do
-                  stderr.puts %(No gateway "#{gateway}" in #{slice})
+                  stderr.puts Styles::FAILURE[%(No gateway "#{gateway}" in #{slice})]
                   exit 1
                 end
               else
@@ -163,13 +163,13 @@ module Hanami
             def ensure_database_slice(slice)
               return if slice.container.providers[:db]
 
-              puts "#{slice} does not have a :db provider."
+              puts Styles::FAILURE["#{slice} does not have a :db provider."]
               exit 1
             end
 
             def warn_on_misconfigured_database(database, slices) # rubocop:disable Metrics/AbcSize
               if slices.length > 1
-                puts <<~STR
+                puts Styles::WARNING[<<~STR.chomp]
                   WARNING: Database #{database.name} is configured for multiple config/db/ directories:
 
                   #{slices.map { "- " + _1.root.relative_path_from(_1.app.root).join("config", "db").to_s }.join("\n")}
@@ -182,7 +182,7 @@ module Hanami
                   .relative_path_from(database.slice.app.root)
                   .join("config", "db").to_s
 
-                puts <<~STR
+                puts Styles::WARNING[<<~STR.chomp]
                   WARNING: Database #{database.name} expects the folder #{relative_path}/ to exist but it does not.
 
                 STR

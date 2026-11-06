@@ -50,11 +50,14 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Slice, :app do
       CODE
 
       expect(fs.read("config/routes.rb")).to include(routes)
-      expect(output).to include("Created config/routes.rb")
+      expect(output).to include("create  config/routes.rb")
+
+      # Summary
+      expect(output).to end_with("✓ Generated slice #{slice}")
 
       # Slice directory
       expect(fs.directory?("slices/#{slice}")).to be(true)
-      expect(output).to include("Created slices/#{slice}/")
+      expect(output).to include("create  slices/#{slice}/")
 
       # Action
       action = <<~CODE
@@ -68,9 +71,9 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Slice, :app do
       CODE
 
       expect(fs.read("slices/#{slice}/action.rb")).to eq(action)
-      expect(output).to include("Created slices/#{slice}/action.rb")
+      expect(output).to include("create  slices/#{slice}/action.rb")
       expect(fs.read("slices/#{slice}/actions/.keep")).to eq("")
-      expect(output).to include("Created slices/#{slice}/actions/.keep")
+      expect(output).to include("create  slices/#{slice}/actions/.keep")
 
       # Relation
       relation = <<~EXPECTED
@@ -84,9 +87,9 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Slice, :app do
         end
       EXPECTED
       expect(fs.read("slices/admin/db/relation.rb")).to eq(relation)
-      expect(output).to include("Created slices/admin/db/relation.rb")
+      expect(output).to include("create  slices/admin/db/relation.rb")
       expect(fs.read("slices/admin/relations/.keep")).to eq("")
-      expect(output).to include("Created slices/admin/relations/.keep")
+      expect(output).to include("create  slices/admin/relations/.keep")
 
       # Repo
       repo = <<~EXPECTED
@@ -100,9 +103,9 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Slice, :app do
         end
       EXPECTED
       expect(fs.read("slices/admin/db/repo.rb")).to eq(repo)
-      expect(output).to include("Created slices/admin/db/repo.rb")
+      expect(output).to include("create  slices/admin/db/repo.rb")
       expect(fs.read("slices/admin/repos/.keep")).to eq("")
-      expect(output).to include("Created slices/admin/repos/.keep")
+      expect(output).to include("create  slices/admin/repos/.keep")
 
       # Struct
       struct = <<~EXPECTED
@@ -116,9 +119,9 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Slice, :app do
         end
       EXPECTED
       expect(fs.read("slices/admin/db/struct.rb")).to eq(struct)
-      expect(output).to include("Created slices/admin/db/struct.rb")
+      expect(output).to include("create  slices/admin/db/struct.rb")
       expect(fs.read("slices/admin/structs/.keep")).to eq("")
-      expect(output).to include("Created slices/admin/structs/.keep")
+      expect(output).to include("create  slices/admin/structs/.keep")
 
       view = <<~RUBY
         # auto_register: false
@@ -130,7 +133,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Slice, :app do
         end
       RUBY
       expect(fs.read("slices/#{slice}/view.rb")).to eq(view)
-      expect(output).to include("Created slices/#{slice}/view.rb")
+      expect(output).to include("create  slices/#{slice}/view.rb")
 
       mailer = <<~RUBY
         # auto_register: false
@@ -143,9 +146,9 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Slice, :app do
         end
       RUBY
       expect(fs.read("slices/#{slice}/mailer.rb")).to eq(mailer)
-      expect(output).to include("Created slices/#{slice}/mailer.rb")
+      expect(output).to include("create  slices/#{slice}/mailer.rb")
       expect(fs.read("slices/#{slice}/mailers/.keep")).to eq("")
-      expect(output).to include("Created slices/#{slice}/mailers/.keep")
+      expect(output).to include("create  slices/#{slice}/mailers/.keep")
 
       helpers = <<~RUBY
         # auto_register: false
@@ -160,7 +163,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Slice, :app do
         end
       RUBY
       expect(fs.read("slices/#{slice}/views/helpers.rb")).to eq(helpers)
-      expect(output).to include("Created slices/#{slice}/views/helpers.rb")
+      expect(output).to include("create  slices/#{slice}/views/helpers.rb")
 
       context = <<~RUBY
         # auto_register: false
@@ -175,7 +178,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Slice, :app do
         end
       RUBY
       expect(fs.read("slices/#{slice}/views/context.rb")).to eq(context)
-      expect(output).to include("Created slices/#{slice}/views/context.rb")
+      expect(output).to include("create  slices/#{slice}/views/context.rb")
 
       operation = <<~RUBY
         # auto_register: false
@@ -187,7 +190,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Slice, :app do
         end
       RUBY
       expect(fs.read("slices/#{slice}/operation.rb")).to eq(operation)
-      expect(output).to include("Created slices/#{slice}/operation.rb")
+      expect(output).to include("create  slices/#{slice}/operation.rb")
 
       layout = <<~ERB
         <!DOCTYPE html>
@@ -206,7 +209,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Slice, :app do
         </html>
       ERB
       expect(fs.read("slices/#{slice}/templates/layouts/app.html.erb")).to eq(layout)
-      expect(output).to include("Created slices/#{slice}/templates/layouts/app.html.erb")
+      expect(output).to include("create  slices/#{slice}/templates/layouts/app.html.erb")
 
       # slices/admin/config/i18n/en.yml
       i18n = <<~EXPECTED
@@ -215,14 +218,14 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Slice, :app do
           hello: "Hello"
       EXPECTED
       expect(fs.read("slices/#{slice}/config/i18n/en.yml")).to eq(i18n)
-      expect(output).to include("Created slices/#{slice}/config/i18n/en.yml")
+      expect(output).to include("create  slices/#{slice}/config/i18n/en.yml")
 
       # slices/admin/assets/js/app.js
       app_js = <<~EXPECTED
         import "../css/app.css";
       EXPECTED
       expect(fs.read("slices/#{slice}/assets/js/app.js")).to eq(app_js)
-      expect(output).to include("Created slices/#{slice}/assets/js/app.js")
+      expect(output).to include("create  slices/#{slice}/assets/js/app.js")
 
       # slices/admin/assets/css/app.css
       app_css = <<~EXPECTED
@@ -233,7 +236,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Slice, :app do
         }
       EXPECTED
       expect(fs.read("slices/#{slice}/assets/css/app.css")).to eq(app_css)
-      expect(output).to include("Created slices/#{slice}/assets/css/app.css")
+      expect(output).to include("create  slices/#{slice}/assets/css/app.css")
 
       # slices/admin/assets/images/favicon.ico
       expect(fs.exist?("slices/#{slice}/assets/images/favicon.ico")).to be(true)
@@ -270,7 +273,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Slice, :app do
   it "generates multiple slices over time" do
     within_application_directory do
       subject.call(name: "admin")
-      expect(output).to include("Created config/routes.rb")
+      expect(output).to include("create  config/routes.rb")
 
       subject.call(name: "billing")
 
@@ -294,7 +297,7 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Slice, :app do
       CODE
 
       expect(fs.read("config/routes.rb")).to eq(routes)
-      expect(output).to include("Updated config/routes.rb")
+      expect(output).to include("update  config/routes.rb")
     end
   end
 
