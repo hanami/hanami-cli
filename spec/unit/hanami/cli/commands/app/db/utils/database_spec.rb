@@ -36,10 +36,11 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Utils::Database do
 
     it "raises an error for URLs that cannot be parsed, without including the URL's credentials" do
       expect { described_class.database_class("postgres://user:se cret@localhost/app") }
-        .to raise_error(Hanami::CLI::InvalidDatabaseURLError) { |error|
+        .to raise_error(Hanami::CLI::Error) { |error|
           expect(error.message).to start_with "`postgres' database URL could not be parsed"
           expect(error.message).not_to include "cret"
-          expect(error.cause).to be_nil
+          expect(error.cause).to be_an_instance_of Hanami::DB::InvalidDatabaseURLError
+          expect(error.cause.cause).to be_nil
         }
     end
 

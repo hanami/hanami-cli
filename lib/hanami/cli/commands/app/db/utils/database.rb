@@ -37,10 +37,6 @@ module Hanami
                 }
               }.freeze
 
-              # Matches a URL's scheme, including any JDBC subprotocol, e.g. "jdbc:sqlserver"
-              DATABASE_SCHEME_MATCHER = /\A(?:jdbc:)?[a-z][a-z0-9+.-]*(?=:)/i
-              private_constant :DATABASE_SCHEME_MATCHER
-
               def self.database_class(database_url)
                 # Required here rather than at the top of this file, since every app command loads
                 # this file, including in apps that do not use hanami-db.
@@ -49,30 +45,21 @@ module Hanami
                 adapter = Hanami::DB::DatabaseURL.adapter(database_url)
 
                 DATABASE_CLASS_RESOLVER.fetch(adapter) {
-                  scheme = database_scheme(database_url)
+                  ensure_parseable(database_url)
 
-                  raise Hanami::CLI::InvalidDatabaseURLError.new(scheme) unless parseable?(database_url)
-
+                  scheme = Hanami::DB::DatabaseURL.scheme(database_url) || "(none)"
                   raise Hanami::CLI::UnsupportedDatabaseSchemeError.new(scheme)
                 }.call
               end
 
-              # Returns false when the URL cannot be parsed. Avoids raising from a `rescue`, since
-              # the URI error (whose message includes the URL) would become the new error's cause.
-              def self.parseable?(database_url)
+              # Re-raises hanami-db's error for URLs that cannot be parsed as a CLI error, so the CLI
+              # prints its message rather than a backtrace.
+              def self.ensure_parseable(database_url)
                 Hanami::DB::DatabaseURL.uri(database_url)
-                true
-              rescue URI::Error
-                false
+              rescue Hanami::DB::InvalidDatabaseURLError => exception
+                raise Hanami::CLI::Error, exception.message
               end
-              private_class_method :parseable?
-
-              # Returns the URL's scheme for use in error messages. Unlike parsing the URL, this
-              # cannot fail, and never exposes the credentials the URL may contain.
-              def self.database_scheme(database_url)
-                database_url.to_s[DATABASE_SCHEME_MATCHER] || "(none)"
-              end
-              private_class_method :database_scheme
+              private_class_method :ensure_parseable
 
               def self.from_slice(slice:, system_call:)
                 provider = slice.container.providers[:db]
