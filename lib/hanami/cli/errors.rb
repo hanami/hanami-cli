@@ -111,14 +111,6 @@ module Hanami
       end
     end
 
-    # @since 2.0.0
-    # @api public
-    class UnsupportedDatabaseSchemeError < Error
-      def initialize(scheme)
-        super("`#{scheme}' is not a supported db scheme")
-      end
-    end
-
     # rubocop:disable Layout/LineLength
     # @since 2.2.0
     # @api public

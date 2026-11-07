@@ -21,17 +21,23 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Utils::Database do
 
     it "raises an error for unsupported schemes, without including the URL's credentials" do
       expect { described_class.database_class("oracle://user:secret@localhost/app") }
-        .to raise_error(Hanami::CLI::UnsupportedDatabaseSchemeError, "`oracle' is not a supported db scheme")
+        .to raise_error(Hanami::CLI::Error, "`oracle' is not a supported database URL scheme") { |error|
+          expect(error.cause).to be_an_instance_of Hanami::DB::UnsupportedSchemeError
+        }
     end
 
     it "includes the JDBC subprotocol in the error for unsupported JDBC URLs" do
       expect { described_class.database_class("jdbc:sqlserver://localhost;user=sa;password=secret") }
-        .to raise_error(Hanami::CLI::UnsupportedDatabaseSchemeError, "`jdbc:sqlserver' is not a supported db scheme")
+        .to raise_error(Hanami::CLI::Error, "`jdbc:sqlserver' is not a supported database URL scheme") { |error|
+          expect(error.cause).to be_an_instance_of Hanami::DB::UnsupportedSchemeError
+        }
     end
 
     it "raises an error for unsupported JDBC subprotocols" do
       expect { described_class.database_class("jdbc:postgres://localhost/app") }
-        .to raise_error(Hanami::CLI::UnsupportedDatabaseSchemeError, "`jdbc:postgres' is not a supported db scheme")
+        .to raise_error(Hanami::CLI::Error, "`jdbc:postgres' is not a supported database URL scheme") { |error|
+          expect(error.cause).to be_an_instance_of Hanami::DB::UnsupportedSchemeError
+        }
     end
 
     it "raises an error for URLs that cannot be parsed, without including the URL's credentials" do
@@ -46,7 +52,9 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Utils::Database do
 
     it "raises an error for URLs without a scheme" do
       expect { described_class.database_class("db/app.sqlite3") }
-        .to raise_error(Hanami::CLI::UnsupportedDatabaseSchemeError, "`(none)' is not a supported db scheme")
+        .to raise_error(Hanami::CLI::Error, "`(none)' is not a supported database URL scheme") { |error|
+          expect(error.cause).to be_an_instance_of Hanami::DB::UnsupportedSchemeError
+        }
     end
   end
 end
