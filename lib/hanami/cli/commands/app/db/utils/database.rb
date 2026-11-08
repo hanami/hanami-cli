@@ -42,24 +42,11 @@ module Hanami
                 # this file, including in apps that do not use hanami-db.
                 require "hanami-db"
 
-                adapter = Hanami::DB::DatabaseURL.adapter(database_url)
-
-                DATABASE_CLASS_RESOLVER.fetch(adapter) {
-                  ensure_parseable(database_url)
-
-                  scheme = Hanami::DB::DatabaseURL.scheme(database_url) || "(none)"
-                  raise Hanami::CLI::UnsupportedDatabaseSchemeError.new(scheme)
-                }.call
-              end
-
-              # Re-raises hanami-db's error for URLs that cannot be parsed as a CLI error, so the CLI
-              # prints its message rather than a backtrace.
-              def self.ensure_parseable(database_url)
-                Hanami::DB::DatabaseURL.uri(database_url)
-              rescue Hanami::DB::InvalidURLError => exception
+                DATABASE_CLASS_RESOLVER.fetch(Hanami::DB::DatabaseURL.adapter!(database_url)).call
+              rescue Hanami::DB::Error => exception
+                # So the CLI prints the message rather than a backtrace
                 raise Hanami::CLI::Error, exception.message
               end
-              private_class_method :ensure_parseable
 
               def self.from_slice(slice:, system_call:)
                 provider = slice.container.providers[:db]
