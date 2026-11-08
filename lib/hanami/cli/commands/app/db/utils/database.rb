@@ -44,7 +44,7 @@ module Hanami
 
                 DATABASE_CLASS_RESOLVER.fetch(Hanami::DB::DatabaseURL.adapter!(database_url)).call
               rescue Hanami::DB::Error => exception
-                # Re-raised as a CLI error, so the CLI prints its message rather than a backtrace
+                # So the CLI prints the message rather than a backtrace
                 raise Hanami::CLI::Error, exception.message
               end
 
