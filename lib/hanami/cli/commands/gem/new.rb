@@ -128,7 +128,7 @@ module Hanami
             template_engine: TEMPLATE_ENGINE_DEFAULT,
             test: TEST_FRAMEWORK_DEFAULT
           )
-            directory = inflector.underscore(app)
+            directory = app.split("-").map { inflector.underscore(_1) }.join("-")
             app = inflector.underscore(name || app)
 
             raise PathAlreadyExistsError.new(directory) if fs.exist?(directory)
@@ -160,7 +160,7 @@ module Hanami
                 if skip_install
                   puts
                   puts Styles::WARNING[
-                    "Skipping installation, please enter `#{app}' directory and run `bundle exec hanami install'"
+                    "Skipping installation, please enter `#{directory}' directory and run `bundle exec hanami install'"
                   ]
                 else
                   install(head:, skip_assets:, skip_git:)
