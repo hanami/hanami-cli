@@ -1,4 +1,4 @@
-This library contains all of the CLI commands for [full-stack Hanami applications](`https://github.com/hanami/hanami`).
+This library contains all of the CLI commands for [full-stack Hanami applications](https://github.com/hanami/hanami).
 
 **NOTE**: For versions 0.4 and below, there was a general purpose CLI utility library with this name.
 That library has since been renamed to [dry-rb/dry-cli](https://github.com/dry-rb/dry-cli).
@@ -10,6 +10,8 @@ This library is a dependency of the main `hanami` gem, so installing that is the
 
 ## Usage
 
+Run `bundle exec hanami --help` within a Hanami app to list the available commands. See the [CLI commands guide](https://hanakai.org/learn/hanami/cli-commands) for details.
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
@@ -20,4 +22,4 @@ In order to run all of the tests, you should run `docker compose up` separately,
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/hanami/cli. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/hanami/cli/blob/main/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at https://github.com/hanami/hanami-cli. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/hanami/hanami-cli/blob/main/CODE_OF_CONDUCT.md).
