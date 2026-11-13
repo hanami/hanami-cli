@@ -461,6 +461,16 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Prepare, :app_integration do
       )
     end
 
+    it "does not re-execute the nested commands it runs" do
+      allow(command).to receive(:run_command).and_call_original
+
+      expect_exit_code(0) { command.call(env: "development") }
+
+      # A nested command re-executing would exit before Prepare reaches its final steps
+      expect(command).to have_received(:run_command).with(Hanami::CLI::Commands::App::DB::Seed, anything)
+      expect(test_env_executor).to have_received(:call).once
+    end
+
     it "does not re-execute the command when run with other environments" do
       command.call(env: "test")
       expect(test_env_executor).not_to have_received(:call)

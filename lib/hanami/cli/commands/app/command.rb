@@ -75,11 +75,11 @@ module Hanami
           # @param klass [Hanami::CLI::Command]
           # @param args [Array] any additional arguments to pass to the command's `#call` method.
           #
+          # @see Dry::CLI::Command#invoke
+          #
           # @since 2.0.0
           # @api public
-          def run_command(klass, ...)
-            klass.new(stderr:, stdin:, stdout:, fs:).call(...)
-          end
+          def run_command(klass, ...) = invoke(klass, ...)
 
           # Executes a given block and prints string to the command's `stdout` stream with details
           # of the time taken to execute.
