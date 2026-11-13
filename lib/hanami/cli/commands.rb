@@ -29,7 +29,7 @@ module Hanami
 
       # If we can't load the hanami gem, check if there is a custom path override and finally
       # fall back to a simple file check.
-      (ENV["HANAMI_APP_PATH"] && File.exist?(ENV["HANAMI_APP_PATH"])) || File.exist?("config/app.rb")
+      File.exist?(ENV.fetch("HANAMI_APP_PATH", "config/app.rb"))
     end
 
     # Contains the commands available for the current `hanami` CLI execution, depending on whether
