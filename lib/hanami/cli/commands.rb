@@ -27,8 +27,9 @@ module Hanami
       # raising errors for other missing requires.
       raise exception unless exception.path == "hanami" || exception.is_a?(Gem::LoadError)
 
-      # If we can't load the hanami gem, fall back to a simple file check.
-      File.exist?("config/app.rb")
+      # If we can't load the hanami gem, check if there is a custom path override and finally
+      # fall back to a simple file check.
+      File.exist?(ENV.fetch("HANAMI_APP_PATH", "config/app.rb"))
     end
 
     # Contains the commands available for the current `hanami` CLI execution, depending on whether
