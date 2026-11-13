@@ -19,6 +19,13 @@ RSpec.describe Hanami::CLI do
         )
       end
 
+      it "falls back to checking for HANAMI_APP_PATH envvar" do
+        with_envvars("HANAMI_APP_PATH" => "config/my_nice_app.rb") do
+          allow(File).to receive(:exist?).with("config/my_nice_app.rb").and_return(true)
+          expect(described_class.within_hanami_app?).to be true
+        end
+      end
+
       it "falls back to checking for config/app.rb" do
         allow(File).to receive(:exist?).with("config/app.rb").and_return(true)
         expect(described_class.within_hanami_app?).to be true
