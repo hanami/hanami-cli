@@ -19,10 +19,12 @@ module Hanami
             #
             # Adds `--skip-test-db` option flag
             #
-            # @since 3.0.0
+            # Also takes the `nested_command:` keyword given by {DB::Command#run_command}, so the
+            # command's own `#call` never sees it. This module is prepended to every db command, so
+            # it always runs before the command's own `#call`.
+            #
             # @api private
             module SkipTestDB
-              # @since 3.0.0
               # @api private
               def self.prepended(klass)
                 # This module is included each time the class is inherited
@@ -32,14 +34,16 @@ module Hanami
                 end
               end
 
-              # @since 3.0.0
               # @api private
-              def call(*args, **opts)
+              def call(*args, nested_command: false, **opts)
+                # Runs once per subclass level, and only the outermost is given `nested_command:`
+                @nested_command ||= nested_command
+
                 if opts[:skip_test_db]
                   ENV["HANAMI_CLI_DB_COMMAND_RE_RUN_IN_TEST"] = "false"
                 end
 
-                super
+                super(*args, **opts)
               end
             end
 
@@ -59,23 +63,32 @@ module Hanami
             # @api private
             attr_reader :test_env_executor
 
-            def initialize(
-              system_call: SystemCall.new,
-              test_env_executor: SystemCall.new,
-              nested_command: false
-            )
+            # @api private
+            private def auto_initialize(system_call: SystemCall.new, test_env_executor: SystemCall.new, **kwargs)
+              super(**kwargs)
               @system_call = system_call
               @test_env_executor = test_env_executor
-              @nested_command = nested_command
             end
 
-            def nested_command?
-              @nested_command
+            # Runs another db command, marked as nested, so that it does not re-run itself in test.
+            # This command re-runs in test instead, which runs the nested command again as part of it.
+            #
+            # The mark is given to the nested command's `#call`, since it is about this one run of the
+            # command, and is not one of its dependencies. It is not a declared option, so it cannot be
+            # given on the command line. {SkipTestDB#call} takes it before the command's own `#call`.
+            #
+            # This exists only for {#re_run_development_command_in_test}, which re-runs the whole
+            # `hanami` command line in a new process. Remove it along with that re-run, once we can
+            # reinitialize the DB subsystem for the test env in-process.
+            #
+            # @see Hanami::CLI::Commands::App::Command#run_command
+            #
+            # @api private
+            def run_command(klass, **kwargs)
+              super(klass, **kwargs, nested_command: true)
             end
 
             private
-
-            def invoke_dependencies(...) = super.merge(system_call:, test_env_executor:, nested_command: true)
 
             def databases(app: false, slice: nil, gateway: nil)
               if gateway && !app && !slice
@@ -196,10 +209,9 @@ module Hanami
               # failures when testing commands via RSpec, for which the $0 is "/full/path/to/rspec".
               return unless $0.end_with?("hanami")
 
-              # If this special env key is set, then a re-run has already been invoked. This would
-              # mean the current command is actually a nested command run by another db command. In
-              # this case, don't trigger a re-runs, because one is already in process.
-              return if nested_command?
+              # A nested command run by another db command does not re-run, because the outer command
+              # re-runs in test and runs this one again as part of that.
+              return if @nested_command
 
               # Re-runs in test are for development-env commands only.
               return unless Hanami.env == :development

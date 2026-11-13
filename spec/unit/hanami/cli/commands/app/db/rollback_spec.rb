@@ -192,7 +192,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
           expect(columns.()).to eq [:id, :title, :body]
           expect(output).to include "database db/app.sqlite3 rolled back"
           expect(output).to_not include "database db/main.sqlite3 rolled back"
-          expect(dump_command).to have_received(:call).with(hash_including(app: true, slice: nil))
+          expect(dump_command).to have_received(:call).with(hash_including(app: true))
         end
 
         it "rolls back app database only with a specified number of steps and --app flag" do
@@ -204,7 +204,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
           expect(Hanami.app["db.gateway"].connection.tables).not_to include :posts
           expect(output).to include "database db/app.sqlite3 rolled back"
           expect(output).to_not include "database db/main.sqlite3 rolled back"
-          expect(dump_command).to have_received(:call).with(hash_including(app: true, slice: nil))
+          expect(dump_command).to have_received(:call).with(hash_including(app: true))
         end
 
         it "rolls back slice database only with --slice flag" do
@@ -303,7 +303,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Rollback, :app_integration do
 
         expect(Hanami.app["db.gateways.super"].connection.tables).to include :comments
         expect(Hanami.app["db.gateways.extra"].connection.tables).to_not include :users
-        expect(dump_command).to have_received(:call).with(hash_including(app: true, slice: nil, gateway: "extra"))
+        expect(dump_command).to have_received(:call).with(hash_including(app: true, gateway: "extra"))
         expect(dump_command).to have_received(:call).once
 
         expect(output).to include "database db/app_extra.sqlite3 rolled back"

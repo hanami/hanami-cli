@@ -101,7 +101,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
         expect(Hanami.app["db.gateway"].connection.tables).to include :posts
         expect(Main::Slice["db.gateway"].connection.tables).to include :comments
 
-        expect(dump_command).to have_received(:call).with(hash_including(app: false, slice: nil))
+        expect(dump_command).to have_received(:call).with(hash_including(app: false))
         expect(dump_command).to have_received(:call).once
 
         expect(output).to include_in_order(
@@ -116,7 +116,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
         expect(Hanami.app["db.gateway"].connection.tables).to include :posts
         expect(Main::Slice["db.gateway"].connection.tables).not_to include :comments
 
-        expect(dump_command).to have_received(:call).with(hash_including(app: true, slice: nil))
+        expect(dump_command).to have_received(:call).with(hash_including(app: true))
         expect(dump_command).to have_received(:call).once
 
         expect(output).to include "database db/app.sqlite3 migrated"
@@ -178,7 +178,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
           expect(Hanami.app["db.gateways.default"].connection.tables).to include :posts
           expect(Hanami.app["db.gateways.extra"].connection.tables).to include :users
 
-          expect(dump_command).to have_received(:call).with(hash_including(app: true, slice: nil))
+          expect(dump_command).to have_received(:call).with(hash_including(app: true))
           expect(dump_command).to have_received(:call).once
 
           expect(output).to include_in_order(
@@ -193,7 +193,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
           expect(Hanami.app["db.gateways.extra"].connection.tables).to include :users
           expect(Hanami.app["db.gateways.default"].connection.tables).not_to include :posts
 
-          expect(dump_command).to have_received(:call).with(hash_including(app: true, slice: nil, gateway: "extra"))
+          expect(dump_command).to have_received(:call).with(hash_including(app: true, gateway: "extra"))
           expect(dump_command).to have_received(:call).once
 
           expect(output).to include "database db/app_extra.sqlite3 migrated in"
@@ -262,7 +262,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
         expect(Hanami.app["db.gateway"].connection.tables).to include :posts
         expect(Main::Slice["db.gateway"].connection.tables).to include :comments
 
-        expect(dump_command).to have_received(:call).with(hash_including(app: false, slice: nil))
+        expect(dump_command).to have_received(:call).with(hash_including(app: false))
         expect(dump_command).to have_received(:call).once
 
         expect(output).to include_in_order(
@@ -277,7 +277,7 @@ RSpec.describe Hanami::CLI::Commands::App::DB::Migrate, :app_integration do
         expect(Hanami.app["db.gateway"].connection.tables).to include :posts
         expect(Main::Slice["db.gateway"].connection.tables).not_to include :comments
 
-        expect(dump_command).to have_received(:call).with(hash_including(app: true, slice: nil))
+        expect(dump_command).to have_received(:call).with(hash_including(app: true))
         expect(dump_command).to have_received(:call).once
 
         expect(output).to include "database #{POSTGRES_BASE_DB_NAME}_app migrated"
