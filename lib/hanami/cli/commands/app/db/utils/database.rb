@@ -216,7 +216,7 @@ module Hanami
 
               private
 
-              def quoted_path(path)
+              def escaped_path(path)
                 Shellwords.escape(path.to_s)
               end
 

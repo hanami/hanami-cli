@@ -38,8 +38,8 @@ RSpec.describe "Database utils path quoting" do
     Shellwords.split(command)
   end
 
-  describe "#quoted_path" do
-    subject(:quoted) { database.send(:quoted_path, path) }
+  describe "#escaped_path" do
+    subject(:escaped) { database.send(:escaped_path, path) }
 
     {
       "spaces" => "/apps/My App/db/app.sqlite3",
@@ -51,7 +51,7 @@ RSpec.describe "Database utils path quoting" do
         let(:path) { raw_path }
 
         it "produces a single word the shell reads back verbatim" do
-          expect(shell_arguments(quoted)).to eq([path])
+          expect(shell_arguments(escaped)).to eq([path])
         end
       end
     end

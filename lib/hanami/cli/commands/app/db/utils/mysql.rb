@@ -66,7 +66,7 @@ module Hanami
 
                 exec_cli(
                   env.executable,
-                  %(#{commands_option}--init-command="SET FOREIGN_KEY_CHECKS = 0" --database #{escaped_name} < #{quoted_path(structure_file)})
+                  %(#{commands_option}--init-command="SET FOREIGN_KEY_CHECKS = 0" --database #{escaped_name} < #{escaped_path(structure_file)})
                 )
               end
               # rubocop:enable Layout/LineLength
