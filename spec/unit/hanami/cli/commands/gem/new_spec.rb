@@ -79,6 +79,20 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
     expect(fs.read("#{app}/config/app.rb")).to include("module #{module_name}")
   end
 
+  it "keeps hyphens in the app directory" do
+    subject.call(app: "example-project", skip_install: true)
+
+    expect(fs.directory?("example-project")).to be(true)
+    expect(fs.read("example-project/config/app.rb")).to include("module ExampleProject")
+    expect(fs.exist?("example-project/lib/example_project/types.rb")).to be(true)
+    expect(output).to include("enter `example-project' directory")
+
+    subject.call(app: "Hanami-Team", skip_install: true)
+
+    expect(fs.directory?("hanami-team")).to be(true)
+    expect(fs.read("hanami-team/config/app.rb")).to include("module HanamiTeam")
+  end
+
   it "forbids certain confusing app names" do
     %w[app slice].each do |forbidden_name|
       expect {
