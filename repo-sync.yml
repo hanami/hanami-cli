@@ -13,7 +13,7 @@ gemspec:
   homepage: "https://hanamirb.org"
   runtime_dependencies:
     - ["bundler", ">= 2.1"]
-    - ["dry-cli", "~> 1.0", ">= 1.4.0"]
+    - ["dry-cli", ">= 2.0.0.rc1", "< 3"]
     - ["dry-files", "~> 1.0", ">= 1.0.2"]
     - ["dry-inflector", "~> 1.0"]
     - ["irb"]
