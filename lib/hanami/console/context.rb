@@ -46,7 +46,15 @@ module Hanami
         print "Reloading... "
 
         started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-        app.reload
+        begin
+          app.reload
+        rescue StandardError, ScriptError
+          # Finish the line before the console prints the error. ScriptError covers a SyntaxError
+          # in a file loaded during the reload. Hanami can unload a slice that failed part way
+          # through preparing, so calling `reload` again after a fix gets back to a working app.
+          puts "failed. Fix the error, then call `reload` again."
+          raise
+        end
         elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - started
 
         puts "done (#{(elapsed * 1000).round}ms)"

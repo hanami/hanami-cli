@@ -54,6 +54,20 @@ RSpec.describe Hanami::Console::Context do
       end
     end
 
+    context "when reloading raises" do
+      let(:app) { build_app(code_reloading: true, reloadable: true) }
+
+      before do
+        def app.reload = raise(SyntaxError, "unexpected end-of-input")
+      end
+
+      it "finishes the output line, then lets the error through" do
+        expect {
+          expect { console_env.reload }.to raise_error(SyntaxError, "unexpected end-of-input")
+        }.to output("Reloading... failed. Fix the error, then call `reload` again.\n").to_stdout
+      end
+    end
+
     context "when the app has code reloading disabled" do
       let(:app) { build_app(code_reloading: false, reloadable: true) }
 
