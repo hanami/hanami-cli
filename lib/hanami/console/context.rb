@@ -38,7 +38,7 @@ module Hanami
       # @since 3.1.0
       def self.reload_app(app)
         # Either an older Hanami without in-place reloading, or an app that has it turned off.
-        unless app.respond_to?(:reload!) && app.config.code_reloading
+        unless app.respond_to?(:reload) && app.config.code_reloading
           puts "Reloading..."
           return Kernel.exec("#{$PROGRAM_NAME} console")
         end
@@ -46,7 +46,7 @@ module Hanami
         print "Reloading... "
 
         started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-        app.reload!
+        app.reload
         elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - started
 
         puts "done (#{(elapsed * 1000).round}ms)"
@@ -69,9 +69,9 @@ module Hanami
           Context.reload_app(hanami_app)
         end
 
-        # `reload!` would otherwise fall through to `Hanami.app.reload!` via #method_missing,
-        # skipping both the output above and the fallback for apps that cannot reload in place.
-        # It is a common enough thing to reach for that it should do the same as `reload`.
+        # The app has no `reload!`, so without this it would raise NoMethodError via
+        # #method_missing. It is a common enough thing to reach for, since Rails uses it, that it
+        # should do the same as `reload`.
         define_method(:reload!) do
           Context.reload_app(hanami_app)
         end

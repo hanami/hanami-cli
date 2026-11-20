@@ -5,7 +5,7 @@ RSpec.describe Hanami::Console::Context do
 
   after { Hanami::Console::Plugins::UnbootedSliceWarnings.deactivate }
 
-  # Real objects rather than doubles: the code under test asks `respond_to?(:reload!)`, which a
+  # Real objects rather than doubles: the code under test asks `respond_to?(:reload)`, which a
   # double cannot answer honestly.
   def build_app(code_reloading:, reloadable:)
     config = Class.new do
@@ -26,7 +26,7 @@ RSpec.describe Hanami::Console::Context do
       def slices = []
     end
 
-    klass.define_method(:reload!) { @reloads += 1 } if reloadable
+    klass.define_method(:reload) { @reloads += 1 } if reloadable
 
     klass.new(config)
   end
