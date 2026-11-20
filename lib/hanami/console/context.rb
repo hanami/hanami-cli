@@ -41,8 +41,7 @@ module Hanami
       # @api private
       # @since 3.1.0
       def reload_app
-        # Either an older Hanami without in-place reloading, or an app that has it turned off.
-        unless app.respond_to?(:reload) && app.config.code_reloading
+        unless app.config.code_reloading
           puts "Reloading..."
           return Kernel.exec("#{$PROGRAM_NAME} console")
         end

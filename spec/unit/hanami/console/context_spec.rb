@@ -5,9 +5,7 @@ RSpec.describe Hanami::Console::Context do
 
   after { Hanami::Console::Plugins::UnbootedSliceWarnings.deactivate }
 
-  # Real objects rather than doubles: the code under test asks `respond_to?(:reload)`, which a
-  # double cannot answer honestly.
-  def build_app(code_reloading:, reloadable:)
+  def build_app(code_reloading:)
     config = Class.new do
       def initialize(code_reloading) = @code_reloading = code_reloading
       attr_reader :code_reloading
@@ -15,7 +13,7 @@ RSpec.describe Hanami::Console::Context do
       def console = Struct.new(:extensions).new([])
     end.new(code_reloading)
 
-    klass = Class.new do
+    Class.new do
       attr_reader :config, :reloads, :slices
 
       def initialize(config)
@@ -24,15 +22,13 @@ RSpec.describe Hanami::Console::Context do
         # A hash answers `keys` and `[]`, which is all the slice readers use.
         @slices = {}
       end
-    end
 
-    klass.define_method(:reload) { @reloads += 1 } if reloadable
-
-    klass.new(config)
+      def reload = @reloads += 1
+    end.new(config)
   end
 
   describe "slice readers" do
-    let(:app) { build_app(code_reloading: true, reloadable: true) }
+    let(:app) { build_app(code_reloading: true) }
 
     it "never hides a console method of the same name" do
       app.slices.merge!(shop: :shop_slice, reload: :reload_slice)
@@ -43,8 +39,8 @@ RSpec.describe Hanami::Console::Context do
   end
 
   describe "#reload" do
-    context "when the app can reload in place" do
-      let(:app) { build_app(code_reloading: true, reloadable: true) }
+    context "when the app has code reloading enabled" do
+      let(:app) { build_app(code_reloading: true) }
 
       it "reloads the app and reports how long it took" do
         expect { console_env.reload }.to output(/Reloading\.\.\. done \(\d+ms\)/).to_stdout
@@ -79,7 +75,7 @@ RSpec.describe Hanami::Console::Context do
     end
 
     context "when reloading raises" do
-      let(:app) { build_app(code_reloading: true, reloadable: true) }
+      let(:app) { build_app(code_reloading: true) }
 
       before do
         def app.reload = raise(SyntaxError, "unexpected end-of-input")
@@ -93,22 +89,14 @@ RSpec.describe Hanami::Console::Context do
     end
 
     context "when the app has code reloading disabled" do
-      let(:app) { build_app(code_reloading: false, reloadable: true) }
+      let(:app) { build_app(code_reloading: false) }
 
       it "falls back to re-execing the console" do
         expect(Kernel).to receive(:exec).with(/console/)
 
         expect { console_env.reload }.to output(/Reloading\.\.\./).to_stdout
-      end
-    end
 
-    context "when the app predates in-place reloading" do
-      let(:app) { build_app(code_reloading: true, reloadable: false) }
-
-      it "falls back to re-execing the console" do
-        expect(Kernel).to receive(:exec).with(/console/)
-
-        expect { console_env.reload }.to output(/Reloading\.\.\./).to_stdout
+        expect(app.reloads).to eq(0)
       end
     end
   end
