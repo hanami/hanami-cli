@@ -20,8 +20,10 @@ module Hanami
         super()
         @app = app
 
+        @slice_readers = Plugins::SliceReaders.new(app)
+
         define_context_methods
-        include Plugins::SliceReaders.new(app)
+        include @slice_readers
 
         Plugins::UnbootedSliceWarnings.activate
       end
@@ -34,9 +36,11 @@ module Hanami
       # Constants captured before the reload are the exception. They still point at the classes
       # they did when they were captured, so anything held in a variable is stale afterwards.
       #
+      # A reload can add or remove slices, so the slice readers are refreshed afterwards.
+      #
       # @api private
       # @since 3.1.0
-      def self.reload_app(app)
+      def reload_app
         # Either an older Hanami without in-place reloading, or an app that has it turned off.
         unless app.respond_to?(:reload) && app.config.code_reloading
           puts "Reloading..."
@@ -57,6 +61,8 @@ module Hanami
         end
         elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - started
 
+        @slice_readers.refresh
+
         puts "done (#{(elapsed * 1000).round}ms)"
       end
 
@@ -64,6 +70,7 @@ module Hanami
 
       def define_context_methods
         hanami_app = app
+        context = self
 
         define_method(:inspect) do
           "#<#{self.class} app=#{hanami_app} env=#{hanami_app.config.env}>"
@@ -74,14 +81,14 @@ module Hanami
         end
 
         define_method(:reload) do
-          Context.reload_app(hanami_app)
+          context.reload_app
         end
 
         # The app has no `reload!`, so without this it would raise NoMethodError via
         # #method_missing. It is a common enough thing to reach for, since Rails uses it, that it
         # should do the same as `reload`.
         define_method(:reload!) do
-          Context.reload_app(hanami_app)
+          context.reload_app
         end
 
         define_method(:method_missing) do |name, *args, &block|

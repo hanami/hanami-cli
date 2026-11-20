@@ -16,14 +16,14 @@ RSpec.describe Hanami::Console::Context do
     end.new(code_reloading)
 
     klass = Class.new do
-      attr_reader :config, :reloads
+      attr_reader :config, :reloads, :slices
 
       def initialize(config)
         @config = config
         @reloads = 0
+        # A hash answers `keys` and `[]`, which is all the slice readers use.
+        @slices = {}
       end
-
-      def slices = []
     end
 
     klass.define_method(:reload) { @reloads += 1 } if reloadable
@@ -51,6 +51,19 @@ RSpec.describe Hanami::Console::Context do
         expect { console_env.reload! }.to output(/Reloading\.\.\. done/).to_stdout
 
         expect(app.reloads).to eq(1)
+      end
+
+      it "adds and removes slice readers to match the slices after the reload" do
+        app.slices[:shop] = :shop_slice
+
+        def app.reload = @slices = {admin: :admin_slice}
+
+        expect(console_env.shop).to eq(:shop_slice)
+
+        expect { console_env.reload }.to output.to_stdout
+
+        expect(console_env.admin).to eq(:admin_slice)
+        expect(console_env).not_to respond_to(:shop)
       end
     end
 
