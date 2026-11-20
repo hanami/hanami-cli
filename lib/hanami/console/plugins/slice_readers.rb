@@ -6,10 +6,7 @@ module Hanami
   module Console
     module Plugins
       # @api private
-      # @since 2.0.0
       class SliceReaders < Module
-        # @since 2.0.0
-        # @api private
         def initialize(app)
           super()
 
@@ -25,8 +22,6 @@ module Hanami
         # Call this after reloading the app, since a reload can add or remove slices. The console
         # includes this module, so the change shows up there right away.
         #
-        # @api private
-        # @since 3.1.0
         def refresh
           slice_names = @app.slices.keys.map(&:to_sym)
 
@@ -41,10 +36,16 @@ module Hanami
         def define_reader(slice_name)
           app = @app
 
-          # Looked up on each call rather than closed over, because reloading the app replaces
-          # its slice classes. Closing over the slice would leave the console handing out a class
-          # whose container had already been discarded.
-          define_method(slice_name) do
+          define_method(slice_name) do |*args, **kwargs, &block|
+            # The console object can already have a method of this name, from a user extension or
+            # from Object, like `class` or `system`. Defer to it, so the reader never hides it.
+            # Some REPL code calls these methods on the console object (Pry calls `class` and
+            # `method`, for example). Such a slice is still at `app.slices[:name]`.
+            return super(*args, **kwargs, &block) if defined?(super)
+
+            # Looked up on each call rather than closed over, because reloading the app replaces
+            # its slice classes. Closing over the slice would leave the console handing out a
+            # class whose container had already been discarded.
             app.slices[slice_name]
           end
         end

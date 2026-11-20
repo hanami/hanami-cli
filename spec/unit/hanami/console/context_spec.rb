@@ -31,6 +31,17 @@ RSpec.describe Hanami::Console::Context do
     klass.new(config)
   end
 
+  describe "slice readers" do
+    let(:app) { build_app(code_reloading: true, reloadable: true) }
+
+    it "never hides a console method of the same name" do
+      app.slices.merge!(shop: :shop_slice, reload: :reload_slice)
+
+      expect(console_env.shop).to eq(:shop_slice)
+      expect { console_env.reload }.to output(/Reloading\.\.\. done/).to_stdout
+    end
+  end
+
   describe "#reload" do
     context "when the app can reload in place" do
       let(:app) { build_app(code_reloading: true, reloadable: true) }

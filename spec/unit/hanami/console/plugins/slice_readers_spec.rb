@@ -73,4 +73,44 @@ RSpec.describe Hanami::Console::Plugins::SliceReaders do
       expect(console_env).not_to respond_to(:admin)
     end
   end
+
+  context "when a slice is named after a method every object has" do
+    before do
+      registry.reload(
+        shop: shop_before,
+        class: double("class slice"),
+        format: double("format slice"),
+        then: double("then slice")
+      )
+    end
+
+    it "defers to that method, passing on arguments and blocks" do
+      expect(console_env.class).to be(Object)
+      expect(console_env.send(:format, "%d slices", 4)).to eq("4 slices")
+      expect(console_env.then { :from_block }).to eq(:from_block)
+    end
+
+    it "still returns the slice for other names" do
+      expect(console_env.shop).to be(shop_before)
+    end
+  end
+
+  context "when a slice is named after a method further up the lookup chain" do
+    # Extended first, so it comes after the readers in method lookup, as a user's console
+    # extension does.
+    let(:extension) do
+      Module.new do
+        def reports = :reports_extension
+      end
+    end
+
+    let(:console_env) { Object.new.extend(extension).extend(slice_readers) }
+
+    before { registry.reload(shop: shop_before, reports: double("reports slice")) }
+
+    it "defers to that method" do
+      expect(console_env.reports).to eq(:reports_extension)
+      expect(console_env.shop).to be(shop_before)
+    end
+  end
 end
