@@ -33,9 +33,9 @@ module Hanami
 
             argument :name, required: true, desc: "Action name"
 
-            option :url, as: :url_path, required: false, type: :string, desc: "Action URL path"
+            option :url, required: false, type: :string, desc: "Action URL path"
 
-            option :http, as: :http_method, required: false, type: :string, desc: "Action HTTP method"
+            option :http, required: false, type: :string, desc: "Action HTTP method"
 
             option \
               :skip_view,
@@ -89,8 +89,8 @@ module Hanami
             def call(
               name:,
               slice: nil,
-              url_path: nil,
-              http_method: nil,
+              url: nil,
+              http: nil,
               skip_view: DEFAULT_SKIP_VIEW,
               skip_route: DEFAULT_SKIP_ROUTE,
               skip_tests: DEFAULT_SKIP_TESTS,
@@ -105,9 +105,9 @@ module Hanami
               super(
                 name:,
                 slice:,
-                url_path:,
+                url_path: url,
                 skip_route:,
-                http_method:,
+                http_method: http,
                 skip_view: skip_view || !Hanami.bundled?("hanami-view"),
                 skip_tests:,
                 template_engine: template_engine || default_template_engine,
