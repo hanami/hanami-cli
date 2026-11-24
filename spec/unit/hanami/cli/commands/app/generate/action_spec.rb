@@ -270,13 +270,17 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Action, :app do
       end
     end
 
-    it "reads --url and --http from the command line" do
+    it "reads --url from the command line" do
       within_application_directory do
         Dry::CLI.new(subject).call(arguments: [action_name, "--url=/people"], stdout:, stderr:)
         expect(fs.read("config/routes.rb")).to match(%(get "/people", to: "users.index"))
+      end
+    end
 
-        Dry::CLI.new(subject).call(arguments: ["users.create", "--http=delete"], stdout:, stderr:)
-        expect(fs.read("config/routes.rb")).to match(%(delete "/users", to: "users.create"))
+    it "reads --http from the command line" do
+      within_application_directory do
+        Dry::CLI.new(subject).call(arguments: [action_name, "--http=delete"], stdout:, stderr:)
+        expect(fs.read("config/routes.rb")).to match(%(delete "/users", to: "users.index"))
       end
     end
 
