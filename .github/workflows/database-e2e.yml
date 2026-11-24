@@ -136,9 +136,25 @@ jobs:
               ;;
           esac
       - name: Set up Ruby
-        uses: ruby/setup-ruby@7f797815d8adceb1c412e7abefdd1ab4abc47a5f # zizmor: ignore[cache-poisoning]
+        uses: ruby/setup-ruby@20eb24b0d509e2b9ed9b6d42ddfeb992915e0564 # v1.341.0 # zizmor: ignore[cache-poisoning]
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
+      # On JRuby, installing some gems (such as rbs) fetches their jars from Maven Central, which CI
+      # can't always reach. The jars are kept in the local Maven repository, so restoring it lets
+      # most runs skip the fetch.
+      - name: Restore Maven repository
+        if: matrix.ruby == 'jruby'
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.m2/repository
+          key: maven-jruby-${{ matrix.db }}-${{ github.run_id }}
+          restore-keys: maven-jruby-${{ matrix.db }}-
       - name: Run database E2E script
         run: bash .github/workflows/database-e2e.sh
+      - name: Save Maven repository
+        if: matrix.ruby == 'jruby' && hashFiles('testapp/Gemfile.lock') != ''
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.m2/repository
+          key: maven-jruby-${{ matrix.db }}-${{ hashFiles('testapp/Gemfile.lock') }}
