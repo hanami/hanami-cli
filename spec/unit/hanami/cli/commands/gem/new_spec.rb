@@ -380,10 +380,16 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         # frozen_string_literal: true
 
         #
-        # Environment and port
+        # Environment, host, and port
         #
-        port ENV.fetch("HANAMI_PORT", 2300)
-        environment ENV.fetch("HANAMI_ENV", "development")
+        hanami_env = ENV["HANAMI_ENV"] || ENV["APP_ENV"] || ENV["RACK_ENV"] || "development"
+        environment hanami_env
+
+        # In development, listen on localhost only, so the server isn't reachable from other machines on
+        # your network. Set HANAMI_HOST to listen on another address, such as 0.0.0.0 inside a container.
+        host = ENV["HANAMI_HOST"] unless ENV["HANAMI_HOST"].to_s.empty?
+        host ||= "localhost" if hanami_env == "development"
+        port ENV.fetch("HANAMI_PORT", 2300), host
 
         #
         # Threads within each Puma/Ruby process (aka worker)
@@ -1070,10 +1076,16 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           # frozen_string_literal: true
 
           #
-          # Environment and port
+          # Environment, host, and port
           #
-          port ENV.fetch("HANAMI_PORT", 2300)
-          environment ENV.fetch("HANAMI_ENV", "development")
+          hanami_env = ENV["HANAMI_ENV"] || ENV["APP_ENV"] || ENV["RACK_ENV"] || "development"
+          environment hanami_env
+
+          # In development, listen on localhost only, so the server isn't reachable from other machines on
+          # your network. Set HANAMI_HOST to listen on another address, such as 0.0.0.0 inside a container.
+          host = ENV["HANAMI_HOST"] unless ENV["HANAMI_HOST"].to_s.empty?
+          host ||= "localhost" if hanami_env == "development"
+          port ENV.fetch("HANAMI_PORT", 2300), host
 
           #
           # Threads within each Puma/Ruby process (aka worker)
