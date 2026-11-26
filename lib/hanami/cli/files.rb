@@ -24,6 +24,19 @@ module Hanami
         write(path, *content)
       end
 
+      # Writes the file, unless it already exists and `force` is false. In that case, leaves the
+      # file alone and reports it as skipped.
+      #
+      # Use this in place of {#create} for files that are useful but not essential to generate,
+      # such as tests, so that an existing file does not stop the generator.
+      #
+      # @api private
+      def create_or_skip(path, *content, force: false)
+        return skipped(path) if exist?(path) && !force
+
+        write(path, *content)
+      end
+
       # @since 2.0.0
       # @api private
       def write(path, *content)
@@ -96,10 +109,15 @@ module Hanami
         report(Styles::SUCCESS["create"], path)
       end
 
+      def skipped(path)
+        report(Styles::MUTED["skip"], path)
+      end
+
       # Prints a line for a change to a path, with its verb right-aligned so the paths line up:
       #
       #     create  app/actions/books/index.rb
       #     update  config/routes.rb
+      #       skip  spec/actions/books/index_spec.rb
       def report(verb, path)
         path = path.to_s
 
