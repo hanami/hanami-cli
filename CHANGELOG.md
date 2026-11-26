@@ -17,6 +17,7 @@ and this project adheres to [Break Versioning](https://www.taoensso.com/break-ve
 - Add `--no-dump` option to `hanami db rollback`, to skip dumping the database structure after rolling back. (@katafrakt in #459)
 - Add `repository` as an alias for the `repo` generator, so `hanami generate repository` works. (@sandbergja in #456)
 - Respect the `HANAMI_APP_PATH` env var when detecting the app's file and the hanami gem is not installed. (@sandbergja in #477)
+- Add `Files#create_or_skip`, for generators (such as the test generators in hanami-rspec and hanami-minitest) to leave an existing file alone and report it as `skip`, or overwrite it when `force: true` is given. (@timriley in #481)
 
 ### Changed
 
