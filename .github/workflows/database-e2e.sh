@@ -61,7 +61,17 @@ if [ "$JRUBY" = "true" ]; then
 fi
 
 cd testapp
-bundle install
+
+# Retry, since on JRuby some gems fetch their jars from Maven Central during install, which CI
+# can't always reach.
+for attempt in 1 2 3; do
+  bundle install && break
+  if [ "$attempt" -eq 3 ]; then
+    exit 1
+  fi
+  echo "bundle install failed (attempt $attempt of 3), retrying"
+  sleep 10
+done
 
 # Create database
 bundle exec hanami db create | tee create.log
