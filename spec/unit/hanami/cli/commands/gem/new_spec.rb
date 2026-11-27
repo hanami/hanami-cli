@@ -187,8 +187,9 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         gem "hanami-view", "#{hanami_version}"
 
         gem "dry-types", "~> 1.7"
-        gem "dry-operation", ">= 1.0.1"
+        gem "dry-operation", ">= 1.2.0"
         gem "dry-validation", "~> 1.11"
+        gem "dry-schema", "~> 1.17"
         gem "i18n", "~> 1.14"
         gem "puma", ">= 7.1"
         gem "rake"
@@ -628,8 +629,9 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           gem "hanami-view", github: "hanami/hanami-view", branch: "main"
 
           gem "dry-types", "~> 1.7"
-          gem "dry-operation", ">= 1.0.1"
+          gem "dry-operation", ">= 1.2.0"
           gem "dry-validation", "~> 1.11"
+          gem "dry-schema", "~> 1.17"
           gem "i18n", "~> 1.14"
           gem "puma", ">= 7.1"
           gem "rake"
@@ -698,8 +700,9 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
 
             source "https://gem.coop/@dry" do
               gem "dry-types", "~> 1.7"
-              gem "dry-operation", ">= 1.0.1"
+              gem "dry-operation", ">= 1.2.0"
               gem "dry-validation", "~> 1.11"
+              gem "dry-schema", "~> 1.17"
             end
 
             gem "i18n", "~> 1.14"
@@ -877,8 +880,9 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           gem "hanami-view", "#{hanami_version}"
 
           gem "dry-types", "~> 1.7"
-          gem "dry-operation", ">= 1.0.1"
+          gem "dry-operation", ">= 1.2.0"
           gem "dry-validation", "~> 1.11"
+          gem "dry-schema", "~> 1.17"
           gem "i18n", "~> 1.14"
           gem "puma", ">= 7.1"
           gem "rake"
