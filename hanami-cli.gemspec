@@ -32,7 +32,7 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency "bundler", ">= 2.1"
   spec.add_runtime_dependency "dry-cli", ">= 2.0.0.rc1", "< 3"
-  spec.add_runtime_dependency "dry-files", "~> 1.0", ">= 1.0.2"
+  spec.add_runtime_dependency "dry-files", "~> 1.2"
   spec.add_runtime_dependency "dry-inflector", "~> 1.0"
   spec.add_runtime_dependency "irb"
   spec.add_runtime_dependency "rake", "~> 13.0"
