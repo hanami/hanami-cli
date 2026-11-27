@@ -84,18 +84,18 @@ RSpec.describe Hanami::CLI::Commands::App::Generate::Migration, :app do
 
     context "SQL migration" do
       let(:migration_file_contents) { <<~SQL }
+        -- @migrate up
+        -- @migrate begin
         -- Add your migration here.
         --
         -- See https://hanakai.org/learn/hanami/database/migrations/ for details.
-        -- @migrate up
-        -- @begin
         SELECT 'up SQL query';
-        -- @end
+        -- @migrate end
 
         -- @migrate down
-        -- @begin
+        -- @migrate begin
         SELECT 'down SQL query';
-        -- @end
+        -- @migrate end
       SQL
 
       it "generates a migration" do

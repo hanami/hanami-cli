@@ -60,18 +60,18 @@ module Hanami
               end
             end
           RUBY
+            -- @migrate up
+            -- @migrate begin
             -- Add your migration here.
             --
             -- See https://hanakai.org/learn/hanami/database/migrations/ for details.
-            -- @migrate up
-            -- @begin
             SELECT 'up SQL query';
-            -- @end
+            -- @migrate end
 
             -- @migrate down
-            -- @begin
+            -- @migrate begin
             SELECT 'down SQL query';
-            -- @end
+            -- @migrate end
           SQL
           private_constant :FILE_CONTENTS
         end
