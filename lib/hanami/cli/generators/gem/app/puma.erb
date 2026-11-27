@@ -15,6 +15,11 @@ max_threads_count = ENV.fetch("HANAMI_MAX_THREADS", 5)
 min_threads_count = ENV.fetch("HANAMI_MIN_THREADS") { max_threads_count }
 
 threads min_threads_count, max_threads_count
+<%- if jruby? -%>
+
+# Puma runs a single process on JRuby, since JRuby can't fork workers. JRuby threads run in
+# parallel, so to handle more requests, raise HANAMI_MAX_THREADS instead.
+<%- else -%>
 
 #
 # Workers (aka Puma/Ruby processes)
@@ -42,3 +47,4 @@ if puma_cluster_mode
     Hanami.shutdown
   end
 end
+<%- end -%>

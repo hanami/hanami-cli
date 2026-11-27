@@ -16,9 +16,11 @@ announce() {
 announce "Running bundle install..."
 bundle check || bundle install
 
+<%- if generate_assets? -%>
 announce "\nRunning npm install..."
 npm install
 
+<%- end -%>
 <%- if generate_db? -%>
 announce "\nPreparing the database..."
 hanami db prepare

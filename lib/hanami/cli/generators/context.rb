@@ -108,16 +108,35 @@ module Hanami
           generate_db? && database_option == Commands::Gem::New::DATABASE_MYSQL
         end
 
+        # JRuby connects through JDBC, so it needs a "jdbc:" URL. JDBC drivers take the user as a
+        # query param rather than userinfo.
         def database_url
           if generate_sqlite?
-            "sqlite://db/#{app}.sqlite"
+            jruby? ? "jdbc:sqlite:db/#{app}.sqlite" : "sqlite://db/#{app}.sqlite"
           elsif generate_postgres?
-            "postgres://localhost/#{app}"
+            jruby? ? "jdbc:postgresql://localhost/#{app}" : "postgres://localhost/#{app}"
           elsif generate_mysql?
-            "mysql2://root@localhost/#{app}"
+            jruby? ? "jdbc:mysql://localhost/#{app}?user=root" : "mysql2://root@localhost/#{app}"
           else
             raise "Unknown database option: #{database_option}"
           end
+        end
+
+        # JRuby can't install the C extension database gems, so it uses the JDBC driver gems.
+        def database_gem
+          if generate_sqlite?
+            jruby? ? "jdbc-sqlite3" : "sqlite3"
+          elsif generate_postgres?
+            jruby? ? "jdbc-postgres" : "pg"
+          elsif generate_mysql?
+            jruby? ? "jdbc-mysql" : "mysql2"
+          else
+            raise "Unknown database option: #{database_option}"
+          end
+        end
+
+        def jruby?
+          RUBY_ENGINE == "jruby"
         end
 
         def bundled_views?

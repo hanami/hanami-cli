@@ -40,24 +40,22 @@ HANAMI_DB_GEM=$(grep '^gem "hanami-db"' "$GITHUB_WORKSPACE/Gemfile")
 sed -i "s|^\([[:space:]]*\)gem \"hanami-db\".*|\1$HANAMI_DB_GEM|" testapp/Gemfile
 grep -qF "$HANAMI_DB_GEM" testapp/Gemfile
 
+# `hanami new` should choose the JDBC driver gem and URL when run on JRuby
 if [ "$JRUBY" = "true" ]; then
   case "$E2E_DATABASE_FLAG" in
     sqlite)
-      original_gem="sqlite3"
       jdbc_gem="jdbc-sqlite3"
       ;;
     postgres)
-      original_gem="pg"
       jdbc_gem="jdbc-postgres"
       ;;
     mysql)
-      original_gem="mysql2"
       jdbc_gem="jdbc-mysql"
       ;;
   esac
 
-  sed -i "s#^gem \"${original_gem}\"#gem \"${jdbc_gem}\"#" testapp/Gemfile
-  grep -q "gem \"${jdbc_gem}\"" testapp/Gemfile
+  grep -q "^gem \"${jdbc_gem}\"" testapp/Gemfile
+  grep -q "^DATABASE_URL=jdbc:" testapp/.env
 fi
 
 cd testapp
