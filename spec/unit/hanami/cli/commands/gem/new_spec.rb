@@ -1434,6 +1434,9 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         # package.json
         expect(fs.exist?("package.json")).to be(false)
 
+        # bin/setup
+        expect(fs.read("bin/setup")).to_not match(/npm install/)
+
         # Procfile.dev
         expect(fs.read("Procfile.dev")).to_not match(/hanami assets watch/)
 
