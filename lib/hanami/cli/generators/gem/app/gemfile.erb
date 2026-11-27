@@ -56,12 +56,8 @@ gem "dry-schema", "~> 1.17"
 gem "i18n", "~> 1.14"
 gem "puma", ">= 7.1"
 gem "rake"
-<%- if generate_sqlite? -%>
-gem "sqlite3"
-<%- elsif generate_postgres? -%>
-gem "pg"
-<%- elsif generate_mysql? -%>
-gem "mysql2"
+<%- if generate_db? -%>
+gem "<%= database_gem %>"
 <%- end -%>
 <%- if generate_view? && template_engine == "haml" -%>
 gem "haml"

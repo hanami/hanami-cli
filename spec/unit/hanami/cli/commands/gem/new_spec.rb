@@ -29,6 +29,13 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
   before do
     allow(bundler).to receive(:bundle).with(a_string_starting_with("binstubs"))
       .and_return(successful_system_call_result)
+
+    # The generated files differ on JRuby. Expect the CRuby files unless an example says otherwise,
+    # so these specs pass on either Ruby.
+    #
+    # Stub the constant within Context only, which its own lookup finds first. Stubbing the global
+    # constant would break other code, such as JRuby loading its native extensions.
+    stub_const("Hanami::CLI::Generators::Context::RUBY_ENGINE", "ruby")
   end
 
   it "normalizes app name" do
@@ -1437,6 +1444,9 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
         # Procfile.dev
         expect(fs.read("Procfile.dev")).to_not match(/hanami assets watch/)
 
+        # bin/setup
+        expect(fs.read("bin/setup")).to_not match(/npm/)
+
         # config/assets.js
         expect(fs.exist?("config/assets.js")).to be(false)
 
@@ -1752,6 +1762,73 @@ RSpec.describe Hanami::CLI::Commands::Gem::New do
           expect(fs.read(".gitignore")).to_not include("db/*.sqlite")
           expect(fs.exist?("db/")).to be(false)
         end
+      end
+    end
+
+    describe "on JRuby" do
+      before do
+        stub_const("Hanami::CLI::Generators::Context::RUBY_ENGINE", "jruby")
+      end
+
+      it "generates app with JDBC gem and URL for --database=sqlite" do
+        subject.call(app: app, database: "sqlite")
+
+        fs.chdir(app) do
+          expect(fs.read("Gemfile")).to include(%(gem "jdbc-sqlite3"))
+          expect(fs.read("Gemfile")).to_not include(%(gem "sqlite3"))
+          expect(fs.read(".env")).to include("DATABASE_URL=jdbc:sqlite:db/#{app}.sqlite\n")
+          expect(fs.read(".gitignore")).to include("db/*.sqlite*")
+          expect(fs.exist?("db/.keep")).to be(true)
+        end
+      end
+
+      it "generates app with JDBC gem and URL for --database=postgres" do
+        subject.call(app: app, database: "postgres")
+
+        fs.chdir(app) do
+          expect(fs.read("Gemfile")).to include(%(gem "jdbc-postgres"))
+          expect(fs.read("Gemfile")).to_not include(%(gem "pg"))
+          expect(fs.read(".env")).to include("DATABASE_URL=jdbc:postgresql://localhost/#{app}\n")
+        end
+      end
+
+      it "generates app with JDBC gem and URL for --database=mysql" do
+        subject.call(app: app, database: "mysql")
+
+        fs.chdir(app) do
+          expect(fs.read("Gemfile")).to include(%(gem "jdbc-mysql"))
+          expect(fs.read("Gemfile")).to_not include(%(gem "mysql2"))
+          expect(fs.read(".env")).to include("DATABASE_URL=jdbc:mysql://localhost/#{app}?user=root\n")
+        end
+      end
+
+      it "generates puma config without workers" do
+        subject.call(app: app)
+
+        puma = <<~EXPECTED
+          # frozen_string_literal: true
+
+          #
+          # Environment and port
+          #
+          port ENV.fetch("HANAMI_PORT", 2300)
+          environment ENV.fetch("HANAMI_ENV", "development")
+
+          #
+          # Threads within each Puma/Ruby process (aka worker)
+          #
+
+          # Configure the minimum and maximum number of threads to use to answer requests.
+          max_threads_count = ENV.fetch("HANAMI_MAX_THREADS", 5)
+          min_threads_count = ENV.fetch("HANAMI_MIN_THREADS") { max_threads_count }
+
+          threads min_threads_count, max_threads_count
+
+          # Puma runs a single process on JRuby, since JRuby can't fork workers. JRuby threads run in
+          # parallel, so to handle more requests, raise HANAMI_MAX_THREADS instead.
+        EXPECTED
+
+        expect(fs.read("#{app}/config/puma.rb")).to eq(puma)
       end
     end
 
